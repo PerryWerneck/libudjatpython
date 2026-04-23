@@ -125,7 +125,8 @@ includes_dir = include_directories('src/include')
 #
 lib_src = [
   'src/library/interpreter.cc',
-  'src/library/module.cc'
+  'src/library/module.cc',
+  'src/library/handler.cc',
 ]
 
 module_src = [

@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
 
 /*
- * Copyright (C) 2024 Perry Werneck <perry.werneck@gmail.com>
+ * Copyright (C) 2026 Perry Werneck <perry.werneck@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -23,17 +23,29 @@
  #include <udjat/module/abstract.h>
  #include <udjat/tools/logger.h>
  #include <udjat/tools/url.h>
- // #include <udjat/tools/url/handler/python.h>
+ #include <udjat/tools/url/handler/python.h>
  #include <udjat/module/python.h>
+ #include <Python.h>
 
  namespace Udjat {
 	
 	Udjat::Module * Python::Module::Factory(const char *name) {
-		return new Python::Module(name,"Python module");
+
+		class Module : public Python::Module, private Python::Handler::Factory {
+		public:
+			Module(const char *name, const char *description) : Python::Module{name,description} {
+			}
+
+			virtual ~Module() {
+			}
+
+		};
+
+		return new Module(name,"Python " PY_VERSION " module");
 	}
 
 	Python::Module::Module(const char *name, const char *description) 
-		: Udjat::Module(name,(description ? description : "Python module")) {
+		: Udjat::Module(name,(description ? description : "Python " PY_VERSION " module")) {
 	}
 
 	Python::Module::~Module() {

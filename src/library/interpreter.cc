@@ -24,6 +24,7 @@
  #include <private/interpreter.h>
  #include <stdexcept>
  #include <udjat/tools/memory.h>
+ #include <udjat/tools/logger.h>
  
  #include <Python.h>
 
@@ -38,6 +39,8 @@
 	
 	Python::Interpreter::Interpreter() {
 		lock_guard<recursive_mutex> lock(*this);
+
+		Logger::String{"Initializing python " PY_VERSION " interpreter"}.trace();
 
 		// 1. Initialize the config with default Python settings
 		PyConfig_InitPythonConfig(&config);

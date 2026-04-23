@@ -18,43 +18,47 @@
  */
 
  /**
-  * @brief Declare python interpreter singleton.
+  * @brief Declare curl based url handler.
   */
 
-
  #pragma once
- #include <config.h>
  #include <udjat/defs.h>
- #include <private/interpreter.h>
- #include <mutex>
- #include <functional>
-
- #define PY_SSIZE_T_CLEAN
- #include <Python.h>
-
+ #include <udjat/tools/url.h>
+ #include <udjat/tools/url/handler.h>
+ #include <vector>
+ #include <string>
+ 
  namespace Udjat {
 
  	namespace Python {
 
-		/// @brief The python interpreter
-		class UDJAT_API Interpreter : private std::recursive_mutex {
-		private:
-			PyStatus status;
-			PyConfig config;
-
-			Interpreter();
-			~Interpreter();
+		/// @brief The HTTP client engine.
+		class UDJAT_API Handler : public Udjat::URL::Handler {
+		protected:
+			const URL url;
 
 		public:
-			static Interpreter & Instance();
 
-			int run(const char *script_text);	
-			int run(const char *script_text, const std::function<bool(uint64_t current, uint64_t total, const void *data, size_t len)> &progress);
+			class Factory : public Udjat::URL::Handler::Factory {
+			public:
+				Factory(const char *name = "python");
+				virtual ~Factory();
+				std::shared_ptr<Udjat::URL::Handler> HandlerFactory(const URL &url) const override;
+			};
 
-			int run_path(const char *filename);
-			
+			Handler(const URL &url);
+
+			virtual ~Handler();
+
+			const char * c_str() const noexcept override;
+
+			int test(const HTTP::Method method = HTTP::Get, const char *payload = "") override;
+
+			int perform(const HTTP::Method method, const char *payload, const std::function<bool(uint64_t current, uint64_t total, const void *data, size_t len)> &progress) override;
+
 		};
 
-	}
+ 	}
 
  }
+
