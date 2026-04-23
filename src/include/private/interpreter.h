@@ -25,13 +25,9 @@
  #pragma once
  #include <config.h>
  #include <udjat/defs.h>
- #include <private/interpreter.h>
  #include <mutex>
  #include <functional>
-
- #define PY_SSIZE_T_CLEAN
- #include <Python.h>
-
+ 
  namespace Udjat {
 
  	namespace Python {
@@ -39,7 +35,8 @@
 		/// @brief The python interpreter
 		class UDJAT_API Interpreter {
 		private:
-			/// @brief The current python interpreter context;
+
+			/// @brief The current python interpreter context.
 			class Context;
 
 		public:

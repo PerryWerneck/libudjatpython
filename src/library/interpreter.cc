@@ -97,7 +97,6 @@
 			return rc;
 		}
 
-
 	};
 
 	std::mutex Python::Interpreter::Context::guard;
