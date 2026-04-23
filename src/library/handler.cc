@@ -48,7 +48,7 @@
 		try {
 
 			File::Text file{url.path().c_str()};
-			rc = Python::Interpreter::Instance().run(file.c_str());
+			rc = Python::Interpreter().run(file.c_str());
 
 		} catch(const std::exception &e) {
 
@@ -71,7 +71,7 @@
 		try {
 
 			File::Text file{url.path().c_str()};
-			rc = Python::Interpreter::Instance().run(file.c_str(),progress);
+			rc = Python::Interpreter().run(file.c_str(),progress);
 
 		} catch(const std::exception &e) {
 

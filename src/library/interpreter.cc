@@ -32,13 +32,11 @@
 
  namespace Udjat {
 
-	Python::Interpreter & Python::Interpreter::Instance() {
-		static Interpreter instance;
-		return instance;
-	}
-	
+	std::recursive_mutex Python::Interpreter::guard;
+
 	Python::Interpreter::Interpreter() {
-		lock_guard<recursive_mutex> lock(*this);
+		
+		lock_guard<recursive_mutex> lock(guard);
 
 		Logger::String{"Initializing python " PY_VERSION " interpreter"}.trace();
 
@@ -73,13 +71,16 @@
 	}
 
 	Python::Interpreter::~Interpreter() {
-		lock_guard<recursive_mutex> lock(*this);
+		
+		lock_guard<recursive_mutex> lock(guard);
+
  		PyConfig_Clear(&config);
 		Py_Finalize();
 	}
 
 	int Python::Interpreter::run(const char *script_text) {
-		lock_guard<recursive_mutex> lock(*this);
+		
+		lock_guard<recursive_mutex> lock(guard);
 
 		int rc = PyRun_SimpleString(script_text);
 
@@ -96,6 +97,27 @@
 		}
 
 		return rc;
+
+	}
+
+	int Python::Interpreter::run(const char *script_text, const std::function<bool(uint64_t current, uint64_t total, const void *data, size_t len)> &progress) {
+		
+		lock_guard<recursive_mutex> lock(guard);
+
+		int rc;
+
+		rc = PyRun_SimpleString("import sys, io\nsys.stdout = io.StringIO()");
+    	rc = PyRun_SimpleString(script_text);
+
+    	auto sys_module = make_handle(PyImport_ImportModule("sys"),Py_DECREF);
+    	auto stdout_obj = make_handle(PyObject_GetAttrString(sys_module.get(), "stdout"),Py_DECREF);
+    	auto result = make_handle(PyObject_CallMethod(stdout_obj.get(), "getvalue", NULL),Py_DECREF);
+
+    	const char * output = PyUnicode_AsUTF8(result.get());
+
+		progress(0,strlen(output),output,strlen(output));
+
+		PyRun_SimpleString("import sys\nsys.stdout = sys.__stdout__");
 
 	}
 
