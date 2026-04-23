@@ -114,6 +114,18 @@
 
     	rc = PyRun_SimpleString(script_text);
 
+		if (PyErr_Occurred()) {
+			auto exc = make_handle(PyErr_GetRaisedException(),Py_DECREF);
+			if (exc.get()) {
+                // 3. Convert the exception to a string (equivalent to str(e))
+                auto exc_str = make_handle(PyObject_Str(exc.get()),Py_DECREF);
+                if (exc_str.get()) {
+                    string msg = PyUnicode_AsUTF8(exc_str.get());
+					throw runtime_error(msg);
+                }
+            }			
+		}
+
     	auto sys_module = make_handle(PyImport_ImportModule("sys"),Py_DECREF);
     	auto stdout_obj = make_handle(PyObject_GetAttrString(sys_module.get(), "stdout"),Py_DECREF);
     	auto result = make_handle(PyObject_CallMethod(stdout_obj.get(), "getvalue", NULL),Py_DECREF);
@@ -126,9 +138,11 @@
 
 		PyRun_SimpleString(
 			"import sys\n"
-			"sys.stdout = sys.__stdout__"
+			"sys.stdout = sys.__stdout__\n"
+			"sys.stderr = sys.__stderr__"
 		);
 
+		return rc;
 	}
 
  }
