@@ -32,7 +32,7 @@
 	Logger::verbosity(9);
 	Logger::redirect();
 
-	Python::Interpreter::Instance().run("import sys; print(f'----> Program name: {sys.executable}')");
+	Python::Interpreter().run("import sys; print(f'----> Program name: {sys.executable}')");
 
 	/*
 	return loader(argc,argv,[](Application &app) -> int {

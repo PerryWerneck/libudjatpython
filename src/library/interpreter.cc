@@ -106,7 +106,12 @@
 
 		int rc;
 
-		rc = PyRun_SimpleString("import sys, io\nsys.stdout = io.StringIO()");
+		rc = PyRun_SimpleString(
+			"import sys, io\n"
+			"sys.stdout = io.StringIO()\n"
+			"sys.stderr = io.StringIO()"
+		);
+
     	rc = PyRun_SimpleString(script_text);
 
     	auto sys_module = make_handle(PyImport_ImportModule("sys"),Py_DECREF);
@@ -115,11 +120,15 @@
 
     	const char * output = PyUnicode_AsUTF8(result.get());
 
+		// TODO: Split the captured output into individual lines 
+		// and invoke the progress callback for each.
 		progress(0,strlen(output),output,strlen(output));
 
-		PyRun_SimpleString("import sys\nsys.stdout = sys.__stdout__");
+		PyRun_SimpleString(
+			"import sys\n"
+			"sys.stdout = sys.__stdout__"
+		);
 
 	}
 
  }
-
