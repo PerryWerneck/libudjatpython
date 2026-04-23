@@ -30,6 +30,16 @@
 
  namespace Udjat {
 
+	Python::Handler::Factory::Factory(const char *name) : Udjat::URL::Handler::Factory{name} {
+	}
+
+	Python::Handler::Factory::~Factory() {
+	}
+
+	std::shared_ptr<Udjat::URL::Handler> Python::Handler::Factory::HandlerFactory(const URL &url) const {		
+		return std::make_shared<Python::Handler>(url);
+	}
+
 	Python::Handler::Handler(const URL &u) : url{u} {
 
 	}
@@ -88,7 +98,6 @@
 
 
 	}
-
 
  }
 
