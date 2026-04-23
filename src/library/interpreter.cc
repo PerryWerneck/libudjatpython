@@ -21,11 +21,13 @@
 
  #include <udjat/defs.h>
  #include <udjat/tools/application.h>
- #include <private/interpreter.h>
  #include <stdexcept>
  #include <udjat/tools/memory.h>
  #include <udjat/tools/logger.h>
  
+ #include <private/interpreter.h>
+ #include <private/modules.h>
+
  #include <Python.h>
 
  using namespace std;
