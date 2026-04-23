@@ -47,7 +47,7 @@
 		public:
 			static Interpreter & Instance();
 
-			void run(const char *script_text);
+			int run(const char *script_text);
 			
 		};
 

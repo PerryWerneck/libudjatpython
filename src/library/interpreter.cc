@@ -23,6 +23,7 @@
  #include <udjat/tools/application.h>
  #include <private/interpreter.h>
  #include <stdexcept>
+ #include <udjat/tools/memory.h>
  
  #include <Python.h>
 
@@ -43,8 +44,7 @@
 
 		// 2. Set the program name (Replacement for Py_SetProgramName)
 		// This implicitly handles decoding the string
-		// Application::Name name{true};
-		string name{"/home/perry/project/udjat/module/python/.build/udjatpython"};
+		Application::Name name{true};
 
 		debug("Program_name=",name.c_str());
 
@@ -75,9 +75,25 @@
 		Py_Finalize();
 	}
 
-	void Python::Interpreter::run(const char *script_text) {
+	int Python::Interpreter::run(const char *script_text) {
 		lock_guard<recursive_mutex> lock(*this);
-		PyRun_SimpleString(script_text);
+
+		int rc = PyRun_SimpleString(script_text);
+
+		if (PyErr_Occurred()) {
+			auto exc = make_handle(PyErr_GetRaisedException(),Py_DECREF);
+			if (exc.get()) {
+                // 3. Convert the exception to a string (equivalent to str(e))
+                auto exc_str = make_handle(PyObject_Str(exc.get()),Py_DECREF);
+                if (exc_str.get()) {
+                    string msg = PyUnicode_AsUTF8(exc_str.get());
+					throw runtime_error(msg);
+                }
+            }			
+		}
+
+		return rc;
+
 	}
 
  }
