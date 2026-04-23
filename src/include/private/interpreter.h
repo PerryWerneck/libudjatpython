@@ -17,10 +17,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- /**
-  * @brief Declare python interpreter singleton.
-  */
-
+ /// @brief Declare python interpreter class.
 
  #pragma once
  #include <config.h>

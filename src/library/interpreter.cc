@@ -32,6 +32,25 @@
 
  namespace Udjat {
 
+	/*
+	static PyMethodDef udjat_methods[] = {
+		...
+		{"system",  spam_system, METH_VARARGS, "Execute a shell command."},
+		...
+		{NULL, NULL, 0, NULL}        // Sentinel
+	};	
+
+	static struct PyModuleDef udjat_module = {
+		...
+		.m_methods = udjat_methods,
+		...
+	};	
+
+	PyMODINIT_FUNC PyInit_udjat(void) {
+    	return PyModuleDef_Init(&udjat_module);
+	}
+	*/
+
 	class UDJAT_PRIVATE Python::Interpreter::Context {
 	private:
 		static std::mutex guard;
@@ -45,10 +64,15 @@
 
 			debug("Initializing python " PY_VERSION " interpreter");
 
-			// 1. Initialize the config with default Python settings
+			// Add a built-in module, before Py_Initialize
+			/* if (PyImport_AppendInittab("udjat", PyInit_udjat) == -1) {
+				throw runtime_error("Error: could not extend in-built modules table");
+			} */
+
+			// Initialize the config with default Python settings
 			PyConfig_InitPythonConfig(&config);
 
-			// 2. Set the program name (Replacement for Py_SetProgramName)
+			// Set the program name (Replacement for Py_SetProgramName)
 			// This implicitly handles decoding the string
 			Application::Name name{true};
 
@@ -60,7 +84,7 @@
 				throw runtime_error("Unable to set python application name");
 			}
 
-			// 3. Initialize the interpreter from this config
+			// Initialize the interpreter from this config
 			status = Py_InitializeFromConfig(&config);
 			if (PyStatus_Exception(status)) {
 				PyConfig_Clear(&config);
@@ -69,9 +93,6 @@
 
 			Py_Initialize();
 
-			// Import libraries
-			// PyRun_SimpleString("import sys");
-			// PyRun_SimpleString("sys.path.append('/path/to/your/library_folder')")
 		}
 
 		~Context() {
