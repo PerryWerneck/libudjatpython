@@ -46,6 +46,8 @@
 
 	Python::Module::Module(const char *name, const char *description) 
 		: Udjat::Module(name,(description ? description : "Python " PY_VERSION " module")) {
+
+		Logger::String{"Initializing python " PY_VERSION " module"}.trace(name);			
 	}
 
 	Python::Module::~Module() {

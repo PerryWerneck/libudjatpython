@@ -38,7 +38,7 @@
 		
 		lock_guard<recursive_mutex> lock(guard);
 
-		Logger::String{"Initializing python " PY_VERSION " interpreter"}.trace();
+		debug("Initializing python " PY_VERSION " interpreter");
 
 		// 1. Initialize the config with default Python settings
 		PyConfig_InitPythonConfig(&config);
