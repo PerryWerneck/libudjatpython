@@ -39,9 +39,8 @@
 		/// @brief The python interpreter
 		class UDJAT_API Interpreter {
 		private:
-			static std::recursive_mutex guard;
-			PyStatus status;
-			PyConfig config;
+			/// @brief The current python interpreter context;
+			class Context;
 
 		public:
 			Interpreter();

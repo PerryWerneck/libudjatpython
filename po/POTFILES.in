@@ -1,3 +1,7 @@
 src/module/init.cc
 src/library/module.cc
+src/library/interpreter.cc
+src/library/handler.cc
 src/include/udjat/module/python.h
+src/include/udjat/tools/url/handler/python.h
+src/include/private/interpreter.h
