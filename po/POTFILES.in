@@ -1,0 +1,3 @@
+src/module/init.cc
+src/library/module.cc
+src/include/udjat/module/python.h
