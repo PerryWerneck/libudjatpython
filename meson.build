@@ -40,8 +40,9 @@ libversion = '@0@.@1@'.format(pkg_major_version,pkg_minor_version)
 
 #
 # i18n
+# https://mesonbuild.com/i18n-module.html
 #
-subdir('po')
+# subdir('po')
 
 #
 # Required libraries
@@ -123,6 +124,8 @@ includes_dir = include_directories('src/include')
 # Sources
 #
 lib_src = [
+  'src/library/interpreter.cc',
+  'src/library/module.cc'
 ]
 
 module_src = [
@@ -239,7 +242,7 @@ if host_machine.system() == 'windows'
 
   # https://mesonbuild.com/Reference-manual_functions.html#shared_library
   module = shared_library(
-    'http', 
+    'python', 
     config_src + module_src + resources,
     name_prefix: 'udjat-module-',
     install: true,
@@ -267,7 +270,7 @@ else
 
   # https://mesonbuild.com/Reference-manual_functions.html#shared_library
   module = shared_library(
-    'http', 
+    'python', 
     config_src + module_src,
     name_prefix: 'udjat-module-',
     install: true,
@@ -303,7 +306,7 @@ executable(
   config_src + test_src,
   install: false,
   link_with : [ dynamic, module ],
-  dependencies: [ libudjat ],
+  dependencies: [ libudjat, py_dep ],
   include_directories: includes_dir
 )
 

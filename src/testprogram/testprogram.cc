@@ -22,20 +22,30 @@
  #include <udjat/loader.h>
  #include <udjat/tools/logger.h>
  #include <iostream>
+ #include <private/interpreter.h>
 
  using namespace Udjat;
  using namespace std;
 
  int main(int argc, char **argv) {
+
+	Logger::verbosity(9);
+	Logger::redirect();
+
+	Python::Interpreter::Instance().run("import sys; print(f'----> Program name: {sys.executable}')");
+
+	/*
 	return loader(argc,argv,[](Application &app) -> int {
 
-		debug("Initializing " PACKAGE_NAME "...");
+
+		// debug("Initializing " PACKAGE_NAME "...");
 		//udjat_module_init();
-		debug("... initilization of " PACKAGE_NAME " is complete");
+		//debug("... initilization of " PACKAGE_NAME " is complete");
 
 
 		return 0;
 	});
+	*/
 
  }
 

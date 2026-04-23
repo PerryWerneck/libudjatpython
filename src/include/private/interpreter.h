@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
 
 /*
- * Copyright (C) 2024 Perry Werneck <perry.werneck@gmail.com>
+ * Copyright (C) 2026 Perry Werneck <perry.werneck@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -17,27 +17,40 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #include <config.h>
+ /**
+  * @brief Declare python interpreter singleton.
+  */
 
+
+ #pragma once
+ #include <config.h>
  #include <udjat/defs.h>
- #include <udjat/module/abstract.h>
- #include <udjat/tools/logger.h>
- #include <udjat/tools/url.h>
- // #include <udjat/tools/url/handler/python.h>
- #include <udjat/module/python.h>
+ #include <private/interpreter.h>
+ #include <mutex>
+
+ #define PY_SSIZE_T_CLEAN
+ #include <Python.h>
 
  namespace Udjat {
-	
-	Udjat::Module * Python::Module::Factory(const char *name) {
-		return new Python::Module(name,"Python module");
-	}
 
-	Python::Module::Module(const char *name, const char *description) 
-		: Udjat::Module(name,(description ? description : "Python module")) {
-	}
+ 	namespace Python {
 
-	Python::Module::~Module() {
+		/// @brief The python interpreter
+		class UDJAT_API Interpreter : private std::recursive_mutex {
+		private:
+			PyStatus status;
+			PyConfig config;
+
+			Interpreter();
+			~Interpreter();
+
+		public:
+			static Interpreter & Instance();
+
+			void run(const char *script_text);
+			
+		};
+
 	}
 
  }
-
