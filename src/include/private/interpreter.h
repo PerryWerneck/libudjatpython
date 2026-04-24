@@ -38,7 +38,7 @@
 
 		public:
 		
-			Interpreter(bool except = false);
+			Interpreter();
 			~Interpreter();
 
 			int run(const char *script_text);	
