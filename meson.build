@@ -128,6 +128,8 @@ lib_src = [
   'src/library/interpreter.cc',
   'src/library/module.cc',
   'src/library/handler.cc',
+  'src/library/tools.cc',
+  'src/library/logger.cc',
 ]
 
 module_src = [
