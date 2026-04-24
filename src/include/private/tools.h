@@ -40,6 +40,8 @@
 		/// @return The callback return.
 		PyObject * call(int required_args, PyObject *args, const std::function<PyObject *(PyObject *args)> &callback);
 
+		PyObject * call(int required_args, PyObject *args, const std::function<void (PyObject *args)> &callback);
+		
 	}
 
  }

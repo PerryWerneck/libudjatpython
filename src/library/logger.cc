@@ -20,10 +20,16 @@
  #include <config.h>
 
  #include <udjat/defs.h>
+ #include <udjat/tools/logger.h>
+ #include <udjat/tools/intl.h>
  #include <private/modules.h>
  #include <private/tools.h>
+ #include <stdexcept>
 
  #include <Python.h>
+
+ using namespace Udjat;
+ using namespace std;
 
  static void cleanup(PyObject *module);
  static PyObject *debug_method(PyObject *self, PyObject *args);
@@ -72,17 +78,18 @@
 	{NULL, NULL, 0, NULL}        // Sentinel
  };	
 
- static struct PyModuleDef logger_module = {
+ static struct PyModuleDef module = {
 	PyModuleDef_HEAD_INIT,
 	.m_name = "logger",					// name of module
 	.m_doc = NULL,						// module documentation, may be NUL
-	.m_size = -1,						// size of per-interpreter state of the module or -1 if the module keeps state in global variables.
+	.m_size = 0,						// size of per-interpreter state of the module or -1 if the module keeps state in global variables.
 	.m_methods = methods,				// Module methods
 	.m_free = (freefunc) cleanup
  };	
 
  PyMODINIT_FUNC PyInit_logger(void) {
-	return PyModuleDef_Init(&logger_module);
+	debug("----- Registering module",module.m_name);
+	return PyModuleDef_Init(&module);
  }
  
  void cleanup(PyObject *) {
@@ -92,7 +99,7 @@
 	return Python::call(1,args,[](PyObject *args){
 		const char *msg = "";
 		if (!PyArg_ParseTuple(args, "s", &msg))
-            throw throw system_error(ENOENT,system_category(),_("The log message should be a string"));
+            throw system_error(ENOENT,system_category(),_("The log message should be a string"));
 		Logger::Message{msg}.write(Logger::Debug);
 	});
  }
@@ -101,7 +108,7 @@
 	return Python::call(1,args,[](PyObject *args){
 		const char *msg = "";
 		if (!PyArg_ParseTuple(args, "s", &msg))
-            throw throw system_error(ENOENT,system_category(),_("The log message should be a string"));
+            throw system_error(ENOENT,system_category(),_("The log message should be a string"));
 		Logger::Message{msg}.trace();
 	});
  }
@@ -110,7 +117,7 @@
 	return Python::call(1,args,[](PyObject *args){
 		const char *msg = "";
 		if (!PyArg_ParseTuple(args, "s", &msg))
-            throw throw system_error(ENOENT,system_category(),_("The log message should be a string"));
+            throw system_error(ENOENT,system_category(),_("The log message should be a string"));
 		Logger::Message{msg}.error();
 	});
  }
@@ -119,7 +126,7 @@
 	return Python::call(1,args,[](PyObject *args){
 		const char *msg = "";
 		if (!PyArg_ParseTuple(args, "s", &msg))
-            throw throw system_error(ENOENT,system_category(),_("The log message should be a string"));
+            throw system_error(ENOENT,system_category(),_("The log message should be a string"));
 		Logger::Message{msg}.warning();
 	});
  }
@@ -128,7 +135,7 @@
 	return Python::call(1,args,[](PyObject *args){
 		const char *msg = "";
 		if (!PyArg_ParseTuple(args, "s", &msg))
-            throw throw system_error(ENOENT,system_category(),_("The log message should be a string"));
+            throw system_error(ENOENT,system_category(),_("The log message should be a string"));
 		Logger::Message{msg}.info();
 	});
  }

@@ -22,6 +22,7 @@
  #include <udjat/defs.h>
  #include <private/modules.h>
  #include <private/tools.h>
+ #include <udjat/tools/intl.h>
  #include <functional>
  #include <errno.h>
 
@@ -58,6 +59,31 @@
 		try {
 
 			return callback(args);
+
+		} catch(const std::exception &e) {
+
+			PyErr_SetString(PyExc_RuntimeError, e.what());
+
+		} catch(...) {
+
+			PyErr_SetString(PyExc_RuntimeError, _("Unexpected error in python callback."));
+
+		}
+
+		return NULL;
+	}
+
+	PyObject * Python::call(int required_args, PyObject *args, const std::function<void (PyObject *args)> &callback) {
+
+		if(PyTuple_Size(args) != required_args) {
+			PyErr_SetString(PyExc_RuntimeError, strerror(EINVAL));
+			return NULL;
+		}
+
+		try {
+
+			callback(args);
+			Py_RETURN_NONE;
 
 		} catch(const std::exception &e) {
 

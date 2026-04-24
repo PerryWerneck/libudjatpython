@@ -65,12 +65,7 @@
 			guard.lock();
 
 			debug("Initializing python " PY_VERSION " interpreter");
-
-			// Add a built-in module, before Py_Initialize
-			/* if (PyImport_AppendInittab("udjat", PyInit_udjat) == -1) {
-				throw runtime_error("Error: could not extend in-built modules table");
-			} */
-
+			
 			// Initialize the config with default Python settings
 			PyConfig_InitPythonConfig(&config);
 
@@ -86,14 +81,17 @@
 				throw runtime_error("Unable to set python application name");
 			}
 
+			// Add built-in modules, before Py_Initialize
+			if (PyImport_AppendInittab("logger", PyInit_logger) == -1) {
+				throw runtime_error("Error: could not extend in-built modules table");
+			}
+
 			// Initialize the interpreter from this config
 			status = Py_InitializeFromConfig(&config);
 			if (PyStatus_Exception(status)) {
 				PyConfig_Clear(&config);
 				throw runtime_error("Unable to initialize python interpreter");
 			}
-
-			Py_Initialize();
 
 		}
 
