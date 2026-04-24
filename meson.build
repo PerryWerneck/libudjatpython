@@ -131,6 +131,7 @@ lib_src = [
   'src/library/tools.cc',
   'src/library/logger.cc',
   'src/library/config.cc',
+  'src/library/testprogram.cc',
 ]
 
 module_src = [

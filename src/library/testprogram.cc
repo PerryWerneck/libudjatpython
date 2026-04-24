@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
 
 /*
- * Copyright (C) 2021 Perry Werneck <perry.werneck@gmail.com>
+ * Copyright (C) 2025 Perry Werneck <perry.werneck@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -17,22 +17,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+
  #include <config.h>
  #include <udjat/defs.h>
  #include <udjat/loader.h>
  #include <udjat/tools/logger.h>
- #include <udjat/module.h>
  #include <iostream>
  #include <private/interpreter.h>
 
  using namespace Udjat;
  using namespace std;
 
- int main(int argc, char **argv) {
+ #ifdef DEBUG 
 
-	Logger::verbosity(9);
-	Logger::redirect();
-
+ static int call_python_test() {
 	return Python::Interpreter().run(
 		"import sys\n"
 		"import logger\n"
@@ -40,17 +38,34 @@
 		"logger.warning(f'----> Program name: {sys.executable}')\n"
 		"print(config.get('python','example','default'))\n"
 	);
-
-	/*
-	return loader(argc,argv,[](Application &app) -> int {
-
-		udjat_module_init();
-
-		return 0;
-	});
-	*/
-
  }
 
+ UDJAT_API int run_udjat_unit_test(const char *name) {
 
+	static const struct {
+		const char *name;
+		int (*test)();
+	} tests[] = {
+		{"call_python",call_python_test},
+	};
 
+	Logger::String{"Running unit test: ",name}.info();
+
+	if(!name) {
+		for(const auto &test : tests) {
+			Logger::String{"Running unit test: ",test.name}.info();
+			test.test();
+		}
+	} else {
+		for(const auto &test : tests) {
+			if(strcasecmp(test.name, name) == 0) {
+				Logger::String{"Running unit test: ",test.name}.info();
+				return test.test();
+			}
+		}
+	}
+
+	return 0;
+
+ }
+ #endif // DEBUG

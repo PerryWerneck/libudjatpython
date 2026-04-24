@@ -21,11 +21,14 @@
  #include <udjat/defs.h>
  #include <udjat/module/abstract.h>
  #include <udjat/module/python.h>
+ #include <udjat/tools/logger.h>
 
  using namespace std;
+ using namespace Udjat;
 
  /// @brief Register udjat module.
  UDJAT_API Udjat::Module * udjat_module_init() {
+	debug(__FUNCTION__);
 	return Udjat::Python::Module::Factory();
  }
 
