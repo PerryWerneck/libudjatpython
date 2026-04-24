@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: udjathttp 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-23 21:47-0300\n"
+"POT-Creation-Date: 2026-04-23 22:34-0300\n"
 "PO-Revision-Date: 2026-04-23 21:47-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -20,12 +20,13 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Generator: Poedit 3.8\n"
 
-#: src/library/logger.cc:95 src/library/logger.cc:104 src/library/logger.cc:113
-#: src/library/logger.cc:122 src/library/logger.cc:131
+#: src/library/logger.cc:102 src/library/logger.cc:111
+#: src/library/logger.cc:120 src/library/logger.cc:129
+#: src/library/logger.cc:138
 msgid "The log message should be a string"
 msgstr "Mensagem de log precisa ser uma string"
 
-#: src/library/tools.cc:44 src/library/tools.cc:68
+#: src/library/tools.cc:45 src/library/tools.cc:69 src/library/tools.cc:94
 msgid "Unexpected error in python callback."
 msgstr "Erro inesperado em chamada python."
 

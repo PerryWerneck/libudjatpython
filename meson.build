@@ -130,6 +130,7 @@ lib_src = [
   'src/library/handler.cc',
   'src/library/tools.cc',
   'src/library/logger.cc',
+  'src/library/config.cc',
 ]
 
 module_src = [
