@@ -37,7 +37,8 @@
 			class Context;
 
 		public:
-			Interpreter();
+		
+			Interpreter(bool except = false);
 			~Interpreter();
 
 			int run(const char *script_text);	

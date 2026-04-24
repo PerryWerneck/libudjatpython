@@ -30,7 +30,7 @@
 
  namespace Udjat {
 
-	PyObject * Python::call(PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) {
+	PyObject * Python::call(PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept {
 
 		try {
 
@@ -49,7 +49,7 @@
 		return NULL;
 	}
 
-	PyObject * Python::call(int required_args, PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) {
+	PyObject * Python::call(int required_args, PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept {
 
 		if(PyTuple_Size(args) != required_args) {
 			PyErr_SetString(PyExc_RuntimeError, strerror(EINVAL));
@@ -73,7 +73,7 @@
 		return NULL;
 	}
 
-	PyObject * Python::call(int required_args, PyObject *args, const std::function<void (PyObject *args)> &callback) {
+	PyObject * Python::call(int required_args, PyObject *args, const std::function<void (PyObject *args)> &callback) noexcept {
 
 		if(PyTuple_Size(args) != required_args) {
 			PyErr_SetString(PyExc_RuntimeError, strerror(EINVAL));

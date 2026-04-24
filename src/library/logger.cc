@@ -32,11 +32,11 @@
  using namespace std;
 
  static void cleanup(PyObject *module);
- static PyObject *debug_method(PyObject *self, PyObject *args);
- static PyObject *trace_method(PyObject *self, PyObject *args);
- static PyObject *error_method(PyObject *self, PyObject *args);
- static PyObject *warning_method(PyObject *self, PyObject *args);
- static PyObject *info_method(PyObject *self, PyObject *args);
+ static PyObject *debug_method(PyObject *self, PyObject *args) noexcept;
+ static PyObject *trace_method(PyObject *self, PyObject *args) noexcept;
+ static PyObject *error_method(PyObject *self, PyObject *args) noexcept;
+ static PyObject *warning_method(PyObject *self, PyObject *args) noexcept;
+ static PyObject *info_method(PyObject *self, PyObject *args) noexcept;
 
  static PyMethodDef methods[] = {
 	{
@@ -88,14 +88,14 @@
  };	
 
  PyMODINIT_FUNC PyInit_logger(void) {
-	debug("----- Registering module",module.m_name);
+	debug("----- Registering module '",module.m_name,"'");
 	return PyModuleDef_Init(&module);
  }
  
  void cleanup(PyObject *) {
  } 
 
- PyObject *debug_method(PyObject *self, PyObject *args) {
+ PyObject *debug_method(PyObject *self, PyObject *args) noexcept {
 	return Python::call(1,args,[](PyObject *args){
 		const char *msg = "";
 		if (!PyArg_ParseTuple(args, "s", &msg))
@@ -104,7 +104,7 @@
 	});
  }
 
- PyObject *trace_method(PyObject *self, PyObject *args) {
+ PyObject *trace_method(PyObject *self, PyObject *args) noexcept {
 	return Python::call(1,args,[](PyObject *args){
 		const char *msg = "";
 		if (!PyArg_ParseTuple(args, "s", &msg))
@@ -113,7 +113,7 @@
 	});
  }
 
- PyObject *error_method(PyObject *self, PyObject *args) {
+ PyObject *error_method(PyObject *self, PyObject *args) noexcept {
 	return Python::call(1,args,[](PyObject *args){
 		const char *msg = "";
 		if (!PyArg_ParseTuple(args, "s", &msg))
@@ -122,7 +122,7 @@
 	});
  }
 
- PyObject *warning_method(PyObject *self, PyObject *args) {
+ PyObject *warning_method(PyObject *self, PyObject *args) noexcept {
 	return Python::call(1,args,[](PyObject *args){
 		const char *msg = "";
 		if (!PyArg_ParseTuple(args, "s", &msg))
@@ -131,7 +131,7 @@
 	});
  }
 
- PyObject *info_method(PyObject *self, PyObject *args) {
+ PyObject *info_method(PyObject *self, PyObject *args) noexcept {
 	return Python::call(1,args,[](PyObject *args){
 		const char *msg = "";
 		if (!PyArg_ParseTuple(args, "s", &msg))
