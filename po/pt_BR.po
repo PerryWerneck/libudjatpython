@@ -1,0 +1,39 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <perry.werneck@gmail.com>, 2022.
+# Perry Werneck <perry.werneck@gmail.com>, 2022-2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: udjathttp 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-04-23 21:47-0300\n"
+"PO-Revision-Date: 2026-04-23 21:47-0300\n"
+"Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
+"Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-SourceCharset: utf-8\n"
+"X-Generator: Poedit 3.8\n"
+
+#: src/library/logger.cc:95 src/library/logger.cc:104 src/library/logger.cc:113
+#: src/library/logger.cc:122 src/library/logger.cc:131
+msgid "The log message should be a string"
+msgstr "Mensagem de log precisa ser uma string"
+
+#: src/library/tools.cc:44 src/library/tools.cc:68
+msgid "Unexpected error in python callback."
+msgstr "Erro inesperado em chamada python."
+
+#~ msgid "HTTP operation failed"
+#~ msgstr "Requisição HTTP falhou"
+
+#~ msgid "Unsupported HTTP verb"
+#~ msgstr "Verbo HTTP inválido ou não suportado"
+
+#~ msgid "Failed to get response code from curl"
+#~ msgstr "Erro ao tentar obter resposta da libcurl"

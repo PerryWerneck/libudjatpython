@@ -42,7 +42,7 @@ libversion = '@0@.@1@'.format(pkg_major_version,pkg_minor_version)
 # i18n
 # https://mesonbuild.com/i18n-module.html
 #
-# subdir('po')
+subdir('po')
 
 #
 # Required libraries
