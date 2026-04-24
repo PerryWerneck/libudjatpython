@@ -23,22 +23,16 @@
  #include <config.h>
  #include <functional>
  #include <Python.h>
+ #include <udjat/tools/value.h>
 
  namespace Udjat {
 
  	namespace Python {
 
-		/// @brief Run callback, convert exception in python errors.
-		/// @param args The arguments for the callback.
-		/// @param callback The method to call.
-		/// @return The callback return.
-		PyObject * call(PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
+		/// @brief Create python object from Udjat::Value
+		/// @return Python Object.
+		PyObject * ObjectFactory(const Udjat::Value &value) noexcept;
 
-		/// @brief Check argument count, run callback, convert exception in python errors.
-		/// @param args The arguments for the callback.
-		/// @param callback The method to call.
-		/// @return The callback return.
-		PyObject * call(int required_args, PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
 
 	}
 

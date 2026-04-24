@@ -4,6 +4,7 @@ src/library/interpreter.cc
 src/library/handler.cc
 src/library/logger.cc
 src/library/tools.cc
+src/library/config.cc
 src/include/udjat/module/python.h
 src/include/udjat/tools/url/handler/python.h
 src/include/private/interpreter.h
