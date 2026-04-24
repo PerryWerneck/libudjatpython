@@ -23,10 +23,14 @@
  #include <private/modules.h>
  #include <private/tools.h>
  #include <udjat/tools/intl.h>
+ #include <udjat/tools/value.h>
  #include <functional>
  #include <errno.h>
+ #include <stdexcept>
 
  #include <Python.h>
+
+ using namespace std;
 
  namespace Udjat {
 
@@ -34,7 +38,7 @@
 
 		try {
 
-			switch(value.Type()) {
+			switch((Value::Type) value) {
 			case Udjat::Value::Type::Undefined:
 				return Py_None;
 
@@ -49,7 +53,7 @@
 
 						value.for_each([list](const Value &value){
 							PyObject *object = ObjectFactory(value); 
-							List_Append(list,object);
+							PyList_Append(list,object);
 							Py_DecRef(object);
 							return false;
 						});
@@ -78,7 +82,7 @@
 							PyDict_SetItemString(dict, name, object);
 							Py_DecRef(object);
 							return false;
-						};
+						});
 
 					} catch(...) {
 
@@ -122,9 +126,9 @@
 			case Udjat::Value::Type::Fraction:
 			case Udjat::Value::Type::Real:
 				{
-					double value;
-					value.get(value);
-					return PyFloat_FromDouble(value);
+					double response;
+					value.get(response);
+					return PyFloat_FromDouble(response);
 				}
 
 			case Udjat::Value::Type::Boolean:
@@ -133,6 +137,9 @@
 					value.get(response);
 					return response ? Py_True : Py_False;
 				}
+
+			case Udjat::Value::Type::Report:
+				throw runtime_error(_("Unexpected value type in python callback."));
 
 			}
 
