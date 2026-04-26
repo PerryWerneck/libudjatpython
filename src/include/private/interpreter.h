@@ -48,10 +48,16 @@
 		
 			~Interpreter();
 
-			int run(const char *script_text);	
-			int run(const char *script_text, const std::function<bool(uint64_t current, uint64_t total, const void *data, size_t len)> &progress);
+			int run(const char *name, const char *script_text);	
+			int run(const char *name, const char *script_text, const std::function<bool(uint64_t current, uint64_t total, const void *data, size_t len)> &progress);
 
-			int run_path(const char *filename);
+			inline int run(const char *script_text) {
+				return run(nullptr,script_text);
+			}	
+
+			inline int run(const char *script_text, const std::function<bool(uint64_t current, uint64_t total, const void *data, size_t len)> &progress) {
+				return run(nullptr,script_text,progress);				
+			}
 			
 		};
 

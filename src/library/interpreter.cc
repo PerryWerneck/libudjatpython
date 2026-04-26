@@ -84,7 +84,7 @@
 		Py_Finalize();
 	}
 
-	int Python::Interpreter::run(const char *script_text) {
+	int Python::Interpreter::run(const char *, const char *script_text) {
 		lock_guard<recursive_mutex> lock(guard);
 		int rc = PyRun_SimpleString(script_text);
 		if (PyErr_Occurred()) {
@@ -101,7 +101,7 @@
 		return rc;
 	}
 
-	int Python::Interpreter::run(const char *script_text, const std::function<bool(uint64_t current, uint64_t total, const void *data, size_t len)> &progress) {
+	int Python::Interpreter::run(const char *, const char *script_text, const std::function<bool(uint64_t current, uint64_t total, const void *data, size_t len)> &progress) {
 		
 		lock_guard<recursive_mutex> lock(guard);
 
