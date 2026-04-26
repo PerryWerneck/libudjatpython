@@ -41,7 +41,7 @@
 
 	Python::Interpreter::Interpreter() {
 
-		debug("Initializing python " PY_VERSION " interpreter");
+		Logger::String{"Initializing python " PY_VERSION " interpreter"}.info();
 		
 		lock_guard<recursive_mutex> lock(guard);
 
@@ -78,7 +78,7 @@
 	}
 
 	Python::Interpreter::~Interpreter() {
-		debug("Deinitializing python " PY_VERSION " interpreter");
+		Logger::String{"Deinitializing python " PY_VERSION " interpreter"}.info();
 		lock_guard<recursive_mutex> lock(guard);
 		PyConfig_Clear(&config);
 		Py_Finalize();
