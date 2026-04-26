@@ -3,10 +3,12 @@ src/library/module.cc
 src/library/interpreter.cc
 src/library/handler.cc
 src/library/logger.cc
-src/library/tools.cc
 src/library/config.cc
+src/library/tools/call.cc
+src/library/tools/value.cc
 src/include/udjat/module/python.h
 src/include/udjat/tools/url/handler/python.h
 src/include/private/interpreter.h
 src/include/private/modules.h
 src/include/private/tools.h
+src/include/private/value.h

@@ -34,121 +34,86 @@
 
  namespace Udjat {
 
-	/*
-	static PyMethodDef udjat_methods[] = {
-		...
-		{"system",  spam_system, METH_VARARGS, "Execute a shell command."},
-		...
-		{NULL, NULL, 0, NULL}        // Sentinel
-	};	
-
-	static struct PyModuleDef udjat_module = {
-		...
-		.m_methods = udjat_methods,
-		...
-	};	
-
-	PyMODINIT_FUNC PyInit_udjat(void) {
-    	return PyModuleDef_Init(&udjat_module);
+	Python::Interpreter & Python::Interpreter::getInstance() {
+		static Interpreter instance;
+		return instance;
 	}
-	*/
-
-	class UDJAT_PRIVATE Python::Interpreter::Context {
-	private:
-		static std::mutex guard;
-		PyConfig config;
-		PyStatus status;
-
-	public:
-		Context() {
-
-			guard.lock();
-
-			debug("Initializing python " PY_VERSION " interpreter");
-			
-			// Initialize the config with default Python settings
-			PyConfig_InitPythonConfig(&config);
-
-			// Set the program name (Replacement for Py_SetProgramName)
-			// This implicitly handles decoding the string
-			Application::Name name{true};
-
-			debug("Program_name=",name.c_str());
-
-			status = PyConfig_SetBytesString(&config, &config.program_name, name.c_str());
-			if (PyStatus_Exception(status)) {
-				PyConfig_Clear(&config);
-				throw runtime_error("Unable to set python application name");
-			}
-
-			// Add built-in modules, before Py_Initialize
-			if (PyImport_AppendInittab("logger", PyInit_logger) == -1) {
-				throw runtime_error("Error: could not extend in-built modules table");
-			}
-
-			if (PyImport_AppendInittab("config", PyInit_config) == -1) {
-				throw runtime_error("Error: could not extend in-built modules table");
-			}
-
-			// Initialize the interpreter from this config
-			status = Py_InitializeFromConfig(&config);
-			if (PyStatus_Exception(status)) {
-				PyConfig_Clear(&config);
-				throw runtime_error("Unable to initialize python interpreter");
-			}
-
-		}
-
-		~Context() {
-			debug("Deinitializing python " PY_VERSION " interpreter");
-			PyConfig_Clear(&config);
-			Py_Finalize();
-			guard.unlock();
-		}
-
-		int run(const char *script_text) {
-			int rc = PyRun_SimpleString(script_text);
-			if (PyErr_Occurred()) {
-				auto exc = make_handle(PyErr_GetRaisedException(),Py_DECREF);
-				if (exc.get()) {
-					// 3. Convert the exception to a string (equivalent to str(e))
-					auto exc_str = make_handle(PyObject_Str(exc.get()),Py_DECREF);
-					if (exc_str.get()) {
-						string msg = PyUnicode_AsUTF8(exc_str.get());
-						throw runtime_error(msg);
-					}
-				}			
-			}
-			return rc;
-		}
-
-	};
-
-	std::mutex Python::Interpreter::Context::guard;
 
 	Python::Interpreter::Interpreter() {
+
+		debug("Initializing python " PY_VERSION " interpreter");
+		
+		lock_guard<recursive_mutex> lock(guard);
+
+		// Initialize the config with default Python settings
+		PyConfig_InitPythonConfig(&config);
+
+		// Set the program name (Replacement for Py_SetProgramName)
+		// This implicitly handles decoding the string
+		Application::Name name{true};
+
+		debug("Program_name=",name.c_str());
+
+		status = PyConfig_SetBytesString(&config, &config.program_name, name.c_str());
+		if (PyStatus_Exception(status)) {
+			PyConfig_Clear(&config);
+			throw runtime_error("Unable to set python application name");
+		}
+
+		// Add built-in modules, before Py_Initialize
+		if (PyImport_AppendInittab("logger", PyInit_logger) == -1) {
+			throw runtime_error("Error: could not extend in-built modules table");
+		}
+
+		if (PyImport_AppendInittab("config", PyInit_config) == -1) {
+			throw runtime_error("Error: could not extend in-built modules table");
+		}
+
+		// Initialize the interpreter from this config
+		status = Py_InitializeFromConfig(&config);
+		if (PyStatus_Exception(status)) {
+			PyConfig_Clear(&config);
+			throw runtime_error("Unable to initialize python interpreter");
+		}
 	}
 
 	Python::Interpreter::~Interpreter() {
+		debug("Deinitializing python " PY_VERSION " interpreter");
+		lock_guard<recursive_mutex> lock(guard);
+		PyConfig_Clear(&config);
+		Py_Finalize();
 	}
 
 	int Python::Interpreter::run(const char *script_text) {
-		return Context().run(script_text);
+		lock_guard<recursive_mutex> lock(guard);
+		int rc = PyRun_SimpleString(script_text);
+		if (PyErr_Occurred()) {
+			auto exc = make_handle(PyErr_GetRaisedException(),Py_DECREF);
+			if (exc.get()) {
+				// 3. Convert the exception to a string (equivalent to str(e))
+				auto exc_str = make_handle(PyObject_Str(exc.get()),Py_DECREF);
+				if (exc_str.get()) {
+					string msg = PyUnicode_AsUTF8(exc_str.get());
+					throw runtime_error(msg);
+				}
+			}			
+		}
+		return rc;
 	}
 
 	int Python::Interpreter::run(const char *script_text, const std::function<bool(uint64_t current, uint64_t total, const void *data, size_t len)> &progress) {
 		
-		Context context;
+		lock_guard<recursive_mutex> lock(guard);
 
 		int rc;
 
-		context.run(
+		run(
 			"import sys, io\n"
 			"sys.stdout = io.StringIO()\n"
 			"sys.stderr = io.StringIO()"
 		);
 
-    	rc = context.run(script_text);
+    	rc = run(script_text);
 
     	auto sys_module = make_handle(PyImport_ImportModule("sys"),Py_DECREF);
     	auto stdout_obj = make_handle(PyObject_GetAttrString(sys_module.get(), "stdout"),Py_DECREF);
@@ -160,7 +125,7 @@
 		// and invoke the progress callback for each.
 		progress(0,strlen(output),output,strlen(output));
 
-		context.run(
+		run(
 			"import sys\n"
 			"sys.stdout = sys.__stdout__\n"
 			"sys.stderr = sys.__stderr__"

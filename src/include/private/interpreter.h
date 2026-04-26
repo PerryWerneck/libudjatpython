@@ -24,6 +24,8 @@
  #include <udjat/defs.h>
  #include <mutex>
  #include <functional>
+
+ #include <Python.h>
  
  namespace Udjat {
 
@@ -33,12 +35,17 @@
 		class UDJAT_API Interpreter {
 		private:
 
-			/// @brief The current python interpreter context.
-			class Context;
+			std::recursive_mutex guard;
+
+			PyConfig config;
+			PyStatus status;
+
+			Interpreter();
 
 		public:
+
+			static Interpreter & getInstance();
 		
-			Interpreter();
 			~Interpreter();
 
 			int run(const char *script_text);	

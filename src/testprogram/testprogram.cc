@@ -33,7 +33,7 @@
 	Logger::verbosity(9);
 	Logger::redirect();
 
-	return Python::Interpreter().run(
+	return Python::Interpreter::getInstance().run(
 		"import sys\n"
 		"import logger\n"
 		"import config\n"

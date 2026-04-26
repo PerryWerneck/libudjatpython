@@ -31,7 +31,7 @@
  #ifdef DEBUG 
 
  static int call_python_test() {
-	return Python::Interpreter().run(
+	return Python::Interpreter::getInstance().run(
 		"import sys\n"
 		"import logger\n"
 		"import config\n"

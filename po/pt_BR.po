@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: udjathttp 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-24 16:03-0300\n"
+"POT-Creation-Date: 2026-04-24 18:43-0300\n"
 "PO-Revision-Date: 2026-04-23 21:47-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -26,8 +26,22 @@ msgstr ""
 msgid "The log message should be a string"
 msgstr "Mensagem de log precisa ser uma string"
 
-#: src/library/tools.cc:45 src/library/tools.cc:69 src/library/tools.cc:94
+#: src/library/tools/call.cc:45 src/library/tools/call.cc:69
+#: src/library/tools/call.cc:94 src/library/tools/value.cc:154
 msgid "Unexpected error in python callback."
+msgstr "Erro inesperado em chamada python."
+
+#: src/library/tools/value.cc:49
+msgid "Error creating python list."
+msgstr ""
+
+#: src/library/tools/value.cc:75
+msgid "Error creating python dictionary."
+msgstr ""
+
+#: src/library/tools/value.cc:142 src/library/tools/value.cc:146
+#, fuzzy
+msgid "Unexpected value type in python callback."
 msgstr "Erro inesperado em chamada python."
 
 #~ msgid "HTTP operation failed"
