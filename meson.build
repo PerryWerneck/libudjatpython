@@ -65,6 +65,7 @@ py_dep = py_inst.dependency(embed: true)
 # Compiler flags
 #
 cxx = meson.get_compiler('cpp')
+c = meson.get_compiler('cpp')
 enable_debug = get_option('debug') or get_option('buildtype').contains('debug')
 
 time_epoch = run_command('sh', '-c', 'echo "$SOURCE_DATE_EPOCH"', check : true).stdout().strip()
@@ -75,7 +76,6 @@ endif
 compiler_flags = [
   '-ggdb3',
   '-fvisibility=hidden',
-  '-Wno-overloaded-virtual',
   '-fPIC',
   '-DHAVE_CONFIG_H=1',
   '-DBUILD_DATE='+time_epoch,
@@ -91,7 +91,8 @@ else
   ]
 endif
 
-add_project_arguments(cxx.get_supported_arguments(compiler_flags), language: 'cpp')
+add_project_arguments(cxx.get_supported_arguments(compiler_flags + ['-Wno-overloaded-virtual']), language: 'cpp')
+add_project_arguments(c.get_supported_arguments(compiler_flags), language: 'c')
 
 #
 # Configuration
@@ -304,7 +305,21 @@ dynamic_library = declare_dependency(
 
 py_inst.extension_module(
   'udjat',
-  py_modules,
+  py_modules + [
+    'src/extension/init.c',
+  ],
+  c_args: [ 
+    '-DPACKAGE_VERSION="@0@.@1@.@2@"'.format(pkg_major_version,pkg_minor_version,pkg_micro_version),
+    '-DPACKAGE_REVISION="@0@"'.format(time_epoch),
+    '-fvisibility=hidden',
+  ],
+  cpp_args: [
+    '-std=c++1z',
+    '-Wno-overloaded-virtual',
+    '-fvisibility=hidden',
+    '-DPACKAGE_VERSION="@0@.@1@.@2@"'.format(pkg_major_version,pkg_minor_version,pkg_micro_version),
+    '-DPACKAGE_REVISION="@0@"'.format(time_epoch),
+  ],
   install: true,
   install_tag: 'python', 
   dependencies: [
@@ -321,4 +336,3 @@ executable(
   dependencies: [ libudjat, py_dep ],
   include_directories: includes_dir
 )
-

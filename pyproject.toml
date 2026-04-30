@@ -1,0 +1,19 @@
+[build-system]
+build-backend = 'mesonpy'
+requires = ['meson-python']
+
+[tool.meson-python.args]
+setup = ['--vsenv']
+install = ['--tags=python']
+
+[project]
+name = 'pyudjat'
+version = '1.0.0'
+description = 'Python bindings for libudjat'
+readme = 'README.md'
+requires-python = '>=3.8'
+license = { file = 'LICENSE' }
+authors = [
+  { name = 'Perry Werneck', email = 'perry.werneck@gmail.com' },
+]
+

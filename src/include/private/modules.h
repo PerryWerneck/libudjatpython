@@ -20,7 +20,6 @@
  /// @brief Declare python interpreter class.
 
  #pragma once
- #include <config.h>
  #include <Python.h>
 
  /// @brief Initialize the logger module.
