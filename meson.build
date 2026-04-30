@@ -61,11 +61,6 @@ py_mod = import('python')
 py_inst = py_mod.find_installation('python3')
 py_dep = py_inst.dependency(embed: true)
 
-lib_deps = [
-  libudjat,
-  py_dep
-]
-
 #
 # Compiler flags
 #
@@ -128,11 +123,15 @@ lib_src = [
   'src/library/interpreter.cc',
   'src/library/module.cc',
   'src/library/handler.cc',
-  'src/library/logger.cc',
-  'src/library/config.cc',
   'src/library/testprogram.cc',
   'src/library/tools/call.cc',
   'src/library/tools/value.cc',
+]
+
+# Python modules
+py_modules = [
+  'src/library/logger.cc',
+  'src/library/config.cc',
 ]
 
 module_src = [
@@ -171,9 +170,6 @@ if host_machine.system() == 'windows'
       '-lws2_32',
     ]
   )
-
-  lib_src += [
-  ]
 
 else
 
@@ -217,12 +213,12 @@ if host_machine.system() == 'windows'
 
   dynamic = shared_library(
     meson.project_name(), 
-    config_src + lib_src + resources,
+    config_src + lib_src + py_modules + resources,
     install: true,
     version : libversion,
     soversion : libversion,
     gnu_symbol_visibility: 'hidden',
-    dependencies: lib_deps,
+    dependencies: [ libudjat, py_dep ],
     link_args: [ 
       '-lws2_32',
       '-lwinhttp',
@@ -230,21 +226,13 @@ if host_machine.system() == 'windows'
     include_directories: includes_dir
   )
 
-  static_library = declare_dependency(
-    link_with: static_library(
-      meson.project_name(), 
-      config_src + lib_src,
-      install: true,
-      dependencies: lib_deps,
-      cpp_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
-      include_directories: includes_dir
-    ),
-    include_directories: includes_dir,
-    dependencies: lib_deps,
-    link_args: [ 
-      '-lws2_32',
-      '-lwinhttp',
-    ],
+  static = static_library(
+    meson.project_name(), 
+    config_src + lib_src + py_modules,
+    install: true,
+    dependencies: [ libudjat, py_dep ],
+    cpp_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
+    include_directories: includes_dir
   )
 
   # https://mesonbuild.com/Reference-manual_functions.html#shared_library
@@ -257,7 +245,7 @@ if host_machine.system() == 'windows'
     link_with: dynamic,
     install_dir: libudjat.get_variable('module_path'),
     gnu_symbol_visibility: 'hidden',
-    dependencies: lib_deps,
+    dependencies: [ libudjat, py_dep ],
     include_directories: includes_dir
   )
 
@@ -265,13 +253,13 @@ else
 
   dynamic = shared_library(
     meson.project_name(), 
-    config_src + lib_src,
+    config_src + lib_src + py_modules,
     install: true,
     version : libversion,
     soversion : libversion,
     cpp_args: [ '-ffat-lto-objects' ],    
     gnu_symbol_visibility: 'hidden',
-    dependencies: lib_deps,
+    dependencies: [ libudjat, py_dep ],
     include_directories: includes_dir
   )
 
@@ -284,30 +272,47 @@ else
     link_with: dynamic,
     install_dir: libudjat.get_variable('module_path'),
     gnu_symbol_visibility: 'hidden',
-    dependencies: lib_deps,
+    dependencies: [ libudjat, py_dep ],
     include_directories: includes_dir
   )
 
-  static_library = declare_dependency(
-    link_with: static_library(
-      meson.project_name(), 
-      config_src + lib_src,
-      install: true,
-      dependencies: lib_deps,
-      cpp_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
-      include_directories: includes_dir
-    ),
-    include_directories: includes_dir,
-    dependencies: [ py_dep ],
+  static = static_library(
+    meson.project_name(), 
+    config_src + lib_src + py_modules,
+    install: true,
+    dependencies: [ libudjat, py_dep ],
+    cpp_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
+    include_directories: includes_dir
   )
 
 endif
+
+static_library = declare_dependency(
+  link_with: static,
+  include_directories: includes_dir,
+  dependencies: [ libudjat, py_dep ],
+  link_args: [ 
+    '-lws2_32',
+    '-lwinhttp',
+  ],
+)
 
 dynamic_library = declare_dependency(
   link_with: dynamic,
   include_directories: includes_dir,
 )
 
+py_inst.extension_module(
+  'udjat',
+  py_modules,
+  install: true,
+  install_tag: 'python', 
+  dependencies: [
+    libudjat,
+    py_inst.dependency(),
+  ],
+  include_directories: includes_dir
+)
 executable(
   meson.project_name(),
   config_src + test_src,
