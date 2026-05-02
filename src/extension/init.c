@@ -1,7 +1,7 @@
 /* SPDX-License-Identifier: LGPL-3.0-or-later */
 
 /*
- * Copyright (C) 2024 Perry Werneck <perry.werneck@gmail.com>
+ * Copyright (C) 2026 Perry Werneck <perry.werneck@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published
@@ -24,12 +24,15 @@
 
 /*---[ Globals ]------------------------------------------------------------------------------------*/
 
-PyObject *get_module_version(PyObject *self, PyObject *args) {
+PyObject *get_module_version(PyObject *self, PyObject *args) {PyObject *get_module_revision(PyObject *self, PyObject *args) {
+	return PyUnicode_FromString(PACKAGE_REVISION);
+}
+
 	return PyUnicode_FromString(PACKAGE_VERSION);
 }
 
-PyObject *get_module_revision(PyObject *self, PyObject *args) {
-	return PyUnicode_FromString(PACKAGE_REVISION);
+PyObject *get_core_version(PyObject *self, PyObject *args) {
+	return PyUnicode_FromString("incomplete");
 }
 
 static PyMethodDef methods[] = {
@@ -44,6 +47,15 @@ static PyMethodDef methods[] = {
 	{
 		"revision",
 		get_module_revision,
+		METH_NOARGS,
+		"Get package revision"
+
+	},
+
+
+	{
+		"CORE",
+		get_core_version,
 		METH_NOARGS,
 		"Get package revision"
 
