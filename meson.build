@@ -133,6 +133,7 @@ lib_src = [
 py_modules = [
   'src/library/logger.cc',
   'src/library/config.cc',
+  'src/library/types/agent.c',
 ]
 
 module_src = [
