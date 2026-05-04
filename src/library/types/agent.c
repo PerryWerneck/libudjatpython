@@ -87,8 +87,8 @@
 
 	.tp_str = agent_str,
 
-	.tp_getattr = agent_getattr,
-	.tp_setattr = agent_setattr,
+	.tp_getattro = agent_getattr,
+	.tp_setattro = agent_setattr,
 
 	.tp_methods = agent_methods,
 

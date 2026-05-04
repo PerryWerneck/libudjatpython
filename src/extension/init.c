@@ -24,11 +24,12 @@
 
 /*---[ Globals ]------------------------------------------------------------------------------------*/
 
-PyObject *get_module_version(PyObject *self, PyObject *args) {PyObject *get_module_revision(PyObject *self, PyObject *args) {
-	return PyUnicode_FromString(PACKAGE_REVISION);
+PyObject *get_module_version(PyObject *self, PyObject *args) {
+	return PyUnicode_FromString(PACKAGE_VERSION);
 }
 
-	return PyUnicode_FromString(PACKAGE_VERSION);
+PyObject *get_module_revision(PyObject *self, PyObject *args) {
+	return PyUnicode_FromString(PACKAGE_REVISION);
 }
 
 PyObject *get_core_version(PyObject *self, PyObject *args) {

@@ -27,3 +27,4 @@
 
  /// @brief  Initialize the config file handler module.
  PyMODINIT_FUNC PyInit_config(void);
+
