@@ -18,7 +18,10 @@
  */
 
  #pragma once
- #include <config.h>
+ #ifdef HAVE_CONFIG_H
+	 #include <config.h>
+ #endif // HAVE_CONFIG_H
+
  #include <udjat/defs.h>
  #include <Python.h>
 
@@ -28,17 +31,12 @@
 	} pySettings;
  #endif // __cplusplus
 
- typedef struct {
-	PyObject_HEAD
- } pyAgent;
-
  UDJAT_PRIVATE PyObject	* settings_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds);
  UDJAT_PRIVATE void		  settings_dealloc(PyObject * self);
  UDJAT_PRIVATE int		  settings_init(PyObject *self, PyObject *args, PyObject *kwds);
  UDJAT_PRIVATE void		  settings_finalize(PyObject *self);
 
  UDJAT_PRIVATE PyObject * settings_str(PyObject *self);
- UDJAT_PRIVATE int 		  settings_setattr(PyObject *self, PyObject *attr, PyObject *value);
  UDJAT_PRIVATE PyObject * settings_getattr(PyObject *self, PyObject *attr);
  
  UDJAT_PRIVATE PyObject * settings_get(PyObject *self, PyObject *args);

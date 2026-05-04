@@ -20,7 +20,10 @@
  /// @brief Declare python interpreter class.
 
  #pragma once
- #include <config.h>
+ #ifdef HAVE_CONFIG_H
+	 #include <config.h>
+ #endif // HAVE_CONFIG_H
+
  #include <udjat/defs.h>
  #include <mutex>
  #include <functional>

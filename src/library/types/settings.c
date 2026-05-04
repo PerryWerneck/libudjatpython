@@ -17,7 +17,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #include <config.h>
+ #ifdef HAVE_CONFIG_H
+	 #include <config.h>
+ #endif // HAVE_CONFIG_H
+
  #include <private/settings.h>
  #include <Python.h>
 
@@ -54,7 +57,6 @@
 	.tp_str = settings_str,
 
 	.tp_getattro = settings_getattr,
-	.tp_setattro = settings_setattr,
 
 	.tp_methods = settings_methods,
 

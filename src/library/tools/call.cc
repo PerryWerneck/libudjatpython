@@ -17,7 +17,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #include <config.h>
+ #ifdef HAVE_CONFIG_H
+	 #include <config.h>
+ #endif // HAVE_CONFIG_H
 
  #include <udjat/defs.h>
  #include <private/modules.h>
@@ -96,6 +98,27 @@
 		}
 
 		return NULL;
+	}
+
+	PyObject * Python::call(const std::function<PyObject *(void)> &callback) noexcept {
+
+		try {
+
+			return callback();
+
+		} catch(const std::exception &e) {
+
+			PyErr_SetString(PyExc_RuntimeError, e.what());
+
+		} catch(...) {
+
+			PyErr_SetString(PyExc_RuntimeError, _("Unexpected error in python callback."));
+
+		}
+
+		return NULL;
+
+
 	}
 
  }

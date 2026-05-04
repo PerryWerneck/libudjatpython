@@ -20,13 +20,18 @@
  /// @brief Declare python interpreter class.
 
  #pragma once
- #include <config.h>
+ #ifdef HAVE_CONFIG_H
+	 #include <config.h>
+ #endif // HAVE_CONFIG_H
+
  #include <functional>
  #include <Python.h>
 
  namespace Udjat {
 
  	namespace Python {
+
+		PyObject * call(const std::function<PyObject *(void)> &callback) noexcept;
 
 		/// @brief Run callback, convert exception in python errors.
 		/// @param args The arguments for the callback.

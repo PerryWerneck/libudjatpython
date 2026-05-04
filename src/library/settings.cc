@@ -1,0 +1,107 @@
+/* SPDX-License-Identifier: LGPL-3.0-or-later */
+
+/*
+ * Copyright (C) 2026 Perry Werneck <perry.werneck@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published
+ * by the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+ #ifdef HAVE_CONFIG_H
+	 #include <config.h>
+ #endif // HAVE_CONFIG_H
+
+ #include <udjat/defs.h>
+ #include <private/settings.h>
+ #include <private/tools.h>
+ #include <udjat/tools/xml.h>
+
+ #include <Python.h>
+
+ using namespace Udjat;
+ using namespace std;
+
+ UDJAT_PRIVATE PyObject	* settings_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
+
+ }
+
+ UDJAT_PRIVATE void settings_dealloc(PyObject * self) {
+
+ } 
+ 
+ UDJAT_PRIVATE int settings_init(PyObject *self, PyObject *args, PyObject *kwds) {
+
+ }
+
+ UDJAT_PRIVATE void settings_finalize(PyObject *self) {
+
+ }
+
+ static PyObject * call(PyObject *self,const std::function<PyObject *(const XML::Node &node)> &callback) {
+
+	pySettings *settings = ((pySettings *) self);
+	
+	if(!settings->native) {
+		PyErr_SetString(PyExc_RuntimeError, "The object is empty");
+		return NULL;
+	}
+
+	const XML::Node &node = *((const XML::Node *) settings->native);
+
+	try {
+
+		return callback(node);
+
+	} catch(const std::exception &e) {
+
+		PyErr_SetString(PyExc_RuntimeError, e.what());
+
+	} catch(...) {
+
+		PyErr_SetString(PyExc_RuntimeError, _("Unexpected error in python callback."));
+
+	}
+
+	return NULL;
+
+
+ }
+
+ UDJAT_PRIVATE PyObject * settings_str(PyObject *self) {
+
+	return Python::call(self,[](const XML::Node &node) -> PyObject * {
+
+
+	});
+
+ }
+
+ UDJAT_PRIVATE PyObject * settings_getattr(PyObject *self, PyObject *attr) {
+
+	return Python::call(self,[attr](const XML::Node &node) -> PyObject * {
+
+
+		return PyNone;
+	});
+
+ }
+ 
+ UDJAT_PRIVATE PyObject * settings_get(PyObject *self, PyObject *args) {
+
+	return Python::call(self,[attr](const XML::Node &node) -> PyObject * {
+
+
+	});
+
+
+ }
