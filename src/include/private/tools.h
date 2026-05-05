@@ -24,6 +24,7 @@
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
 
+ #include <udjat/defs.h>
  #include <functional>
  #include <Python.h>
 
@@ -32,6 +33,8 @@
  	namespace Python {
 
 		PyObject * call(const std::function<PyObject *(void)> &callback) noexcept;
+
+		PyObject * call(PyObject *self,const std::function<PyObject *(Abstract::Object *object)> &callback);
 
 		/// @brief Run callback, convert exception in python errors.
 		/// @param args The arguments for the callback.

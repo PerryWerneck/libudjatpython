@@ -44,7 +44,7 @@
 
 	.tp_name = "udjat.sttgings",
 	.tp_doc = "UDJAT Settings Object",
-	.tp_basicsize = sizeof(pyAgent),
+	.tp_basicsize = sizeof(pySettings),
 	.tp_itemsize = 0,
 	.tp_flags = Py_TPFLAGS_HAVE_FINALIZE|Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,
 

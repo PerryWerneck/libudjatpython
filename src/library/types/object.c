@@ -17,27 +17,10 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #pragma once
-
  #ifdef HAVE_CONFIG_H
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
 
- #include <udjat/defs.h>
+ #include <private/object.h>
  #include <Python.h>
 
- UDJAT_PRIVATE PyObject	* agent_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds);
- UDJAT_PRIVATE void		  agent_dealloc(PyObject * self);
- UDJAT_PRIVATE int		  agent_init(PyObject *self, PyObject *args, PyObject *kwds);
- UDJAT_PRIVATE void		  agent_finalize(PyObject *self);
-
- UDJAT_PRIVATE PyObject * agent_failed(PyObject *self, PyObject *args);
- UDJAT_PRIVATE PyObject * agent_get_by_path(PyObject *self, PyObject *args);
- UDJAT_PRIVATE PyObject * agent_invalidate(PyObject *self, PyObject *args);
- UDJAT_PRIVATE PyObject * agent_start(PyObject *self, PyObject *args);
- UDJAT_PRIVATE PyObject * agent_stop(PyObject *self, PyObject *args);
- UDJAT_PRIVATE PyObject * agent_refresh(PyObject *self, PyObject *args);
-
- #ifdef __cplusplus
-	}
- #endif // __cplusplus

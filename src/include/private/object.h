@@ -18,39 +18,52 @@
  */
 
  #pragma once
+
  #ifdef HAVE_CONFIG_H
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
 
  #include <udjat/defs.h>
+ #include <udjat/tools/intl.h>
  #include <Python.h>
-
  #ifdef __cplusplus
-	#include <udjat/tools/xml.h>
+	#include <udjat/tools/abstract/object.h>
+	#include <stdexcept>
  #endif // __cplusplus
 
  typedef struct {
+
  #ifdef __cplusplus
-		const Udjat::XML::Node *handler;
+	Udjat::Abstract::Object *handler;
  #else
-		const void *handler;
+	 void *handler;
  #endif // __cplusplus
- } pySettings;
- 
+
+ } pyAbstractObject;
+
  #ifdef __cplusplus
 	extern "C" {
  #endif // __cplusplus
 
- UDJAT_PRIVATE PyObject	* settings_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds);
- UDJAT_PRIVATE void		  settings_dealloc(PyObject * self);
- UDJAT_PRIVATE int		  settings_init(PyObject *self, PyObject *args, PyObject *kwds);
- UDJAT_PRIVATE void		  settings_finalize(PyObject *self);
-
- UDJAT_PRIVATE PyObject * settings_str(PyObject *self);
- UDJAT_PRIVATE PyObject * settings_getattr(PyObject *self, PyObject *attr);
+ UDJAT_PRIVATE PyObject * object_str(PyObject *self);
+ UDJAT_PRIVATE int 		  object_setattr(PyObject *self, PyObject *attr, PyObject *value);
+ UDJAT_PRIVATE PyObject * object_getattr(PyObject *self, PyObject *attr);
+ UDJAT_PRIVATE PyObject * object_trace(PyObject *self, PyObject *msg);
+ UDJAT_PRIVATE PyObject * object_error(PyObject *self, PyObject *msg);
+ UDJAT_PRIVATE PyObject * object_warning(PyObject *self, PyObject *msg);
+ UDJAT_PRIVATE PyObject * object_info(PyObject *self, PyObject *msg);
  
- UDJAT_PRIVATE PyObject * settings_get(PyObject *self, PyObject *args);
-
  #ifdef __cplusplus
+ }
+
+	template <class T>
+	T & get_private(PyObject *self) {
+		pyAbstractObject *object = ((pyAbstractObject *) self);
+		auto *result = dynamic_cast<T *>(object->handler);
+		if(!result) {
+			throw std::logic_error(_("The object is invalid at this context"));
+		}
+		return *result;
 	}
+
  #endif // __cplusplus

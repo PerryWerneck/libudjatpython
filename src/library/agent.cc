@@ -22,45 +22,37 @@
  #endif // HAVE_CONFIG_H
 
  #include <udjat/defs.h>
- #include <private/settings.h>
+ #include <private/object.h>
+ #include <private/agent.h>
  #include <private/tools.h>
  #include <udjat/tools/xml.h>
- #include <udjat/tools/abstract/object.h>
- #include <udjat/tools/intl.h>
 
  #include <Python.h>
 
  using namespace Udjat;
  using namespace std;
 
- UDJAT_PRIVATE PyObject	* settings_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
+ UDJAT_PRIVATE PyObject	* alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
 
  }
 
- UDJAT_PRIVATE void settings_dealloc(PyObject * self) {
+ UDJAT_PRIVATE void agent_dealloc(PyObject * self) {
 
  } 
  
- UDJAT_PRIVATE int settings_init(PyObject *self, PyObject *args, PyObject *kwds) {
+ UDJAT_PRIVATE int agent_init(PyObject *self, PyObject *args, PyObject *kwds) {
 
  }
 
- UDJAT_PRIVATE void settings_finalize(PyObject *self) {
+ UDJAT_PRIVATE void agent_finalize(PyObject *self) {
 
  }
 
- static PyObject * call(PyObject *self,const std::function<PyObject *(const XML::Node &node)> &callback) {
-
-	pySettings *settings = ((pySettings *) self);
-	
-	if(!settings->native) {
-		PyErr_SetString(PyExc_RuntimeError, _("The object is empty"));
-		return NULL;
-	}
+ static PyObject * call(PyObject *self,const std::function<PyObject *(Abstract::Agent &agent)> &callback) {
 
 	try {
 
-		return callback(*settings->handler);
+		return callback(get_private<Abstract::Agent>(self));
 
 	} catch(const std::exception &e) {
 
@@ -73,35 +65,6 @@
 	}
 
 	return NULL;
-
-
+	
  }
 
- UDJAT_PRIVATE PyObject * settings_str(PyObject *self) {
-
-	return Python::call(self,[](const XML::Node &node) -> PyObject * {
-
-
-	});
-
- }
-
- UDJAT_PRIVATE PyObject * settings_getattr(PyObject *self, PyObject *attr) {
-
-	return Python::call(self,[attr](const XML::Node &node) -> PyObject * {
-
-
-		return PyNone;
-	});
-
- }
- 
- UDJAT_PRIVATE PyObject * settings_get(PyObject *self, PyObject *args) {
-
-	return Python::call(self,[attr](const XML::Node &node) -> PyObject * {
-
-
-	});
-
-
- }
