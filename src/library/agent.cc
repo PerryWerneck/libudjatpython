@@ -24,6 +24,7 @@
  #endif // HAVE_CONFIG_H
 
  #include <udjat/defs.h>
+ #include <udjat/agent/abstract.h>
  #include <private/object.h>
  #include <private/agent.h>
  #include <private/tools.h>
@@ -65,11 +66,11 @@
 
  }
 
- static PyObject * call(PyObject *self,const std::function<PyObject *(Udjat::Abstract::Agent &agent)> &callback) {
+ static PyObject * call(PyObject *self,const std::function<PyObject *(Udjat::Python::Agent &agent)> &callback) {
 
 	try {
 
-		return callback(get_private<Udjat::Abstract::Agent>(self));
+		return callback(get_private<Udjat::Python::Agent>(self));
 
 	} catch(const std::exception &e) {
 
@@ -85,3 +86,85 @@
 	
  }
 
+ UDJAT_PRIVATE PyObject * agent_failed(PyObject *self, PyObject *args) {
+
+	return call(self,[args](Udjat::Python::Agent &agent) -> PyObject * {
+
+		const char *summary;
+		const char *body;
+
+		switch(PyTuple_Size(args)) {
+		case 1:
+			if(!PyArg_ParseTuple(args, "s", &summary)) {
+				throw runtime_error(_("Invalid argument"));
+			}
+			break;
+
+		case 2:
+			if(!PyArg_ParseTuple(args, "ss", &summary,&body)) {
+				throw runtime_error(_("Invalid argument"));
+			}
+			break;
+
+		default:
+			throw runtime_error(_("Invalid argument"));
+
+		}
+
+		agent.failed(summary,body);
+
+		return Py_None;
+
+	});
+
+ }
+
+ UDJAT_PRIVATE PyObject * agent_get_by_path(PyObject *self, PyObject *args) {
+
+	return call(self,[](Udjat::Python::Agent &agent) -> PyObject * {
+
+
+	});
+
+ }
+
+ UDJAT_PRIVATE PyObject * agent_invalidate(PyObject *self, PyObject *args) {
+
+	return call(self,[args](Udjat::Python::Agent &agent) -> PyObject * {
+
+		if(PyTuple_Size(args) != 1) {
+			throw runtime_error(_("Invalid argument"));
+		}
+
+
+		return Py_None;
+	});
+
+ }
+
+ UDJAT_PRIVATE PyObject * agent_start(PyObject *self, PyObject *args) {
+
+	return call(self,[](Udjat::Python::Agent &agent) -> PyObject * {
+
+
+	});
+
+ }
+
+ UDJAT_PRIVATE PyObject * agent_stop(PyObject *self, PyObject *args) {
+
+	return call(self,[](Udjat::Python::Agent &agent) -> PyObject * {
+
+
+	});
+
+ }
+
+ UDJAT_PRIVATE PyObject * agent_refresh(PyObject *self, PyObject *args) {
+
+	return call(self,[](Udjat::Python::Agent &agent) -> PyObject * {
+
+
+	});
+
+ }

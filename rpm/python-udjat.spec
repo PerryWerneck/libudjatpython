@@ -23,7 +23,7 @@ ExclusiveArch: do_not_build
 
 Summary:		Python bindings for libudjat
 Name:			python-udjat
-Version:		1.0.0
+Version: 1.0.0
 Release:		0
 License:		GPL-2.0
 Source:			libudjat-%{version}.tar.xz

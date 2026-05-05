@@ -27,6 +27,27 @@
  #include <udjat/defs.h>
 
  #ifdef __cplusplus
+
+ #include <udjat/agent/abstract.h>
+
+ namespace Udjat::Python {
+
+	class Agent : public Udjat::Abstract::Agent {
+	private:
+		PyObject * self;
+
+	public:
+		Agent(const XML::Node &node);
+		~Agent() override;
+
+		inline void failed(const char *summary, const char *body) noexcept {
+			Udjat::Abstract::Agent::failed(summary,body);
+		}
+
+	};
+
+ };
+
  extern "C" {
  #endif // __cplusplus
 

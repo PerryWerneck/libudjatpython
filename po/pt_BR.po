@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: udjathttp 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-04-26 02:51-0300\n"
+"POT-Creation-Date: 2026-05-05 12:06-0300\n"
 "PO-Revision-Date: 2026-04-23 21:47-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -20,28 +20,51 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Generator: Poedit 3.8\n"
 
-#: src/library/logger.cc:102 src/library/logger.cc:111
-#: src/library/logger.cc:120 src/library/logger.cc:129
-#: src/library/logger.cc:138
+#: src/library/logger.cc:104 src/library/logger.cc:113
+#: src/library/logger.cc:122 src/library/logger.cc:131
+#: src/library/logger.cc:140 src/library/object.cc:133
 msgid "The log message should be a string"
 msgstr "Mensagem de log precisa ser uma string"
 
-#: src/library/tools/call.cc:45 src/library/tools/call.cc:69
-#: src/library/tools/call.cc:94 src/library/tools/value.cc:154
+#: src/library/tools/call.cc:47 src/library/tools/call.cc:71
+#: src/library/tools/call.cc:96 src/library/tools/call.cc:115
+#: src/library/tools/value.cc:156 src/library/settings.cc:88
+#: src/library/agent.cc:80 src/library/object.cc:50 src/library/object.cc:107
 msgid "Unexpected error in python callback."
 msgstr "Erro inesperado em chamada python."
 
-#: src/library/tools/value.cc:49
+#: src/library/tools/value.cc:51
 msgid "Error creating python list."
 msgstr ""
 
-#: src/library/tools/value.cc:75
+#: src/library/tools/value.cc:77
 msgid "Error creating python dictionary."
 msgstr ""
 
-#: src/library/tools/value.cc:142 src/library/tools/value.cc:146
+#: src/library/tools/value.cc:144 src/library/tools/value.cc:148
 #, fuzzy
 msgid "Unexpected value type in python callback."
+msgstr "Erro inesperado em chamada python."
+
+#: src/library/settings.cc:74
+msgid "The object is empty"
+msgstr ""
+
+#: src/library/settings.cc:133
+msgid "Method requires 2 arguments"
+msgstr ""
+
+#: src/library/settings.cc:139
+msgid "Invalid argument"
+msgstr ""
+
+#: src/library/object.cc:118
+msgid "Too many arguments"
+msgstr ""
+
+#: src/library/object.cc:144
+#, fuzzy
+msgid "Unexpected error in python logger."
 msgstr "Erro inesperado em chamada python."
 
 #~ msgid "HTTP operation failed"
