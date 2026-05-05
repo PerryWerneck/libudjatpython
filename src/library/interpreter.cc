@@ -17,6 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #include <Python.h>
+
  #ifdef HAVE_CONFIG_H
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
@@ -29,8 +31,6 @@
  
  #include <private/interpreter.h>
  #include <private/modules.h>
-
- #include <Python.h>
 
  using namespace std;
 

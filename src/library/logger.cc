@@ -17,6 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #include <Python.h>
+
  #ifdef HAVE_CONFIG_H
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
@@ -27,8 +29,6 @@
  #include <private/modules.h>
  #include <private/tools.h>
  #include <stdexcept>
-
- #include <Python.h>
 
  using namespace Udjat;
  using namespace std;

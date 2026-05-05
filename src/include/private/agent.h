@@ -18,13 +18,17 @@
  */
 
  #pragma once
+ #include <Python.h>
 
  #ifdef HAVE_CONFIG_H
-	 #include <config.h>
+	#include <config.h>
  #endif // HAVE_CONFIG_H
 
  #include <udjat/defs.h>
- #include <Python.h>
+
+ #ifdef __cplusplus
+ extern "C" {
+ #endif // __cplusplus
 
  UDJAT_PRIVATE PyObject	* agent_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds);
  UDJAT_PRIVATE void		  agent_dealloc(PyObject * self);

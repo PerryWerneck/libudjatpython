@@ -34,14 +34,31 @@
  using namespace std;
 
  UDJAT_PRIVATE PyObject	* settings_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
-
+	return type->tp_alloc(type,0);
  }
 
  UDJAT_PRIVATE void settings_dealloc(PyObject * self) {
-
+	Py_TYPE(self)->tp_free(self);
  } 
  
  UDJAT_PRIVATE int settings_init(PyObject *self, PyObject *args, PyObject *kwds) {
+
+	try {
+
+
+		return 0;
+
+	} catch(const std::exception &e) {
+
+		PyErr_SetString(PyExc_RuntimeError, e.what());
+
+	} catch(...) {
+
+		PyErr_SetString(PyExc_RuntimeError, "Unexpected error in core module");
+
+	}
+
+	return -1;
 
  }
 
@@ -53,7 +70,7 @@
 
 	pySettings *settings = ((pySettings *) self);
 	
-	if(!settings->native) {
+	if(!settings->handler) {
 		PyErr_SetString(PyExc_RuntimeError, _("The object is empty"));
 		return NULL;
 	}
@@ -74,13 +91,15 @@
 
 	return NULL;
 
-
  }
 
  UDJAT_PRIVATE PyObject * settings_str(PyObject *self) {
 
-	return Python::call(self,[](const XML::Node &node) -> PyObject * {
+	return call(self,[](const XML::Node &node) -> PyObject * {
 
+		return PyUnicode_FromString(
+			node.name()
+		);
 
 	});
 
@@ -88,18 +107,44 @@
 
  UDJAT_PRIVATE PyObject * settings_getattr(PyObject *self, PyObject *attr) {
 
-	return Python::call(self,[attr](const XML::Node &node) -> PyObject * {
+	return call(self,[attr](const XML::Node &node) -> PyObject * {
 
+		const char *attrname;
+		if(!PyArg_ParseTuple(attr, "s", &attrname)) {
+			throw runtime_error("Invalid argument");
+		}
 
-		return PyNone;
+		return PyUnicode_FromString(
+			XML::AttributeFactory(
+				node, 
+				attrname
+			).as_string()
+		);
+
 	});
 
  }
  
  UDJAT_PRIVATE PyObject * settings_get(PyObject *self, PyObject *args) {
 
-	return Python::call(self,[attr](const XML::Node &node) -> PyObject * {
+	return call(self,[args](const XML::Node &node) -> PyObject * {
 
+		if(PyTuple_Size(args) != 2) {
+			throw runtime_error(_("Method requires 2 arguments"));
+		}
+
+		const char *attrname;
+		const char *def;
+		if(!PyArg_ParseTuple(args, "ss", &attrname,&def)) {
+			throw runtime_error(_("Invalid argument"));
+		}
+
+		return PyUnicode_FromString(
+			XML::AttributeFactory(
+				node, 
+				attrname
+			).as_string(def)
+		);
 
 	});
 

@@ -17,6 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #include <Python.h>
+
  #ifdef HAVE_CONFIG_H
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
@@ -27,8 +29,6 @@
  #include <udjat/tools/url.h>
  #include <udjat/tools/file/text.h>
  #include <udjat/tools/logger.h>
-
- #include <Python.h>
 
  namespace Udjat {
 

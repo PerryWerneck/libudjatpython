@@ -18,6 +18,7 @@
  */
 
  #pragma once
+ #include <Python.h>
 
  #ifdef HAVE_CONFIG_H
 	 #include <config.h>
@@ -25,7 +26,7 @@
 
  #include <udjat/defs.h>
  #include <udjat/tools/intl.h>
- #include <Python.h>
+
  #ifdef __cplusplus
 	#include <udjat/tools/abstract/object.h>
 	#include <stdexcept>

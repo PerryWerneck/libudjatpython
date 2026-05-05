@@ -20,6 +20,8 @@
  /// @brief Declare python interpreter class.
 
  #pragma once
+ #include <Python.h>
+ 
  #ifdef HAVE_CONFIG_H
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
@@ -28,8 +30,6 @@
  #include <mutex>
  #include <functional>
 
- #include <Python.h>
- 
  namespace Udjat {
 
  	namespace Python {

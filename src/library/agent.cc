@@ -17,6 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #include <Python.h>
+
  #ifdef HAVE_CONFIG_H
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
@@ -27,20 +29,35 @@
  #include <private/tools.h>
  #include <udjat/tools/xml.h>
 
- #include <Python.h>
-
  using namespace Udjat;
  using namespace std;
 
- UDJAT_PRIVATE PyObject	* alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
-
+ UDJAT_PRIVATE PyObject	* agent_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
+	return type->tp_alloc(type,0);
  }
 
  UDJAT_PRIVATE void agent_dealloc(PyObject * self) {
-
+	Py_TYPE(self)->tp_free(self);
  } 
  
  UDJAT_PRIVATE int agent_init(PyObject *self, PyObject *args, PyObject *kwds) {
+
+	try {
+
+
+		return 0;
+
+	} catch(const std::exception &e) {
+
+		PyErr_SetString(PyExc_RuntimeError, e.what());
+
+	} catch(...) {
+
+		PyErr_SetString(PyExc_RuntimeError, "Unexpected error in core module");
+
+	}
+
+	return -1;
 
  }
 
@@ -48,11 +65,11 @@
 
  }
 
- static PyObject * call(PyObject *self,const std::function<PyObject *(Abstract::Agent &agent)> &callback) {
+ static PyObject * call(PyObject *self,const std::function<PyObject *(Udjat::Abstract::Agent &agent)> &callback) {
 
 	try {
 
-		return callback(get_private<Abstract::Agent>(self));
+		return callback(get_private<Udjat::Abstract::Agent>(self));
 
 	} catch(const std::exception &e) {
 
