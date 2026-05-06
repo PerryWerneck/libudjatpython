@@ -20,38 +20,47 @@
  /// @brief Declare python interpreter class.
 
  #pragma once
+ #include <Python.h>
+
  #ifdef HAVE_CONFIG_H
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
 
  #include <udjat/defs.h>
  #include <functional>
- #include <Python.h>
+ #include <mutex>
+ #include <memory>
+ #include <string>
 
- namespace Udjat {
+ namespace Udjat::Python {
 
- 	namespace Python {
+	extern UDJAT_PRIVATE std::recursive_mutex guard;
 
-		PyObject * call(const std::function<PyObject *(void)> &callback) noexcept;
+	std::shared_ptr<PyObject> make_handle(PyObject *self);
 
-		PyObject * call(PyObject *self,const std::function<PyObject *(Abstract::Object *object)> &callback);
+	/// @brief Retrieve last exception.
+	/// @param write_to_log Write the error to logfile if true
+	/// @return The exception message.
+	UDJAT_PRIVATE std::string exception(bool write_to_log = true);
 
-		/// @brief Run callback, convert exception in python errors.
-		/// @param args The arguments for the callback.
-		/// @param callback The method to call.
-		/// @return The callback return.
-		PyObject * call(PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
+	PyObject * call(const std::function<PyObject *(void)> &callback) noexcept;
 
-		/// @brief Check argument count, run callback, convert exception in python errors.
-		/// @param args The arguments for the callback.
-		/// @param callback The method to call.
-		/// @return The callback return.
-		PyObject * call(int required_args, PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
+	PyObject * call(PyObject *self,const std::function<PyObject *(Abstract::Object *object)> &callback);
 
-		PyObject * call(int required_args, PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
-		PyObject * call(int required_args, PyObject *args, const std::function<void (PyObject *args)> &callback) noexcept;
+	/// @brief Run callback, convert exception in python errors.
+	/// @param args The arguments for the callback.
+	/// @param callback The method to call.
+	/// @return The callback return.
+	PyObject * call(PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
 
-	}
+	/// @brief Check argument count, run callback, convert exception in python errors.
+	/// @param args The arguments for the callback.
+	/// @param callback The method to call.
+	/// @return The callback return.
+	PyObject * call(int required_args, PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
+
+	PyObject * call(int required_args, PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
+	PyObject * call(int required_args, PyObject *args, const std::function<void (PyObject *args)> &callback) noexcept;
 
  }
 

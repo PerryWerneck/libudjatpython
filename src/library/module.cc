@@ -30,6 +30,10 @@
  #include <udjat/tools/url/handler/python.h>
  #include <udjat/module/python.h>
  #include <private/modules.h>
+ #include <private/tools.h>
+ #include <mutex>
+
+ using namespace std;
 
  namespace Udjat {
 
@@ -37,7 +41,7 @@
 
 		class Module : public Python::Module, private Python::Handler::Factory {
 		private:
-			PyObject *object;
+			// PyObject *object = nullptr;
 
 		public:
 			Module(const char *name, const char *description) 
@@ -45,10 +49,13 @@
 			}
 
 			virtual ~Module() {
+				/*
 				if(object) {
+					lock_guard<recursive_mutex> guard(Python::guard);
 					Py_DecRef(object);
 					object = nullptr;
 				}
+				*/
 			}
 
 		};

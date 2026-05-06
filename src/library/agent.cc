@@ -32,6 +32,8 @@
  #include <private/xml.h>
  #include <udjat/tools/xml.h>
  #include <udjat/tools/memory.h>
+ #include <string>
+
 
  using namespace Udjat;
  using namespace std;
@@ -42,11 +44,10 @@
 
  namespace Udjat {
 
-#include <string>
-#include <Python.h>
-
 	Python::Agent::Agent(const char *pysource,const XML::Node &node) 
-		: self{Python::Interpreter::getInstance().factory(pysource,"agent_factory",node)} {
+		: self{Python::factory(pysource,"agent_factory",node)} {
+
+		lock_guard<recursive_mutex> lock(Python::guard);
 
 		debug("Initializing ",Py_TYPE(self)->tp_name);
 
@@ -72,12 +73,17 @@
 	}
 
 	Python::Agent::~Agent() {
+
+		lock_guard<recursive_mutex> lock(Python::guard);
+
 		if(self) {
 			pyAbstractObject *object = ((pyAbstractObject *) self);
 			object->handler = nullptr;
+			Py_DecRef(self);
+			self = NULL;
 		}
-	}
 
+	}
 
  }
 

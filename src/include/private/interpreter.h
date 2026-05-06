@@ -38,7 +38,7 @@
 		std::shared_ptr<PyObject> make_handle(PyObject *self);
 
 		/// @brief The python interpreter
-		class UDJAT_API Interpreter : public std::recursive_mutex {
+		class UDJAT_API Interpreter {
 		private:
 
 			PyConfig config;
@@ -49,9 +49,6 @@
 		public:
 
 			static Interpreter & getInstance();
-
-			static void PyDecRef(PyObject *object);
-		
 			~Interpreter();
 
 			int run(const char *name, const char *script_text);	
@@ -74,16 +71,6 @@
 			/// @param module_name The module name to import.
 			/// @return Object for the loaded module.
 			PyObject * module(const char *module_name);
-
-			/// @brief Retrieve last exception.
-			/// @param write_to_log Write the error to logfile if true
-			/// @return The exception message.
-			std::string exception(bool write_to_log = true);
-
-			PyObject * factory(const char *pysource, const char *method, const XML::Node &node);
-	
-			std::shared_ptr<PyObject> factory(const Udjat::XML::Node &node);
-
 
 		};
 

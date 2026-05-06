@@ -24,6 +24,7 @@
  #include <udjat/defs.h>
  #include <private/modules.h>
  #include <private/tools.h>
+ #include <private/value.h>
  #include <udjat/tools/intl.h>
  #include <udjat/tools/value.h>
  #include <functional>
@@ -36,7 +37,9 @@
 
  namespace Udjat {
 
-	PyObject * ObjectFactory(const Udjat::Value &value) noexcept {
+	PyObject * Python::ObjectFactory(const Udjat::Value &value) noexcept {
+
+		lock_guard<recursive_mutex> lock(guard);
 
 		try {
 

@@ -34,6 +34,7 @@
  #include <private/interpreter.h>
  #include <private/modules.h>
  #include <private/xml.h>
+ #include <private/tools.h>
 
  using namespace std;
 
@@ -48,7 +49,7 @@
 
 		Logger::String{"Initializing python " PY_VERSION " interpreter"}.info();
 		
-		lock_guard<recursive_mutex> lock(*this);
+		lock_guard<recursive_mutex> lock(guard);
 
 		// Initialize the config with default Python settings
 		PyConfig_InitPythonConfig(&config);
@@ -90,14 +91,16 @@
 	Python::Interpreter::~Interpreter() {
 		Logger::String{"Deinitializing python " PY_VERSION " interpreter"}.info();
 
-		lock_guard<recursive_mutex> lock(*this);
+		lock_guard<recursive_mutex> lock(guard);
 
 		PyConfig_Clear(&config);
 		Py_Finalize();
 	}
 
 	int Python::Interpreter::run(const char *, const char *script_text) {
-		lock_guard<recursive_mutex> lock(*this);
+
+		lock_guard<recursive_mutex> lock(guard);
+
 		int rc = PyRun_SimpleString(script_text);
 		if (PyErr_Occurred()) {
 			auto exc = make_handle(PyErr_GetRaisedException());
@@ -114,8 +117,8 @@
 	}
 
 	int Python::Interpreter::run(const char *, const char *script_text, const std::function<bool(uint64_t current, uint64_t total, const void *data, size_t len)> &progress) {
-		
-		lock_guard<recursive_mutex> lock(*this);
+
+		lock_guard<recursive_mutex> lock(guard);
 
 		int rc;
 
@@ -148,7 +151,7 @@
 
 	PyObject * Python::Interpreter::import(const char *pysource) {
 
-		lock_guard<recursive_mutex> lock(*this);
+		lock_guard<recursive_mutex> lock(guard);
 
 		PyObject *pName = PyUnicode_FromString(pysource);
  		PyObject* pModule = PyImport_Import(pName);
@@ -163,135 +166,10 @@
 	}
 
 	PyObject * Python::Interpreter::module(const char *module_name) {
-		lock_guard<recursive_mutex> lock(*this);
+
+		lock_guard<recursive_mutex> lock(guard);
+
 		return PyImport_ImportModule(module_name);
-	}
-
-	std::string Python::Interpreter::exception(bool write_to_log) {
-
-		lock_guard<recursive_mutex> lock(*this);
-
-		string response;
-
-		PyObject *ptype, *pvalue, *ptraceback;
-		PyErr_Fetch(&ptype, &pvalue, &ptraceback); // Clears the global error state
-    
-    	if (pvalue == nullptr) 
-			return _("Unknown Python Error");
-
-		// Normalize the exception (essential for proper error strings)
-		PyErr_NormalizeException(&ptype, &pvalue, &ptraceback);
-
-		// Convert the exception value to a Python string object
-		PyObject* pstr = PyObject_Str(pvalue);
-		if (pstr) {
-			response += PyUnicode_AsUTF8(pstr); // Extract C-string from Python string
-			Py_DECREF(pstr);
-		}
-
-		if(write_to_log) {
-			Logger::String{response.c_str()}.error("python");
-		}
-		
-		// TODO: Extract line number from traceback if available
-		/*
-		PyObject* pModule = PyImport_ImportModule("traceback");
-		if (pModule) {
-			// 2. Get the 'format_exception' function
-			PyObject* pFunc = PyObject_GetAttrString(pModule, "format_exception");
-			if (pFunc && PyCallable_Check(pFunc)) {
-				// 3. Call format_exception(ptype, pvalue, ptraceback)
-				// format_exception returns a list of strings
-				PyObject* pList = PyObject_CallFunctionObjArgs(pFunc, ptype, pvalue, ptraceback, NULL);
-
-				if (pList && PyList_Check(pList)) {
-					Py_ssize_t size = PyList_Size(pList);
-					for (Py_ssize_t i = 0; i < size; i++) {
-						PyObject* pItem = PyList_GetItem(pList, i); // Borrowed reference
-						Logger::String{PyUnicode_AsUTF8(pItem)}.error("python");
-					}
-					Py_DECREF(pList);
-				}
-				Py_XDECREF(pFunc);
-			}
-			Py_DECREF(pModule);
-		}
-		*/
-
-		Py_XDECREF(ptype);
-		Py_XDECREF(pvalue);
-		Py_XDECREF(ptraceback);
-		
-		return response;
-		
-	}
-
-	std::shared_ptr<PyObject> Python::Interpreter::factory(const Udjat::XML::Node &node) {
-		debug("Building settings...");
-		auto settings = make_handle(PyObject_CallFunction((PyObject*)&xml_type, "O", Py_None));
-
-		if(!settings) {
-			debug("Failed building settings");
-			throw runtime_error(exception());
-		}
-
-		// Store XML::Node in the object.
-		{
-			pyXML *native = ((pyXML *) settings.get());
-			native->handler = &node;
-		}
-		
-		return settings;
-	}
-
-	void Python::Interpreter::PyDecRef(PyObject *self) {
-		lock_guard<recursive_mutex> lock(Python::Interpreter::getInstance());
-		Py_DecRef(self);
-	}
-
-	std::shared_ptr<PyObject> Python::make_handle(PyObject *self) {
-		return Udjat::make_handle<PyObject>(self,Python::Interpreter::PyDecRef);
-	}
-
-	PyObject * Python::Interpreter::factory(const char *pysource, const char *method, const XML::Node &node) {
-	
-		lock_guard<recursive_mutex> lock(*this);
-
-		debug("Creating object from ",pysource," using ",method,"(settings)");
-		auto module = make_handle(PyImport_ImportModule(pysource));
-		if(!module) {
-			exception(true);
-			throw runtime_error(Logger::String{"Unable to load '",pysource,"'"});
-		}
-		
-		debug("Searching for '",method,"'");
-		auto func = make_handle(PyObject_GetAttrString(module.get(), method));
-		if(!func) {
-			throw logic_error(Logger::Message{_("The method {}(settings) is required on '{}"),method,pysource});
-		}
-
-		if(!PyCallable_Check(func.get())) {
-			throw logic_error(Logger::Message{_("The method {}(settings) is not callable on '{}"),method,pysource});
-		}
-
-		// Build python object for XML::Node
-		auto settings = factory(node);
-		auto args = make_handle(PyTuple_Pack(1, settings.get()));
-
-		debug("Calling object...");
-		PyObject *response = PyObject_CallObject(func.get(), args.get());
-
-		if(!response) {
-			throw runtime_error(this->exception());
-		}
-
-		if(response == Py_None) {
-			throw runtime_error(_("Unexpected response from factory method"));
-		}
-
-		debug(__FUNCTION__,"Response was ",Py_TYPE(response)->tp_name);
-
-		return response;
 	}
 
  }

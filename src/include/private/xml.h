@@ -43,7 +43,14 @@
 
  UDJAT_PRIVATE const Udjat::XML::Node & xml_get_native(const PyObject *object);
  UDJAT_PRIVATE std::shared_ptr<PyObject> xml_get_pyObject(const Udjat::XML::Node &node);
- 
+
+ namespace Udjat::Python {
+
+	 UDJAT_PRIVATE std::shared_ptr<PyObject> factory(const Udjat::XML::Node &node);
+	 UDJAT_PRIVATE PyObject * factory(const char *pysource, const char *method, const Udjat::XML::Node &node);
+
+ }
+
  extern "C" {
  #endif // __cplusplus
 

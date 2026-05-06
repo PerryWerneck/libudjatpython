@@ -126,6 +126,7 @@ lib_src = [
   'src/library/module.cc',
   'src/library/handler.cc',
   'src/library/testprogram.cc',
+  'src/library/tools/misc.cc',
   'src/library/tools/call.cc',
   'src/library/tools/value.cc',
 ]

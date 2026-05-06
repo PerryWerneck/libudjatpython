@@ -35,6 +35,66 @@
  using namespace Udjat;
  using namespace std;
 
+ PyObject * Udjat::Python::factory(const char *pysource, const char *method, const XML::Node &node) {
+
+	lock_guard<recursive_mutex> lock(guard);
+
+	debug("Creating object from ",pysource," using ",method,"(settings)");
+	auto module = Python::make_handle(PyImport_ImportModule(pysource));
+	if(!module) {
+		exception(true);
+		throw runtime_error(Logger::String{"Unable to load '",pysource,"'"});
+	}
+	
+	debug("Searching for '",method,"'");
+	auto func = make_handle(PyObject_GetAttrString(module.get(), method));
+	if(!func) {
+		throw logic_error(Logger::Message{_("The method {}(settings) is required on '{}"),method,pysource});
+	}
+
+	if(!PyCallable_Check(func.get())) {
+		throw logic_error(Logger::Message{_("The method {}(settings) is not callable on '{}"),method,pysource});
+	}
+
+	// Build python object for XML::Node
+	auto settings = factory(node);
+	auto args = make_handle(PyTuple_Pack(1, settings.get()));
+
+	debug("Calling object...");
+	PyObject *response = PyObject_CallObject(func.get(), args.get());
+
+	if(!response) {
+		throw runtime_error(exception());
+	}
+
+	if(response == Py_None) {
+		throw runtime_error(_("Unexpected response from factory method"));
+	}
+
+	debug(__FUNCTION__,"Response was ",Py_TYPE(response)->tp_name);
+
+	return response;
+ }
+
+ std::shared_ptr<PyObject> Python::factory(const Udjat::XML::Node &node) {
+
+	debug("Building settings...");
+	auto settings = make_handle(PyObject_CallFunction((PyObject*)&xml_type, "O", Py_None));
+
+	if(!settings) {
+		debug("Failed building settings");
+		throw runtime_error(exception());
+	}
+
+	// Store XML::Node in the object.
+	{
+		pyXML *native = ((pyXML *) settings.get());
+		native->handler = &node;
+	}
+	
+	return settings;
+ }
+
  UDJAT_PRIVATE PyObject	* xml_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
 	debug(__FUNCTION__);
 	if (PyErr_Occurred()) {

@@ -20,24 +20,20 @@
  /// @brief Declare python interpreter class.
 
  #pragma once
+ #include <Python.h>
+
  #ifdef HAVE_CONFIG_H
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
 
  #include <functional>
- #include <Python.h>
  #include <udjat/tools/value.h>
 
- namespace Udjat {
+ namespace Udjat::Python {
 
- 	namespace Python {
-
-		/// @brief Create python object from Udjat::Value
-		/// @return Python Object.
-		PyObject * ObjectFactory(const Udjat::Value &value) noexcept;
-
-
-	}
+	/// @brief Create python object from Udjat::Value
+	/// @return Python Object.
+	PyObject * ObjectFactory(const Udjat::Value &value) noexcept;
 
  }
 
