@@ -57,9 +57,11 @@
 
  UDJAT_PRIVATE PyObject	* agent_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds);
  UDJAT_PRIVATE void		  agent_dealloc(PyObject * self);
+
  UDJAT_PRIVATE int		  agent_init(PyObject *self, PyObject *args, PyObject *kwds);
  UDJAT_PRIVATE void		  agent_finalize(PyObject *self);
 
+ UDJAT_PRIVATE PyObject * agent_setup(PyObject *self, PyObject *args);
  UDJAT_PRIVATE PyObject * agent_failed(PyObject *self, PyObject *args);
  UDJAT_PRIVATE PyObject * agent_get_by_path(PyObject *self, PyObject *args);
  UDJAT_PRIVATE PyObject * agent_invalidate(PyObject *self, PyObject *args);

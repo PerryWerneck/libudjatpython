@@ -32,8 +32,8 @@
 	#include <stdexcept>
  #endif // __cplusplus
 
- typedef struct {
-
+ typedef struct {	
+	PyObject_HEAD;
  #ifdef __cplusplus
 	Udjat::Abstract::Object *handler;
  #else

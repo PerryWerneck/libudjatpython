@@ -28,6 +28,7 @@
  #include <udjat/tools/abstract/object.h>
  #include <udjat/tools/logger.h>
  #include <udjat/tools/intl.h>
+ #include <udjat/tools/memory.h>
 
  #include <Python.h>
 
@@ -55,6 +56,14 @@
 
  UDJAT_PRIVATE void xml_finalize(PyObject *self) {
 
+ }
+
+ UDJAT_PRIVATE const XML::Node & xml_get_native(const PyObject *self) {
+	pyXML *settings = ((pyXML *) self);
+	if(!settings->handler) {
+		throw logic_error(_("The properties object is empty"));
+	}
+	return *(settings->handler);
  }
 
  static PyObject * call(PyObject *self,const std::function<PyObject *(const XML::Node &node)> &callback) {
@@ -148,3 +157,4 @@
 
 
  }
+

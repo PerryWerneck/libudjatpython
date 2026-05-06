@@ -78,6 +78,8 @@
 			std::string exception(bool write_to_log = true);
 
 			PyObject * factory(const char *pysource, const char *method, const XML::Node &node);
+	
+			std::shared_ptr<PyObject> factory(const Udjat::XML::Node &node);
 
 
 		};

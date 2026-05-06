@@ -6,13 +6,13 @@ src/library/logger.cc
 src/library/config.cc
 src/library/tools/call.cc
 src/library/tools/value.cc
-src/library/settings.cc
 src/library/agent.cc
 src/library/object.cc
+src/library/xml.cc
 src/library/types/agent.c
-src/library/types/settings.c
 src/library/types/object.c
-src/extension/init.c
+src/library/types/module.c
+src/library/types/xml.c
 src/include/udjat/module/python.h
 src/include/udjat/tools/url/handler/python.h
 src/include/private/interpreter.h
@@ -20,5 +20,5 @@ src/include/private/modules.h
 src/include/private/tools.h
 src/include/private/value.h
 src/include/private/agent.h
-src/include/private/settings.h
 src/include/private/object.h
+src/include/private/xml.h

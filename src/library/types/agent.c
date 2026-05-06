@@ -91,6 +91,13 @@
 		.ml_flags = METH_VARARGS,
 		.ml_doc =	"Refresh agent\n"
     },
+    {
+		.ml_name = "setup",
+		.ml_meth = (PyCFunction) agent_setup,
+		.ml_flags = METH_VARARGS,
+		.ml_doc =	"Setup agent from properties object\n\n"
+					"setup(properties): Apply 'properties' on agent\n"
+    },
 
     {
     	NULL
@@ -109,6 +116,7 @@
 
 	.tp_new = agent_alloc,
 	.tp_dealloc = agent_dealloc,
+
 	.tp_init = agent_init,
 	.tp_finalize = agent_finalize,
 

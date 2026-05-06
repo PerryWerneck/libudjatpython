@@ -29,6 +29,7 @@
  #include <private/object.h>
  #include <private/agent.h>
  #include <private/tools.h>
+ #include <private/xml.h>
  #include <udjat/tools/xml.h>
  #include <udjat/tools/memory.h>
 
@@ -47,16 +48,20 @@
 	Python::Agent::Agent(const char *pysource,const XML::Node &node) 
 		: self{Python::Interpreter::getInstance().factory(pysource,"agent_factory",node)} {
 
-		/*
-		auto udjat_module = make_handle(python.module("udjat"),Py_DECREF);
-		auto pClass = make_handle(PyObject_GetAttrString(udjat_module.get(), "agent"),Py_DECREF);
+		debug("Initializing ",Py_TYPE(self)->tp_name);
 
-		if(!PyObject_IsInstance(this->self, pClass.get())) {
-			Py_DECREF(this->self);
-			this->self = nullptr;
-			throw logic_error(_("The object returned from agent_factory is not an agent"));
+#ifdef DEBUG
+		printf("\nAgent self at %s(): %p (handler=%p)\n",__FUNCTION__,self,((pyAbstractObject *) self)->handler);
+#endif // DEBUG
+
+		if(!PyObject_IsInstance(self, (PyObject *)&agent_type)) {
+			Py_DecRef(self);
+			self = NULL;
+			throw logic_error(_("The object returned from factory method is not an agent"));
 		}
-		*/
+
+		pyAbstractObject *object = ((pyAbstractObject *) self);
+		object->handler = this;
 
 	}
 
@@ -81,11 +86,23 @@
  // ---------------------------------------------------------------------------------------
 
  UDJAT_PRIVATE PyObject	* agent_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
+
 	debug(__FUNCTION__);
 	if (PyErr_Occurred()) {
         return NULL; // Exit early if something else already failed
     }
-	return type->tp_alloc(type,0);
+
+	PyObject *self = type->tp_alloc(type,0);
+
+	if(self) {
+		((pyAbstractObject *) self)->handler = NULL;
+	}
+
+#ifdef DEBUG
+	printf("\nAgent self at %s: %p (handler=%p)\n",__FUNCTION__,self,((pyAbstractObject *) self)->handler);
+#endif // DEBUG
+
+	return self;
  }
 
  UDJAT_PRIVATE void agent_dealloc(PyObject * self) {
@@ -94,13 +111,35 @@
  
  UDJAT_PRIVATE int agent_init(PyObject *self, PyObject *args, PyObject *kwds) {
 
-	debug(__FUNCTION__,"( ",PyTuple_Size(args)," argument(s))");
+	debug(__FUNCTION__," ",Py_TYPE(self)->tp_name, " with ",PyTuple_Size(args)," argument(s)");
 
 	try {
+
+#ifdef DEBUG
+		printf("\nAgent self at %s: %p (handler=%p)\n",__FUNCTION__,self,((pyAbstractObject *) self)->handler);
+#endif // DEBUG
+
+		/*
+		pyAbstractObject *object = ((pyAbstractObject *) self);
 
 		if(PyTuple_Size(args) != 1) {
 			throw logic_error(_("Agent initializer requires a single argument"));
 		}
+
+		PyObject *arg = PyTuple_GetItem(args, 0);
+		if(PyObject_TypeCheck(arg, &xml_type)) {
+
+			// It's a XML type
+			debug("Getting properties from XML");
+			const auto prop = xml_get_native(arg);
+
+			object->handler =
+		} else {
+
+			// Cant recognize parameter.
+			throw logic_error(_("Agent initializer requires a valid properties definition as argument"));
+		}
+		*/
 
 		return 0;
 
@@ -180,6 +219,7 @@
 	return call(self,[](Udjat::Python::Agent &agent) -> PyObject * {
 
 
+
 		return Py_None;
 	});
 
@@ -222,6 +262,32 @@
 
 	return call(self,[](Udjat::Python::Agent &agent) -> PyObject * {
 
+
+		return Py_None;
+	});
+
+ }
+
+ UDJAT_PRIVATE PyObject * agent_setup(PyObject *self, PyObject *args) {
+
+	return call(self,[args](Udjat::Python::Agent &agent) -> PyObject * {
+
+		debug("Setting up agent ",agent.name());
+		
+		if(PyTuple_Size(args) != 1) {
+			throw logic_error(_("Agent setup requires a properties object as argument"));
+		}
+
+		PyObject* settings = PyTuple_GetItem(args, 0);
+		if(PyObject_TypeCheck(settings, &xml_type)) {
+
+			// It's a XML type
+			debug("Getting properties from XML");
+			agent.setup(xml_get_native(settings));
+
+		} else {
+			throw logic_error(_("Agent.setup() requires a valid properties object"));
+		}
 
 		return Py_None;
 	});

@@ -228,6 +228,26 @@
 		
 	}
 
+	std::shared_ptr<PyObject> Python::Interpreter::factory(const Udjat::XML::Node &node) {
+		debug("Building settings...");
+		auto settings = make_handle<PyObject>(
+				PyObject_CallFunction((PyObject*)&xml_type, "O", Py_None),
+				Py_DecRef);
+
+		if(!settings) {
+			debug("Failed building settings");
+			throw runtime_error(exception());
+		}
+
+		// Store XML::Node in the object.
+		{
+			pyXML *native = ((pyXML *) settings.get());
+			native->handler = &node;
+		}
+		
+		return settings;
+	}
+
 	PyObject * Python::Interpreter::factory(const char *pysource, const char *method, const XML::Node &node) {
 	
 		lock_guard<recursive_mutex> lock(guard);
@@ -250,22 +270,7 @@
 		}
 
 		// Build python object for XML::Node
-		debug("Building settings...");
-		auto settings = make_handle<PyObject>(
-				PyObject_CallFunction((PyObject*)&xml_type, "O", Py_None),
-				Py_DecRef);
-
-		if(!settings) {
-			debug("Failed building settings");
-			throw runtime_error(this->exception());
-		}
-
-		// Store XML::Node in the object.
-		{
-			pyXML *native = ((pyXML *) settings.get());
-			native->handler = &node;
-		}
-
+		auto settings = factory(node);
 		auto args = make_handle(PyTuple_Pack(1, settings.get()),Py_DECREF);
 
 		debug("Calling object...");
@@ -274,7 +279,13 @@
 		if(!response) {
 			throw runtime_error(this->exception());
 		}
-		
+
+		if(response == Py_None) {
+			throw runtime_error(_("Unexpected response from factory method"));
+		}
+
+		debug(__FUNCTION__,"Response was ",Py_TYPE(response)->tp_name);
+
 		return response;
 	}
 

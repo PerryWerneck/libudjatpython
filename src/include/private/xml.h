@@ -27,18 +27,24 @@
 
  #ifdef __cplusplus
 	#include <udjat/tools/xml.h>
+	#include <memory>
  #endif // __cplusplus
 
  typedef struct {
- #ifdef __cplusplus
+ 	PyObject_HEAD;
+#ifdef __cplusplus
 		const Udjat::XML::Node *handler;
  #else
 		const void *handler;
  #endif // __cplusplus
  } pyXML;
- 
+
  #ifdef __cplusplus
-	extern "C" {
+
+ UDJAT_PRIVATE const Udjat::XML::Node & xml_get_native(const PyObject *object);
+ UDJAT_PRIVATE std::shared_ptr<PyObject> xml_get_pyObject(const Udjat::XML::Node &node);
+ 
+ extern "C" {
  #endif // __cplusplus
 
  extern UDJAT_PRIVATE PyTypeObject xml_type;
@@ -54,5 +60,5 @@
  UDJAT_PRIVATE PyObject * xml_get(PyObject *self, PyObject *args);
 
  #ifdef __cplusplus
-	}
+ }
  #endif // __cplusplus

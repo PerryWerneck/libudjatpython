@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: udjathttp 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-05 21:46-0300\n"
+"POT-Creation-Date: 2026-05-06 08:15-0300\n"
 "PO-Revision-Date: 2026-04-23 21:47-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -20,16 +20,16 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Generator: Poedit 3.8\n"
 
-#: src/library/interpreter.cc:174
+#: src/library/interpreter.cc:182
 msgid "Unknown Python Error"
 msgstr ""
 
-#: src/library/interpreter.cc:233
+#: src/library/interpreter.cc:245
 #, c++-format
 msgid "The method {}(settings) is required on '{}"
 msgstr ""
 
-#: src/library/interpreter.cc:237
+#: src/library/interpreter.cc:249
 #, c++-format
 msgid "The method {}(settings) is not callable on '{}"
 msgstr ""
@@ -43,16 +43,15 @@ msgstr "Mensagem de log precisa ser uma string"
 #: src/library/config.cc:94 src/library/config.cc:100 src/library/config.cc:106
 #: src/library/config.cc:111 src/library/config.cc:133
 #: src/library/config.cc:139 src/library/config.cc:145
-#: src/library/config.cc:150 src/library/settings.cc:139
-#: src/library/agent.cc:146 src/library/agent.cc:152 src/library/agent.cc:157
-#: src/library/agent.cc:184
+#: src/library/config.cc:150 src/library/agent.cc:155 src/library/agent.cc:161
+#: src/library/agent.cc:166 src/library/agent.cc:193 src/library/xml.cc:137
 msgid "Invalid argument"
 msgstr ""
 
 #: src/library/tools/call.cc:47 src/library/tools/call.cc:71
 #: src/library/tools/call.cc:96 src/library/tools/call.cc:115
-#: src/library/tools/value.cc:156 src/library/settings.cc:88
-#: src/library/agent.cc:128 src/library/object.cc:50 src/library/object.cc:107
+#: src/library/tools/value.cc:156 src/library/agent.cc:137
+#: src/library/object.cc:50 src/library/object.cc:107 src/library/xml.cc:79
 msgid "Unexpected error in python callback."
 msgstr "Erro inesperado em chamada python."
 
@@ -69,12 +68,8 @@ msgstr ""
 msgid "Unexpected value type in python callback."
 msgstr "Erro inesperado em chamada python."
 
-#: src/library/settings.cc:74
-msgid "The object is empty"
-msgstr ""
-
-#: src/library/settings.cc:133
-msgid "Method requires 2 arguments"
+#: src/library/agent.cc:102
+msgid "Agent initializer requires a single argument"
 msgstr ""
 
 #: src/library/object.cc:118
@@ -85,6 +80,26 @@ msgstr ""
 #, fuzzy
 msgid "Unexpected error in python logger."
 msgstr "Erro inesperado em chamada python."
+
+#: src/library/xml.cc:65
+msgid "The object is empty"
+msgstr ""
+
+#: src/library/xml.cc:131
+msgid "Method requires 2 arguments"
+msgstr ""
+
+#: src/library/types/module.c:101
+msgid "XML parser is not ready"
+msgstr ""
+
+#: src/library/types/module.c:107
+msgid "Agent type is not ready"
+msgstr ""
+
+#: src/library/types/module.c:114
+msgid "Failed inserting agent type"
+msgstr ""
 
 #~ msgid "HTTP operation failed"
 #~ msgstr "Requisição HTTP falhou"
