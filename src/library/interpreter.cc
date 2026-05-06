@@ -28,6 +28,8 @@
  #include <stdexcept>
  #include <udjat/tools/memory.h>
  #include <udjat/tools/logger.h>
+ #include <udjat/tools/intl.h>
+ #include <udjat/tools/memory.h>
  
  #include <private/interpreter.h>
  #include <private/modules.h>
@@ -136,4 +138,116 @@
 		return rc;
 	}
 
+	PyObject * Python::Interpreter::import(const char *pysource) {
+
+		lock_guard<recursive_mutex> lock(guard);
+
+		PyObject *pName = PyUnicode_FromString(pysource);
+ 		PyObject* pModule = PyImport_Import(pName);
+    	Py_DECREF(pName); // Clean up the name object immediately
+
+		if(!pModule) {
+			exception(true);
+			throw runtime_error(Logger::String{"Unable to load '",pysource,"'"});
+		}
+
+		return pModule;
+	}
+
+	PyObject * Python::Interpreter::module(const char *module_name) {
+
+		lock_guard<recursive_mutex> lock(guard);
+		return PyImport_ImportModule(module_name);
+
+	}
+
+	std::string Python::Interpreter::exception(bool write_to_log) {
+
+		lock_guard<recursive_mutex> lock(guard);
+
+		string response;
+
+		PyObject *ptype, *pvalue, *ptraceback;
+		PyErr_Fetch(&ptype, &pvalue, &ptraceback); // Clears the global error state
+    
+    	if (pvalue == nullptr) 
+			return _("Unknown Python Error");
+
+		// Normalize the exception (essential for proper error strings)
+		PyErr_NormalizeException(&ptype, &pvalue, &ptraceback);
+
+		// Convert the exception value to a Python string object
+		PyObject* pstr = PyObject_Str(pvalue);
+		if (pstr) {
+			response += PyUnicode_AsUTF8(pstr); // Extract C-string from Python string
+			Py_DECREF(pstr);
+		}
+
+		if(write_to_log) {
+			Logger::String{response.c_str()}.error("python");
+		}
+		
+		// TODO: Extract line number from traceback if available
+		/*
+		PyObject* pModule = PyImport_ImportModule("traceback");
+		if (pModule) {
+			// 2. Get the 'format_exception' function
+			PyObject* pFunc = PyObject_GetAttrString(pModule, "format_exception");
+			if (pFunc && PyCallable_Check(pFunc)) {
+				// 3. Call format_exception(ptype, pvalue, ptraceback)
+				// format_exception returns a list of strings
+				PyObject* pList = PyObject_CallFunctionObjArgs(pFunc, ptype, pvalue, ptraceback, NULL);
+
+				if (pList && PyList_Check(pList)) {
+					Py_ssize_t size = PyList_Size(pList);
+					for (Py_ssize_t i = 0; i < size; i++) {
+						PyObject* pItem = PyList_GetItem(pList, i); // Borrowed reference
+						Logger::String{PyUnicode_AsUTF8(pItem)}.error("python");
+					}
+					Py_DECREF(pList);
+				}
+				Py_XDECREF(pFunc);
+			}
+			Py_DECREF(pModule);
+		}
+		*/
+
+		Py_XDECREF(ptype);
+		Py_XDECREF(pvalue);
+		Py_XDECREF(ptraceback);
+		
+		return response;
+		
+	}
+
+	PyObject * Python::Interpreter::factory(const char *pysource, const char *method, const XML::Node &node) {
+	
+		lock_guard<recursive_mutex> lock(guard);
+
+		debug("Creating object from ",pysource," using ",method,"(settings)");
+
+		auto module = make_handle(this->import(pysource),Py_DECREF);
+		auto func = make_handle(PyObject_GetAttrString(module.get(), method),Py_DECREF);
+
+		if(!func) {
+			throw logic_error(Logger::Message{_("The method {}(settings) is required on '{}"),method,pysource});
+		}
+
+		if(!PyCallable_Check(func.get())) {
+			throw logic_error(Logger::Message{_("The method {}(settings) is not callable on '{}"),method,pysource});
+		}
+
+		// FIX-ME: Build an empty settings object for node.
+		auto args = make_handle(PyTuple_Pack(1, PyLong_FromLong(10)),Py_DECREF);
+
+		PyObject *response = PyObject_CallObject(func.get(), args.get());
+
+		if(!response) {
+			throw runtime_error(this->exception());
+		}
+		
+		return response;
+	}
+
  }
+

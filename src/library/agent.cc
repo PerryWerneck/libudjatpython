@@ -25,13 +25,60 @@
 
  #include <udjat/defs.h>
  #include <udjat/agent/abstract.h>
+ #include <private/interpreter.h>
  #include <private/object.h>
  #include <private/agent.h>
  #include <private/tools.h>
  #include <udjat/tools/xml.h>
+ #include <udjat/tools/memory.h>
 
  using namespace Udjat;
  using namespace std;
+
+ // ---------------------------------------------------------------------------------------
+ // C++ Object
+ // ---------------------------------------------------------------------------------------
+
+ namespace Udjat {
+
+#include <string>
+#include <Python.h>
+
+	Python::Agent::Agent(const char *pysource,const XML::Node &node) 
+		: self{Python::Interpreter::getInstance().factory(pysource,"agent_factory",node)} {
+
+		/*
+		auto udjat_module = make_handle(python.module("udjat"),Py_DECREF);
+		auto pClass = make_handle(PyObject_GetAttrString(udjat_module.get(), "agent"),Py_DECREF);
+
+		if(!PyObject_IsInstance(this->self, pClass.get())) {
+			Py_DECREF(this->self);
+			this->self = nullptr;
+			throw logic_error(_("The object returned from agent_factory is not an agent"));
+		}
+		*/
+
+	}
+
+	Python::Agent::Agent(const XML::Node &node) : Agent{XML::AttributeFactory(node,"src").as_string(),node} {
+	}
+
+	Python::Agent::Agent(const char *pysource) : Agent{pysource,XML::Node{}} {
+	}
+
+	Python::Agent::~Agent() {
+		if(self) {
+			pyAbstractObject *object = ((pyAbstractObject *) self);
+			object->handler = nullptr;
+		}
+	}
+
+
+ }
+
+ // ---------------------------------------------------------------------------------------
+ // Python bindings
+ // ---------------------------------------------------------------------------------------
 
  UDJAT_PRIVATE PyObject	* agent_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
 	return type->tp_alloc(type,0);
@@ -124,6 +171,7 @@
 	return call(self,[](Udjat::Python::Agent &agent) -> PyObject * {
 
 
+		return Py_None;
 	});
 
  }
@@ -136,7 +184,6 @@
 			throw runtime_error(_("Invalid argument"));
 		}
 
-
 		return Py_None;
 	});
 
@@ -147,6 +194,7 @@
 	return call(self,[](Udjat::Python::Agent &agent) -> PyObject * {
 
 
+		return Py_None;
 	});
 
  }
@@ -156,6 +204,7 @@
 	return call(self,[](Udjat::Python::Agent &agent) -> PyObject * {
 
 
+		return Py_None;
 	});
 
  }
@@ -165,6 +214,7 @@
 	return call(self,[](Udjat::Python::Agent &agent) -> PyObject * {
 
 
+		return Py_None;
 	});
 
  }

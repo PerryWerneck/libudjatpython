@@ -17,6 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #include <Python.h>
+
  #include <config.h>
  #include <udjat/defs.h>
  #include <udjat/loader.h>
@@ -24,6 +26,7 @@
  #include <udjat/module.h>
  #include <iostream>
  #include <private/interpreter.h>
+ #include <private/agent.h>
 
  using namespace Udjat;
  using namespace std;
@@ -33,6 +36,7 @@
 	Logger::verbosity(9);
 	Logger::redirect();
 
+	/*
 	return Python::Interpreter::getInstance().run(
 		"import sys\n"
 		"import logger\n"
@@ -40,6 +44,10 @@
 		"logger.warning(f'----> Program name: {sys.executable}')\n"
 		"print(config.get('python','example','default'))\n"
 	);
+	*/
+
+	Python::Agent agent{"../testscripts/agent.py"};
+
 
 	/*
 	return loader(argc,argv,[](Application &app) -> int {

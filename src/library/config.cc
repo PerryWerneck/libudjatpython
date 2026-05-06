@@ -26,6 +26,7 @@
  #include <udjat/defs.h>
  #include <udjat/tools/configuration.h>
  #include <udjat/tools/logger.h>
+ #include <udjat/tools/intl.h>
  #include <private/tools.h>
  #include <stdexcept>
 
@@ -90,24 +91,24 @@
 		switch(PyTuple_Size(args)) {
 		case 1:
 			if(!PyArg_ParseTuple(args, "s", &name)) {
-				throw runtime_error("Invalid argument");
+				throw runtime_error(_("Invalid argument"));
 			}
 			break;
 
 		case 2:
 			if(!PyArg_ParseTuple(args, "ss", &group,&name)) {
-				throw runtime_error("Invalid argument");
+				throw runtime_error(_("Invalid argument"));
 			}
 			break;
 
 		case 3:
 			if(!PyArg_ParseTuple(args, "sss", &group,&name,&def)) {
-				throw runtime_error("Invalid argument");
+				throw runtime_error(_("Invalid argument"));
 			}
 			break;
 
 		default:
-			throw runtime_error("Invalid argument");
+			throw runtime_error(_("Invalid argument"));
 
 		}
 
@@ -129,24 +130,24 @@
 		switch(PyTuple_Size(args)) {
 		case 1:
 			if(!PyArg_ParseTuple(args, "s", &name)) {
-				throw runtime_error("Invalid argument");
+				throw runtime_error(_("Invalid argument"));
 			}
 			break;
 
 		case 2:
 			if(!PyArg_ParseTuple(args, "ss", &group,&name)) {
-				throw runtime_error("Invalid argument");
+				throw runtime_error(_("Invalid argument"));
 			}
 			break;
 
 		case 3:
 			if(!PyArg_ParseTuple(args, "sss", &group,&name,&def)) {
-				throw runtime_error("Invalid argument");
+				throw runtime_error(_("Invalid argument"));
 			}
 			break;
 
 		default:
-			throw runtime_error("Invalid argument");
+			throw runtime_error(_("Invalid argument"));
 
 		}
 		

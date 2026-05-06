@@ -62,6 +62,24 @@
 				return run(nullptr,script_text,progress);				
 			}
 			
+			/// @brief Import python source.
+			/// @param pysource The python source to import.
+			/// @return Object for the loaded source.
+			PyObject * import(const char *pysource);
+
+			/// @brief Import python module
+			/// @param module_name The module name to import.
+			/// @return Object for the loaded module.
+			PyObject * module(const char *module_name);
+
+			/// @brief Retrieve last exception.
+			/// @param write_to_log Write the error to logfile if true
+			/// @return The exception message.
+			std::string exception(bool write_to_log = true);
+
+			PyObject * factory(const char *pysource, const char *method, const XML::Node &node);
+
+
 		};
 
 	}

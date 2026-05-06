@@ -32,12 +32,14 @@
 
  namespace Udjat::Python {
 
-	class Agent : public Udjat::Abstract::Agent {
+	class UDJAT_API Agent : public Udjat::Abstract::Agent {
 	private:
-		PyObject * self;
+		PyObject * self = nullptr;
 
 	public:
+		Agent(const char *pysource,const XML::Node &node);
 		Agent(const XML::Node &node);
+		Agent(const char *pysource);
 		~Agent() override;
 
 		inline void failed(const char *summary, const char *body) noexcept {
