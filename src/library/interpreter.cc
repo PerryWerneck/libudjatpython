@@ -244,13 +244,13 @@
 		return settings;
 	}
 
-	static void decref(PyObject *self) {
+	void Python::Interpreter::PyDecRef(PyObject *self) {
 		lock_guard<recursive_mutex> lock(Python::Interpreter::getInstance());
 		Py_DecRef(self);
 	}
 
 	std::shared_ptr<PyObject> Python::make_handle(PyObject *self) {
-		return Udjat::make_handle<PyObject>(self,decref);
+		return Udjat::make_handle<PyObject>(self,Python::Interpreter::PyDecRef);
 	}
 
 	PyObject * Python::Interpreter::factory(const char *pysource, const char *method, const XML::Node &node) {

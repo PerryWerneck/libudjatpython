@@ -49,6 +49,8 @@
 		public:
 
 			static Interpreter & getInstance();
+
+			static void PyDecRef(PyObject *object);
 		
 			~Interpreter();
 
