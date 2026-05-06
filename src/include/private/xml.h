@@ -48,6 +48,7 @@
 
 	 UDJAT_PRIVATE std::shared_ptr<PyObject> factory(const Udjat::XML::Node &node);
 	 UDJAT_PRIVATE PyObject * factory(const char *pysource, const char *method, const Udjat::XML::Node &node);
+	 UDJAT_PRIVATE PyObject * call(PyObject *self, const char *method, const Udjat::XML::Node &node);
 
  }
 

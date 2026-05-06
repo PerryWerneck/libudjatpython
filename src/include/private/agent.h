@@ -46,6 +46,8 @@
 			Udjat::Abstract::Agent::failed(summary,body);
 		}
 
+		bool setup(const XML::Node &node) override;
+
 	};
 
  };

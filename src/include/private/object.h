@@ -29,6 +29,7 @@
 
  #ifdef __cplusplus
 	#include <udjat/tools/abstract/object.h>
+	#include <udjat/tools/xml.h>
 	#include <stdexcept>
  #endif // __cplusplus
 
@@ -43,6 +44,9 @@
  } pyAbstractObject;
 
  #ifdef __cplusplus
+
+	UDJAT_PRIVATE bool object_setup(PyObject *self, const char *name, const Udjat::XML::Node &node);
+	
 	extern "C" {
  #endif // __cplusplus
 

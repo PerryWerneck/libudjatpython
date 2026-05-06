@@ -85,6 +85,10 @@
 
 	}
 
+	bool Python::Agent::setup(const XML::Node &node) {
+		return object_setup(self,name(),node);
+	}
+	
  }
 
  // ---------------------------------------------------------------------------------------

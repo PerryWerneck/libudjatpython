@@ -76,7 +76,9 @@
 	return response;
  }
 
- std::shared_ptr<PyObject> Python::factory(const Udjat::XML::Node &node) {
+ std::shared_ptr<PyObject> Udjat::Python::factory(const Udjat::XML::Node &node) {
+
+	lock_guard<recursive_mutex> lock(guard);
 
 	debug("Building settings...");
 	auto settings = make_handle(PyObject_CallFunction((PyObject*)&xml_type, "O", Py_None));
@@ -93,6 +95,34 @@
 	}
 	
 	return settings;
+ }
+
+ UDJAT_PRIVATE PyObject * Udjat::Python::call(PyObject *self, const char *method, const Udjat::XML::Node &node) {
+
+	lock_guard<recursive_mutex> lock(guard);
+
+	debug("Searching for '",method,"'");
+
+	auto func = make_handle(PyObject_GetAttrString(self, method));
+	if(!func) {
+		throw logic_error(Logger::Message{_("The method {} is required"),method});
+	}
+
+	if(!PyCallable_Check(func.get())) {
+		throw logic_error(Logger::Message{_("The method {} is not callable"),method});
+	}
+
+	auto settings = factory(node);
+	auto args = make_handle(PyTuple_Pack(1, settings.get()));
+
+	debug("Calling object...");
+	PyObject *response = PyObject_CallObject(func.get(), args.get());
+
+	if(!response) {
+		throw runtime_error(exception());
+	}
+
+	return response;
  }
 
  UDJAT_PRIVATE PyObject	* xml_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
