@@ -81,6 +81,7 @@
  // ---------------------------------------------------------------------------------------
 
  UDJAT_PRIVATE PyObject	* agent_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
+	debug(__FUNCTION__);
 	return type->tp_alloc(type,0);
  }
 
@@ -90,8 +91,13 @@
  
  UDJAT_PRIVATE int agent_init(PyObject *self, PyObject *args, PyObject *kwds) {
 
+	debug(__FUNCTION__,"( ",PyTuple_Size(args)," argument(s))");
+
 	try {
 
+		if(PyTuple_Size(args) != 1) {
+			throw logic_error(_("Agent initializer requires a single argument"));
+		}
 
 		return 0;
 

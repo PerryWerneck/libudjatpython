@@ -53,6 +53,8 @@
  extern "C" {
  #endif // __cplusplus
 
+ extern UDJAT_PRIVATE PyTypeObject agent_type;
+
  UDJAT_PRIVATE PyObject	* agent_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds);
  UDJAT_PRIVATE void		  agent_dealloc(PyObject * self);
  UDJAT_PRIVATE int		  agent_init(PyObject *self, PyObject *args, PyObject *kwds);

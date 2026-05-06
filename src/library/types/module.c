@@ -23,7 +23,9 @@
 	#include <config.h>
  #endif
 
+ #include <udjat/tools/intl.h>
  #include <private/modules.h>
+ #include <private/agent.h>
 
  static void cleanup(PyObject *module);
 
@@ -92,6 +94,19 @@ PyMODINIT_FUNC PyInit_udjat(void)
         // Add internal modules as submodules of 'udjat'
         PyModule_AddObject(module, "logger", PyModule_Create_logger());
         PyModule_AddObject(module, "config", PyModule_Create_config());
+
+		if (PyType_Ready(&agent_type) < 0) {
+        	Py_DECREF(module);
+			PyErr_SetString(PyExc_RuntimeError, _("Agent type is not ready"));
+        	return NULL;
+		}
+
+		Py_INCREF(&agent_type); // AddObject steals a reference
+    	if (PyModule_AddObject(module, "agent", (PyObject *)&agent_type) < 0) {
+        	Py_DECREF(module);
+			PyErr_SetString(PyExc_RuntimeError, _("Failed inserting agent type"));
+        	return NULL;
+		}
     }
 
     return module;
