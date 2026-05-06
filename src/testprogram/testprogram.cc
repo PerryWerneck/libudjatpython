@@ -36,6 +36,10 @@
 	Logger::verbosity(9);
 	Logger::redirect();
 
+	Python::Interpreter::getInstance().run(
+		"import sys; sys.path.append('./testscripts')"
+	);
+
 	/*
 	return Python::Interpreter::getInstance().run(
 		"import sys\n"
@@ -46,7 +50,8 @@
 	);
 	*/
 
-	Python::Agent agent{"../testscripts/agent.py"};
+
+	Python::Agent agent{"testagent"};
 
 
 	/*

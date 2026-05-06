@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: udjathttp 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-05 12:06-0300\n"
+"POT-Creation-Date: 2026-05-05 21:46-0300\n"
 "PO-Revision-Date: 2026-04-23 21:47-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -20,16 +20,39 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Generator: Poedit 3.8\n"
 
+#: src/library/interpreter.cc:174
+msgid "Unknown Python Error"
+msgstr ""
+
+#: src/library/interpreter.cc:233
+#, c++-format
+msgid "The method {}(settings) is required on '{}"
+msgstr ""
+
+#: src/library/interpreter.cc:237
+#, c++-format
+msgid "The method {}(settings) is not callable on '{}"
+msgstr ""
+
 #: src/library/logger.cc:104 src/library/logger.cc:113
 #: src/library/logger.cc:122 src/library/logger.cc:131
 #: src/library/logger.cc:140 src/library/object.cc:133
 msgid "The log message should be a string"
 msgstr "Mensagem de log precisa ser uma string"
 
+#: src/library/config.cc:94 src/library/config.cc:100 src/library/config.cc:106
+#: src/library/config.cc:111 src/library/config.cc:133
+#: src/library/config.cc:139 src/library/config.cc:145
+#: src/library/config.cc:150 src/library/settings.cc:139
+#: src/library/agent.cc:146 src/library/agent.cc:152 src/library/agent.cc:157
+#: src/library/agent.cc:184
+msgid "Invalid argument"
+msgstr ""
+
 #: src/library/tools/call.cc:47 src/library/tools/call.cc:71
 #: src/library/tools/call.cc:96 src/library/tools/call.cc:115
 #: src/library/tools/value.cc:156 src/library/settings.cc:88
-#: src/library/agent.cc:80 src/library/object.cc:50 src/library/object.cc:107
+#: src/library/agent.cc:128 src/library/object.cc:50 src/library/object.cc:107
 msgid "Unexpected error in python callback."
 msgstr "Erro inesperado em chamada python."
 
@@ -52,10 +75,6 @@ msgstr ""
 
 #: src/library/settings.cc:133
 msgid "Method requires 2 arguments"
-msgstr ""
-
-#: src/library/settings.cc:139
-msgid "Invalid argument"
 msgstr ""
 
 #: src/library/object.cc:118

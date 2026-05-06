@@ -3,3 +3,4 @@ subprojects
 vgcore.*
 *.pot
 dist
+__pycache__

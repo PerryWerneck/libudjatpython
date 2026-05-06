@@ -225,10 +225,14 @@
 		lock_guard<recursive_mutex> lock(guard);
 
 		debug("Creating object from ",pysource," using ",method,"(settings)");
-
-		auto module = make_handle(this->import(pysource),Py_DECREF);
+		auto module = make_handle(PyImport_ImportModule(pysource),Py_DECREF);
+		if(!module) {
+			exception(true);
+			throw runtime_error(Logger::String{"Unable to load '",pysource,"'"});
+		}
+		
+		debug("Searching for '",method,"'");
 		auto func = make_handle(PyObject_GetAttrString(module.get(), method),Py_DECREF);
-
 		if(!func) {
 			throw logic_error(Logger::Message{_("The method {}(settings) is required on '{}"),method,pysource});
 		}
@@ -240,6 +244,7 @@
 		// FIX-ME: Build an empty settings object for node.
 		auto args = make_handle(PyTuple_Pack(1, PyLong_FromLong(10)),Py_DECREF);
 
+		debug("Calling object...");
 		PyObject *response = PyObject_CallObject(func.get(), args.get());
 
 		if(!response) {
