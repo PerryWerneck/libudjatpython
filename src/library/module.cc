@@ -29,17 +29,26 @@
  #include <udjat/tools/url.h>
  #include <udjat/tools/url/handler/python.h>
  #include <udjat/module/python.h>
+ #include <private/modules.h>
 
  namespace Udjat {
-	
+
 	Udjat::Module * Python::Module::Factory(const char *name) {
 
 		class Module : public Python::Module, private Python::Handler::Factory {
+		private:
+			PyObject *object;
+
 		public:
-			Module(const char *name, const char *description) : Python::Module{name,description} {
+			Module(const char *name, const char *description) 
+				: Python::Module{name,description} {
 			}
 
 			virtual ~Module() {
+				if(object) {
+					Py_DecRef(object);
+					object = nullptr;
+				}
 			}
 
 		};

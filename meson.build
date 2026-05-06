@@ -100,6 +100,7 @@ add_project_arguments(c.get_supported_arguments(compiler_flags), language: 'c')
 app_conf = configuration_data()
 app_conf.set_quoted('PACKAGE_NAME', meson.project_name())
 app_conf.set_quoted('PACKAGE_VERSION', meson.project_version())
+app_conf.set_quoted('PACKAGE_REVISION','@0@'.format(time_epoch))
 app_conf.set_quoted('PACKAGE_DESCRIPTION', project_description)
 app_conf.set('PACKAGE_VERSION_MAJOR', pkg_major_version)
 app_conf.set('PACKAGE_VERSION_MINOR', pkg_minor_version)
@@ -139,10 +140,10 @@ py_modules = [
   'src/library/types/object.c',
   'src/library/types/agent.c',
   'src/library/types/settings.c',
+  'src/library/types/module.c',
 ]
 
 module_src = [
-  'src/module/init.cc',
 ]
 
 test_src = [

@@ -27,6 +27,8 @@
  #include <iostream>
  #include <private/interpreter.h>
  #include <private/agent.h>
+ #include <private/modules.h>
+ #include <udjat/tools/memory.h>
 
  using namespace Udjat;
  using namespace std;

@@ -22,9 +22,19 @@
  #pragma once
  #include <Python.h>
 
+ #ifdef __cplusplus
+	extern "C" {
+ #endif // __cplusplus
+
+ /// @brief Initialize the udjat module.
+ PyMODINIT_FUNC PyInit_udjat(void);
+
  /// @brief Initialize the logger module.
- PyMODINIT_FUNC PyInit_logger(void);
+ PyMODINIT_FUNC PyModule_Create_logger(void);
 
  /// @brief  Initialize the config file handler module.
- PyMODINIT_FUNC PyInit_config(void);
+ PyMODINIT_FUNC PyModule_Create_config(void);
 
+ #ifdef __cplusplus
+	}
+ #endif // __cplusplus

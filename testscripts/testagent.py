@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 
+from udjat import logger
 
 def agent_factory(settings):
-	print("Building new agent")
+	logger.info("Agent factory method was called")
 
-	

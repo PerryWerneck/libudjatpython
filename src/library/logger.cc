@@ -89,9 +89,9 @@
 	.m_free = (freefunc) cleanup
  };	
 
- PyMODINIT_FUNC PyInit_logger(void) {
+ PyMODINIT_FUNC PyModule_Create_logger(void) {
 	debug("----- Registering module '",module.m_name,"'");
-	return PyModuleDef_Init(&module);
+	return PyModule_Create(&module);
  }
  
  void cleanup(PyObject *) {

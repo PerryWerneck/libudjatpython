@@ -65,13 +65,17 @@
 		}
 
 		// Add built-in modules, before Py_Initialize
-		if (PyImport_AppendInittab("logger", PyInit_logger) == -1) {
+		if (PyImport_AppendInittab("udjat", PyInit_udjat) == -1) {
 			throw runtime_error("Error: could not extend in-built modules table");
 		}
 
-		if (PyImport_AppendInittab("config", PyInit_config) == -1) {
-			throw runtime_error("Error: could not extend in-built modules table");
-		}
+		//if (PyImport_AppendInittab("logger", PyInit_logger) == -1) {
+		//	throw runtime_error("Error: could not extend in-built modules table");
+		//}
+
+		//if (PyImport_AppendInittab("config", PyInit_config) == -1) {
+		//	throw runtime_error("Error: could not extend in-built modules table");
+		//}
 
 		// Initialize the interpreter from this config
 		status = Py_InitializeFromConfig(&config);
@@ -79,11 +83,14 @@
 			PyConfig_Clear(&config);
 			throw runtime_error("Unable to initialize python interpreter");
 		}
+
 	}
 
 	Python::Interpreter::~Interpreter() {
 		Logger::String{"Deinitializing python " PY_VERSION " interpreter"}.info();
+
 		lock_guard<recursive_mutex> lock(guard);
+
 		PyConfig_Clear(&config);
 		Py_Finalize();
 	}

@@ -19,18 +19,9 @@
 
  #pragma once
 
- #ifdef HAVE_CONFIG_H
-	 #include <config.h>
- #endif // HAVE_CONFIG_H
-
  #include <udjat/defs.h>
  #include <udjat/module/abstract.h>
  
- // #include <udjat/tools/actions/python.h>
- // #include <udjat/agent/python.h>
- // #include <udjat/tools/url.h>
-
-
  namespace Udjat {
 
 	namespace Python {

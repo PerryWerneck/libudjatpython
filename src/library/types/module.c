@@ -18,6 +18,11 @@
  */
 
  #include <Python.h>
+
+ #ifdef HAVE_CONFIG_H
+	#include <config.h>
+ #endif
+
  #include <private/modules.h>
 
  static void cleanup(PyObject *module);
@@ -33,7 +38,7 @@ PyObject *get_module_revision(PyObject *self, PyObject *args) {
 }
 
 PyObject *get_core_version(PyObject *self, PyObject *args) {
-	return PyUnicode_FromString("incomplete");
+	return PyUnicode_FromString("");
 }
 
 static PyMethodDef methods[] = {
@@ -55,11 +60,10 @@ static PyMethodDef methods[] = {
 
 
 	{
-		"CORE",
+		"core",
 		get_core_version,
 		METH_NOARGS,
-		"Get package revision"
-
+		"Get core version"
 	},
 
 	{
@@ -86,8 +90,8 @@ PyMODINIT_FUNC PyInit_udjat(void)
 
     if (module) {
         // Add internal modules as submodules of 'udjat'
-        PyModule_AddObject(module, "logger", PyInit_logger());
-        PyModule_AddObject(module, "config", PyInit_config());
+        PyModule_AddObject(module, "logger", PyModule_Create_logger());
+        PyModule_AddObject(module, "config", PyModule_Create_config());
     }
 
     return module;
