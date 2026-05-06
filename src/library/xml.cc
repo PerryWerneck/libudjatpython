@@ -100,18 +100,23 @@
  UDJAT_PRIVATE PyObject * xml_getattr(PyObject *self, PyObject *attr) {
 
 	debug(__FUNCTION__);
-	return call(self,[attr](const XML::Node &node) -> PyObject * {
+	return call(self,[self,attr](const XML::Node &node) -> PyObject * {
 
 		const char *attrname = PyUnicode_AsUTF8(attr);
 
 		debug("setting.getattr(",attrname,")");
 
-		return PyUnicode_FromString(
-			XML::AttributeFactory(
-				node, 
-				attrname
-			).as_string()
-		);
+		// 1. Handle your custom dynamic properties
+		if(attrname[0] != '_') {
+			auto attribute = XML::AttributeFactory(node,attrname);
+			if(attribute) {
+				return PyUnicode_FromString(attribute.as_string());
+			} 
+		}
+
+		// 2. Delegate EVERYTHING ELSE to Python's standard logic
+		// This handles __dict__, __class__, methods, and members automatically.
+		return PyObject_GenericGetAttr(self, attr);
 
 	});
 
