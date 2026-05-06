@@ -82,6 +82,9 @@
 
  UDJAT_PRIVATE PyObject	* agent_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
 	debug(__FUNCTION__);
+	if (PyErr_Occurred()) {
+        return NULL; // Exit early if something else already failed
+    }
 	return type->tp_alloc(type,0);
  }
 

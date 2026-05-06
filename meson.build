@@ -135,11 +135,11 @@ py_modules = [
   'src/library/logger.cc',
   'src/library/config.cc',
   'src/library/object.cc',
-  'src/library/settings.cc',
+  'src/library/xml.cc',
   'src/library/agent.cc',
   'src/library/types/object.c',
   'src/library/types/agent.c',
-  'src/library/types/settings.c',
+  'src/library/types/xml.c',
   'src/library/types/module.c',
 ]
 

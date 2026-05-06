@@ -17,40 +17,48 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- #pragma once
  #ifdef HAVE_CONFIG_H
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
 
- #include <udjat/defs.h>
+ #include <private/xml.h>
  #include <Python.h>
 
- #ifdef __cplusplus
-	#include <udjat/tools/xml.h>
- #endif // __cplusplus
+ static PyMethodDef xml_methods[] = {
+    {
+		.ml_name = "get",
+		.ml_meth = (PyCFunction) xml_get,
+		.ml_flags = METH_VARARGS,
+		.ml_doc =	"Get attribute from XML definition\n\n"
+					"get(name,default): Get attribute 'name' from XML definition, use default value if not found\n"
+    },
 
- typedef struct {
- #ifdef __cplusplus
-		const Udjat::XML::Node *handler;
- #else
-		const void *handler;
- #endif // __cplusplus
- } pySettings;
- 
- #ifdef __cplusplus
-	extern "C" {
- #endif // __cplusplus
-
- UDJAT_PRIVATE PyObject	* settings_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds);
- UDJAT_PRIVATE void		  settings_dealloc(PyObject * self);
- UDJAT_PRIVATE int		  settings_init(PyObject *self, PyObject *args, PyObject *kwds);
- UDJAT_PRIVATE void		  settings_finalize(PyObject *self);
-
- UDJAT_PRIVATE PyObject * settings_str(PyObject *self);
- UDJAT_PRIVATE PyObject * settings_getattr(PyObject *self, PyObject *attr);
- 
- UDJAT_PRIVATE PyObject * settings_get(PyObject *self, PyObject *args);
-
- #ifdef __cplusplus
+    {
+    	NULL
 	}
- #endif // __cplusplus
+ };
+
+ PyTypeObject xml_type = {
+
+	PyVarObject_HEAD_INIT(NULL, 0)
+
+	.tp_name = "udjat.xml",
+	.tp_doc = "UDJAT Parsed XML Object",
+	.tp_basicsize = sizeof(pyXML),
+	.tp_itemsize = 0,
+	.tp_flags = Py_TPFLAGS_HAVE_FINALIZE|Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,
+
+	.tp_new = xml_alloc,
+	.tp_dealloc = xml_dealloc,
+
+	.tp_init = xml_init,
+	.tp_finalize = xml_finalize,
+
+	.tp_str = xml_str,
+
+	.tp_getattro = xml_getattr,
+
+	.tp_methods = xml_methods,
+
+ };
+

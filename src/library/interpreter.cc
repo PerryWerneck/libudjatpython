@@ -33,6 +33,7 @@
  
  #include <private/interpreter.h>
  #include <private/modules.h>
+ #include <private/xml.h>
 
  using namespace std;
 
@@ -248,8 +249,24 @@
 			throw logic_error(Logger::Message{_("The method {}(settings) is not callable on '{}"),method,pysource});
 		}
 
-		// FIX-ME: Build an empty settings object for node.
-		auto args = make_handle(PyTuple_Pack(1, PyLong_FromLong(10)),Py_DECREF);
+		// Build python object for XML::Node
+		debug("Building settings...");
+		auto settings = make_handle<PyObject>(
+				PyObject_CallFunction((PyObject*)&xml_type, "O", Py_None),
+				Py_DecRef);
+
+		if(!settings) {
+			debug("Failed building settings");
+			throw runtime_error(this->exception());
+		}
+
+		// Store XML::Node in the object.
+		{
+			pyXML *native = ((pyXML *) settings.get());
+			native->handler = &node;
+		}
+
+		auto args = make_handle(PyTuple_Pack(1, settings.get()),Py_DECREF);
 
 		debug("Calling object...");
 		PyObject *response = PyObject_CallObject(func.get(), args.get());

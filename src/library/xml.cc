@@ -22,10 +22,11 @@
  #endif // HAVE_CONFIG_H
 
  #include <udjat/defs.h>
- #include <private/settings.h>
+ #include <private/xml.h>
  #include <private/tools.h>
  #include <udjat/tools/xml.h>
  #include <udjat/tools/abstract/object.h>
+ #include <udjat/tools/logger.h>
  #include <udjat/tools/intl.h>
 
  #include <Python.h>
@@ -33,42 +34,32 @@
  using namespace Udjat;
  using namespace std;
 
- UDJAT_PRIVATE PyObject	* settings_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
-	return type->tp_alloc(type,0);
+ UDJAT_PRIVATE PyObject	* xml_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
+	debug(__FUNCTION__);
+	if (PyErr_Occurred()) {
+        return NULL; // Exit early if something else already failed
+    }
+ 	return type->tp_alloc(type,0);
  }
 
- UDJAT_PRIVATE void settings_dealloc(PyObject * self) {
+ UDJAT_PRIVATE void xml_dealloc(PyObject * self) {
+	debug(__FUNCTION__);
 	Py_TYPE(self)->tp_free(self);
  } 
  
- UDJAT_PRIVATE int settings_init(PyObject *self, PyObject *args, PyObject *kwds) {
-
-	try {
-
-
-		return 0;
-
-	} catch(const std::exception &e) {
-
-		PyErr_SetString(PyExc_RuntimeError, e.what());
-
-	} catch(...) {
-
-		PyErr_SetString(PyExc_RuntimeError, "Unexpected error in core module");
-
-	}
-
-	return -1;
+ UDJAT_PRIVATE int xml_init(PyObject *self, PyObject *args, PyObject *kwds) {
+	debug(__FUNCTION__);
+	return 0;
 
  }
 
- UDJAT_PRIVATE void settings_finalize(PyObject *self) {
+ UDJAT_PRIVATE void xml_finalize(PyObject *self) {
 
  }
 
  static PyObject * call(PyObject *self,const std::function<PyObject *(const XML::Node &node)> &callback) {
 
-	pySettings *settings = ((pySettings *) self);
+	pyXML *settings = ((pyXML *) self);
 	
 	if(!settings->handler) {
 		PyErr_SetString(PyExc_RuntimeError, _("The object is empty"));
@@ -93,8 +84,9 @@
 
  }
 
- UDJAT_PRIVATE PyObject * settings_str(PyObject *self) {
+ UDJAT_PRIVATE PyObject * xml_str(PyObject *self) {
 
+	debug(__FUNCTION__);
 	return call(self,[](const XML::Node &node) -> PyObject * {
 
 		return PyUnicode_FromString(
@@ -105,14 +97,14 @@
 
  }
 
- UDJAT_PRIVATE PyObject * settings_getattr(PyObject *self, PyObject *attr) {
+ UDJAT_PRIVATE PyObject * xml_getattr(PyObject *self, PyObject *attr) {
 
+	debug(__FUNCTION__);
 	return call(self,[attr](const XML::Node &node) -> PyObject * {
 
-		const char *attrname;
-		if(!PyArg_ParseTuple(attr, "s", &attrname)) {
-			throw runtime_error("Invalid argument");
-		}
+		const char *attrname = PyUnicode_AsUTF8(attr);
+
+		debug("setting.getattr(",attrname,")");
 
 		return PyUnicode_FromString(
 			XML::AttributeFactory(
@@ -125,8 +117,9 @@
 
  }
  
- UDJAT_PRIVATE PyObject * settings_get(PyObject *self, PyObject *args) {
+ UDJAT_PRIVATE PyObject * xml_get(PyObject *self, PyObject *args) {
 
+	debug(__FUNCTION__);
 	return call(self,[args](const XML::Node &node) -> PyObject * {
 
 		if(PyTuple_Size(args) != 2) {

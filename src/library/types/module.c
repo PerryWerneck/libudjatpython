@@ -26,6 +26,7 @@
  #include <udjat/tools/intl.h>
  #include <private/modules.h>
  #include <private/agent.h>
+ #include <private/xml.h>
 
  static void cleanup(PyObject *module);
 
@@ -94,6 +95,12 @@ PyMODINIT_FUNC PyInit_udjat(void)
         // Add internal modules as submodules of 'udjat'
         PyModule_AddObject(module, "logger", PyModule_Create_logger());
         PyModule_AddObject(module, "config", PyModule_Create_config());
+
+		if (PyType_Ready(&xml_type) < 0) {
+        	Py_DECREF(module);
+			PyErr_SetString(PyExc_RuntimeError, _("XML parser is not ready"));
+        	return NULL;
+		}
 
 		if (PyType_Ready(&agent_type) < 0) {
         	Py_DECREF(module);
