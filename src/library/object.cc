@@ -68,18 +68,28 @@
 
  UDJAT_PRIVATE PyObject * object_getattr(PyObject *self, PyObject *attr) {
 
-	return call(self,[attr](Abstract::Object &object) -> PyObject * {
+	const char *attrname = PyUnicode_AsUTF8(attr);
 
-		const char *name = "";
-		if(!PyArg_ParseTuple(attr, "s", &name)) {
-			throw runtime_error("Invalid argument");
-		}
+	debug(__FUNCTION__,"(",attrname,")");
 
-		return PyUnicode_FromString(
-			object.getProperty(name).c_str()
-		);
+	if(attrname && *attrname != '_' && ((pyAbstractObject *) self)->handler) {
 
-	});
+		return call(self,[attr](Abstract::Object &object) -> PyObject * {
+
+			const char *name = "";
+			if(!PyArg_ParseTuple(attr, "s", &name)) {
+				throw runtime_error("Invalid argument");
+			}
+
+			return PyUnicode_FromString(
+				object.getProperty(name).c_str()
+			);
+
+		});
+
+	}
+
+	return PyObject_GenericGetAttr(self, attr);
 
  }
  
@@ -175,12 +185,12 @@
 	}
 
 	if(Py_IsNone(response.get())) {
-		Logger::String{"Setup method returned PyNone when I was expecting a boolean"}.warning(name);
+		Logger::Message{"Setup method on {} returned PyNone when I was expecting a boolean",Py_TYPE(self)->tp_name}.warning(name);
 		return false;
 	}
 
 	if(!PyBool_Check(response.get())) {
-		Logger::String{"Setup method returned value when I was expecting a boolean"}.warning(name);
+		Logger::String{"Setup method on {} returned value when I was expecting a boolean",Py_TYPE(self)->tp_name}.warning(name);
 		return false;
 	}		
 

@@ -54,6 +54,7 @@
 
 
 	Python::Agent agent{"testagent"};
+	agent.setup(XML::Node());
 
 
 	/*

@@ -9,12 +9,13 @@ class SampleAgent(agent):
 		#print(dir(properties))
 		#print(properties.testparameter)
 		print(properties.get('testparameter','default value'))
+		print(dir(self))
 
 	def setup(self,properties):
 		print("Setting up from properties")
 		super().setup(properties)
 
 def agent_factory(properties):
-	#print(dir(agent))
-	logger.info("Agent factory method was called")
-	return SampleAgent(properties)
+	agent = SampleAgent(properties)
+	agent.info("Agent factory method was called")
+	return agent

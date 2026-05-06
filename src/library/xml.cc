@@ -105,11 +105,11 @@
 
 	auto func = make_handle(PyObject_GetAttrString(self, method));
 	if(!func) {
-		throw logic_error(Logger::Message{_("The method {} is required"),method});
+		throw logic_error(Logger::Message{_("The method {} is required on {}"),method,Py_TYPE(self)->tp_name});
 	}
 
 	if(!PyCallable_Check(func.get())) {
-		throw logic_error(Logger::Message{_("The method {} is not callable"),method});
+		throw logic_error(Logger::Message{_("The method {} is not callable on {}"),method,Py_TYPE(self)->tp_name});
 	}
 
 	auto settings = factory(node);
