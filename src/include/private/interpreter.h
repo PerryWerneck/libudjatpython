@@ -29,16 +29,17 @@
  #include <udjat/defs.h>
  #include <mutex>
  #include <functional>
+ #include <memory>
 
  namespace Udjat {
 
  	namespace Python {
 
-		/// @brief The python interpreter
-		class UDJAT_API Interpreter {
-		private:
+		std::shared_ptr<PyObject> make_handle(PyObject *self);
 
-			std::recursive_mutex guard;
+		/// @brief The python interpreter
+		class UDJAT_API Interpreter : public std::recursive_mutex {
+		private:
 
 			PyConfig config;
 			PyStatus status;

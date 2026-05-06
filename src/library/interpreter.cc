@@ -48,7 +48,7 @@
 
 		Logger::String{"Initializing python " PY_VERSION " interpreter"}.info();
 		
-		lock_guard<recursive_mutex> lock(guard);
+		lock_guard<recursive_mutex> lock(*this);
 
 		// Initialize the config with default Python settings
 		PyConfig_InitPythonConfig(&config);
@@ -90,20 +90,20 @@
 	Python::Interpreter::~Interpreter() {
 		Logger::String{"Deinitializing python " PY_VERSION " interpreter"}.info();
 
-		lock_guard<recursive_mutex> lock(guard);
+		lock_guard<recursive_mutex> lock(*this);
 
 		PyConfig_Clear(&config);
 		Py_Finalize();
 	}
 
 	int Python::Interpreter::run(const char *, const char *script_text) {
-		lock_guard<recursive_mutex> lock(guard);
+		lock_guard<recursive_mutex> lock(*this);
 		int rc = PyRun_SimpleString(script_text);
 		if (PyErr_Occurred()) {
-			auto exc = make_handle(PyErr_GetRaisedException(),Py_DECREF);
+			auto exc = make_handle(PyErr_GetRaisedException());
 			if (exc.get()) {
 				// 3. Convert the exception to a string (equivalent to str(e))
-				auto exc_str = make_handle(PyObject_Str(exc.get()),Py_DECREF);
+				auto exc_str = make_handle(PyObject_Str(exc.get()));
 				if (exc_str.get()) {
 					string msg = PyUnicode_AsUTF8(exc_str.get());
 					throw runtime_error(msg);
@@ -115,7 +115,7 @@
 
 	int Python::Interpreter::run(const char *, const char *script_text, const std::function<bool(uint64_t current, uint64_t total, const void *data, size_t len)> &progress) {
 		
-		lock_guard<recursive_mutex> lock(guard);
+		lock_guard<recursive_mutex> lock(*this);
 
 		int rc;
 
@@ -127,9 +127,9 @@
 
     	rc = run(script_text);
 
-    	auto sys_module = make_handle(PyImport_ImportModule("sys"),Py_DECREF);
-    	auto stdout_obj = make_handle(PyObject_GetAttrString(sys_module.get(), "stdout"),Py_DECREF);
-    	auto result = make_handle(PyObject_CallMethod(stdout_obj.get(), "getvalue", NULL),Py_DECREF);
+    	auto sys_module = make_handle(PyImport_ImportModule("sys"));
+    	auto stdout_obj = make_handle(PyObject_GetAttrString(sys_module.get(), "stdout"));
+    	auto result = make_handle(PyObject_CallMethod(stdout_obj.get(), "getvalue", NULL));
 
     	const char * output = PyUnicode_AsUTF8(result.get());
 
@@ -148,7 +148,7 @@
 
 	PyObject * Python::Interpreter::import(const char *pysource) {
 
-		lock_guard<recursive_mutex> lock(guard);
+		lock_guard<recursive_mutex> lock(*this);
 
 		PyObject *pName = PyUnicode_FromString(pysource);
  		PyObject* pModule = PyImport_Import(pName);
@@ -163,15 +163,13 @@
 	}
 
 	PyObject * Python::Interpreter::module(const char *module_name) {
-
-		lock_guard<recursive_mutex> lock(guard);
+		lock_guard<recursive_mutex> lock(*this);
 		return PyImport_ImportModule(module_name);
-
 	}
 
 	std::string Python::Interpreter::exception(bool write_to_log) {
 
-		lock_guard<recursive_mutex> lock(guard);
+		lock_guard<recursive_mutex> lock(*this);
 
 		string response;
 
@@ -230,9 +228,7 @@
 
 	std::shared_ptr<PyObject> Python::Interpreter::factory(const Udjat::XML::Node &node) {
 		debug("Building settings...");
-		auto settings = make_handle<PyObject>(
-				PyObject_CallFunction((PyObject*)&xml_type, "O", Py_None),
-				Py_DecRef);
+		auto settings = make_handle(PyObject_CallFunction((PyObject*)&xml_type, "O", Py_None));
 
 		if(!settings) {
 			debug("Failed building settings");
@@ -248,19 +244,28 @@
 		return settings;
 	}
 
+	static void decref(PyObject *self) {
+		lock_guard<recursive_mutex> lock(Python::Interpreter::getInstance());
+		Py_DecRef(self);
+	}
+
+	std::shared_ptr<PyObject> Python::make_handle(PyObject *self) {
+		return Udjat::make_handle<PyObject>(self,decref);
+	}
+
 	PyObject * Python::Interpreter::factory(const char *pysource, const char *method, const XML::Node &node) {
 	
-		lock_guard<recursive_mutex> lock(guard);
+		lock_guard<recursive_mutex> lock(*this);
 
 		debug("Creating object from ",pysource," using ",method,"(settings)");
-		auto module = make_handle(PyImport_ImportModule(pysource),Py_DECREF);
+		auto module = make_handle(PyImport_ImportModule(pysource));
 		if(!module) {
 			exception(true);
 			throw runtime_error(Logger::String{"Unable to load '",pysource,"'"});
 		}
 		
 		debug("Searching for '",method,"'");
-		auto func = make_handle(PyObject_GetAttrString(module.get(), method),Py_DECREF);
+		auto func = make_handle(PyObject_GetAttrString(module.get(), method));
 		if(!func) {
 			throw logic_error(Logger::Message{_("The method {}(settings) is required on '{}"),method,pysource});
 		}
@@ -271,7 +276,7 @@
 
 		// Build python object for XML::Node
 		auto settings = factory(node);
-		auto args = make_handle(PyTuple_Pack(1, settings.get()),Py_DECREF);
+		auto args = make_handle(PyTuple_Pack(1, settings.get()));
 
 		debug("Calling object...");
 		PyObject *response = PyObject_CallObject(func.get(), args.get());
