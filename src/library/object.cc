@@ -69,7 +69,6 @@
  UDJAT_PRIVATE PyObject * object_getattr(PyObject *self, PyObject *attr) {
 
 	const char *attrname = PyUnicode_AsUTF8(attr);
-
 	debug(__FUNCTION__,"(",attrname,")");
 
 	if(attrname && *attrname != '_' && ((pyAbstractObject *) self)->handler) {
@@ -95,31 +94,39 @@
  
  UDJAT_PRIVATE int object_setattr(PyObject *self, PyObject *attr, PyObject *value) {
 
-	try {
+	const char *attrname = PyUnicode_AsUTF8(attr);
+	debug(__FUNCTION__,"(",attrname,")");
 
-		const char *name = "";
-		if(!PyArg_ParseTuple(attr, "s", &name)) {
-			throw runtime_error("Invalid argument");
+	if(attrname && *attrname != '_' && ((pyAbstractObject *) self)->handler) {
+
+		try {
+
+			const char *val = "";
+			if(!PyArg_ParseTuple(attr, "s", &val)) {
+				throw runtime_error(_("Invalid argument"));
+			}
+
+			if(get_private<Abstract::Object>(self).setProperty(attrname,val)) {
+				debug(attrname,"='",val,"'");
+				return 0;
+			}
+
+		} catch(const std::exception &e) {
+
+			PyErr_SetString(PyExc_RuntimeError, e.what());
+			return -1;
+
+		} catch(...) {
+
+			PyErr_SetString(PyExc_RuntimeError, _("Unexpected error in python callback."));
+			return -1;
+
 		}
-
-		const char *val = "";
-		if(!PyArg_ParseTuple(attr, "s", &val)) {
-			throw runtime_error("Invalid argument");
-		}
-
-		get_private<Abstract::Object>(self).setProperty(name,val);
-
-	} catch(const std::exception &e) {
-
-		PyErr_SetString(PyExc_RuntimeError, e.what());
-
-	} catch(...) {
-
-		PyErr_SetString(PyExc_RuntimeError, _("Unexpected error in python callback."));
 
 	}
 
-	return 0;
+	debug("Calling PyObject_GenericSetAttr");
+	return PyObject_GenericSetAttr(self, attr, value);
 
  }
 
