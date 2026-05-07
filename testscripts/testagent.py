@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from udjat import logger, agent
+from udjat import agent
 
 class SampleAgent(agent):
 	def setup(self,properties):
@@ -11,6 +11,7 @@ class SampleAgent(agent):
 	
 	def refresh(self,ondemand):
 		self.info("Updating values")
+		print(self.value)
 		return False;
 
 def AgentFactory(properties):

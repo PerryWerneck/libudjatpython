@@ -121,7 +121,7 @@
 	.tp_finalize = agent_finalize,
 
 	.tp_str = object_str,
-	.tp_getattro = object_getattr,
+	.tp_getattro = agent_getattr,
 	.tp_setattro = agent_setattr,
 
 	.tp_methods = agent_methods,

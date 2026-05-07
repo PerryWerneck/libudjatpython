@@ -54,6 +54,10 @@
 		Agent(const char *pysource);
 		~Agent() override;
 
+		inline operator PyObject *() const noexcept {
+			return value;
+		}
+
 		bool refresh(bool ondemand) override;
 
 		std::string to_string() const noexcept override;
@@ -113,6 +117,7 @@
  UDJAT_PRIVATE int		  agent_init(PyObject *self, PyObject *args, PyObject *kwds);
  UDJAT_PRIVATE void		  agent_finalize(PyObject *self);
  UDJAT_PRIVATE int 		  agent_setattr(PyObject *self, PyObject *attr, PyObject *value);
+ UDJAT_PRIVATE PyObject * agent_getattr(PyObject *self, PyObject *attr);
 
  UDJAT_PRIVATE PyObject * agent_setup(PyObject *self, PyObject *args);
  UDJAT_PRIVATE PyObject * agent_failed(PyObject *self, PyObject *args);

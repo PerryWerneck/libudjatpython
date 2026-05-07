@@ -374,6 +374,46 @@
 	return PyObject_GenericSetAttr(self, attr, value);
  }
 
+ UDJAT_PRIVATE PyObject * agent_getattr(PyObject *self, PyObject *attr) {
+
+	const char *attrname = PyUnicode_AsUTF8(attr);
+	debug(__FUNCTION__,"(",attrname,")");
+
+	if(attrname && *attrname != '_' && ((pyAbstractObject *) self)->handler) {
+
+		try {
+
+			auto &agent = get_private<Python::Agent>(self);
+
+			if(!strcmp(attrname,"value")) {
+				return (PyObject *) agent;
+			}
+
+			string response;
+			if(agent.getProperty(attrname,response)) {
+				return PyUnicode_FromString(
+					response.c_str()
+				);
+			}
+
+		} catch(const std::exception &e) {
+
+			PyErr_SetString(PyExc_RuntimeError, e.what());
+			return NULL;
+
+		} catch(...) {
+
+			PyErr_SetString(PyExc_RuntimeError, _("Unexpected error in python callback."));
+			return NULL;
+
+		}
+	
+	}
+
+	return PyObject_GenericGetAttr(self, attr);
+
+ }
+
  UDJAT_PRIVATE PyObject * agent_setup(PyObject *self, PyObject *args) {
 
 	debug(__FUNCTION__);
