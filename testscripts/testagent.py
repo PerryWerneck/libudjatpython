@@ -12,8 +12,8 @@ class SampleAgent(agent):
 		print(dir(self))
 
 	def setup(self,properties):
-		print("Setting up from properties")
-		super().setup(properties)
+		self.info("Setting up from properties")
+		return super().setup(properties)
 
 def agent_factory(properties):
 	agent = SampleAgent(properties)

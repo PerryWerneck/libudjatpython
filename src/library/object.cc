@@ -26,6 +26,7 @@
  #include <private/tools.h>
  #include <private/xml.h>
  #include <udjat/tools/xml.h>
+ #include <udjat/tools/object.h>
  #include <udjat/tools/abstract/object.h>
  #include <udjat/tools/logger.h>
  #include <udjat/tools/intl.h>
@@ -73,63 +74,43 @@
 
 	if(attrname && *attrname != '_' && ((pyAbstractObject *) self)->handler) {
 
-		return call(self,[attr](Abstract::Object &object) -> PyObject * {
+		try {
 
-			const char *name = "";
-			if(!PyArg_ParseTuple(attr, "s", &name)) {
-				throw runtime_error("Invalid argument");
+			string response;
+			if(get_private<Abstract::Object>(self).getProperty(attrname,response)) {
+				return PyUnicode_FromString(
+					response.c_str()
+				);
 			}
 
+		} catch(const std::exception &e) {
+
+			PyErr_SetString(PyExc_RuntimeError, e.what());
+			return NULL;
+
+		} catch(...) {
+
+			PyErr_SetString(PyExc_RuntimeError, _("Unexpected error in python callback."));
+			return NULL;
+
+		}
+
+		/*
+		return call(self,[attrname](Abstract::Object &object) -> PyObject * {
+
 			return PyUnicode_FromString(
-				object.getProperty(name).c_str()
+				object.getProperty(attrname).c_str()
 			);
 
 		});
-
+	*/
+	
 	}
 
 	return PyObject_GenericGetAttr(self, attr);
 
  }
  
- UDJAT_PRIVATE int object_setattr(PyObject *self, PyObject *attr, PyObject *value) {
-
-	const char *attrname = PyUnicode_AsUTF8(attr);
-	debug(__FUNCTION__,"(",attrname,")");
-
-	if(attrname && *attrname != '_' && ((pyAbstractObject *) self)->handler) {
-
-		try {
-
-			const char *val = "";
-			if(!PyArg_ParseTuple(attr, "s", &val)) {
-				throw runtime_error(_("Invalid argument"));
-			}
-
-			if(get_private<Abstract::Object>(self).setProperty(attrname,val)) {
-				debug(attrname,"='",val,"'");
-				return 0;
-			}
-
-		} catch(const std::exception &e) {
-
-			PyErr_SetString(PyExc_RuntimeError, e.what());
-			return -1;
-
-		} catch(...) {
-
-			PyErr_SetString(PyExc_RuntimeError, _("Unexpected error in python callback."));
-			return -1;
-
-		}
-
-	}
-
-	debug("Calling PyObject_GenericSetAttr");
-	return PyObject_GenericSetAttr(self, attr, value);
-
- }
-
  static PyObject * write_log(const Logger::Level level, PyObject *self, PyObject *arg) {
 
 	if(PyTuple_Size(arg) != 1) {

@@ -122,7 +122,6 @@
 
 	.tp_str = object_str,
 	.tp_getattro = object_getattr,
-	.tp_setattro = object_setattr,
 
 	.tp_methods = agent_methods,
 

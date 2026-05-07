@@ -30,6 +30,7 @@
  #ifdef __cplusplus
 	#include <udjat/tools/abstract/object.h>
 	#include <udjat/tools/xml.h>
+	#include <udjat/tools/logger.h>
 	#include <stdexcept>
  #endif // __cplusplus
 
@@ -51,7 +52,6 @@
  #endif // __cplusplus
 
  UDJAT_PRIVATE PyObject * object_str(PyObject *self);
- UDJAT_PRIVATE int 		  object_setattr(PyObject *self, PyObject *attr, PyObject *value);
  UDJAT_PRIVATE PyObject * object_getattr(PyObject *self, PyObject *attr);
  UDJAT_PRIVATE PyObject * object_trace(PyObject *self, PyObject *msg);
  UDJAT_PRIVATE PyObject * object_error(PyObject *self, PyObject *msg);
@@ -60,6 +60,26 @@
  
  #ifdef __cplusplus
  }
+
+	template <class T>
+	int set_property(PyObject *self, PyObject *attr, PyObject *value) {
+		const char *attrname = PyUnicode_AsUTF8(attr);
+		if(attrname && *attrname != '_') {
+			pyAbstractObject *object = ((pyAbstractObject *) self);
+			auto *handler = dynamic_cast<T *>(object->handler);
+			if(handler) {
+				const char *val = PyUnicode_AsUTF8(value);
+				try {
+					if(handler->setProperty(attrname,val)) {
+						return 0;
+					}
+				} catch(const std::exception &e) {
+					Udjat::Logger::String{e.what()}.warning(handler->name());
+				}
+			}
+		}
+		return PyObject_GenericSetAttr(self, attr, value);
+	}
 
 	template <class T>
 	T & get_private(PyObject *self) {

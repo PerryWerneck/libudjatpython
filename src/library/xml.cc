@@ -103,14 +103,20 @@
 
 	debug("Searching for '",method,"'");
 
+	debug("---------- Getting method '",method,"'");
 	auto func = make_handle(PyObject_GetAttrString(self, method));
 	if(!func) {
+		if (PyErr_Occurred()) {
+			throw runtime_error(exception());
+		}
 		throw logic_error(Logger::Message{_("The method {} is required on {}"),method,Py_TYPE(self)->tp_name});
 	}
 
 	if(!PyCallable_Check(func.get())) {
 		throw logic_error(Logger::Message{_("The method {} is not callable on {}"),method,Py_TYPE(self)->tp_name});
 	}
+
+	debug("Method is callable");
 
 	auto settings = factory(node);
 	auto args = make_handle(PyTuple_Pack(1, settings.get()));
@@ -123,6 +129,7 @@
 	}
 
 	return response;
+
  }
 
  UDJAT_PRIVATE PyObject	* xml_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {

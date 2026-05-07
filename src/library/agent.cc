@@ -86,10 +86,7 @@
 	}
 
 	bool Python::Agent::setup(const XML::Node &node) {
-		if(object_setup(self,name(),node)) {
-			return true;
-		}
-		return super::setup(node);
+		return object_setup(self,name(),node);
 	}
 	
  }
@@ -126,47 +123,7 @@
 
 	debug(__FUNCTION__," ",Py_TYPE(self)->tp_name, " with ",PyTuple_Size(args)," argument(s)");
 
-	try {
-
-#ifdef DEBUG
-		printf("\nAgent self at %s: %p (handler=%p)\n",__FUNCTION__,self,((pyAbstractObject *) self)->handler);
-#endif // DEBUG
-
-		/*
-		pyAbstractObject *object = ((pyAbstractObject *) self);
-
-		if(PyTuple_Size(args) != 1) {
-			throw logic_error(_("Agent initializer requires a single argument"));
-		}
-
-		PyObject *arg = PyTuple_GetItem(args, 0);
-		if(PyObject_TypeCheck(arg, &xml_type)) {
-
-			// It's a XML type
-			debug("Getting properties from XML");
-			const auto prop = xml_get_native(arg);
-
-			object->handler =
-		} else {
-
-			// Cant recognize parameter.
-			throw logic_error(_("Agent initializer requires a valid properties definition as argument"));
-		}
-		*/
-
-		return 0;
-
-	} catch(const std::exception &e) {
-
-		PyErr_SetString(PyExc_RuntimeError, e.what());
-
-	} catch(...) {
-
-		PyErr_SetString(PyExc_RuntimeError, "Unexpected error in core module");
-
-	}
-
-	return -1;
+	return 0;
 
  }
 
@@ -283,6 +240,8 @@
 
  UDJAT_PRIVATE PyObject * agent_setup(PyObject *self, PyObject *args) {
 
+	debug(__FUNCTION__);
+	
 	return call(self,[args](Udjat::Python::Agent &agent) -> PyObject * {
 
 		debug("Setting up agent ",agent.name());
@@ -294,15 +253,16 @@
 		PyObject* settings = PyTuple_GetItem(args, 0);
 		if(PyObject_TypeCheck(settings, &xml_type)) {
 
-			// It's a XML type
-			debug("Getting properties from XML");
-			agent.setup(xml_get_native(settings));
+			if(agent.Udjat::Abstract::Agent::setup(xml_get_native(settings))) {
+				return Py_True;
+			}
 
 		} else {
+
 			throw logic_error(_("Agent.setup() requires a valid properties object"));
 		}
 
-		return Py_None;
+		return Py_False;
 	});
 
  }
