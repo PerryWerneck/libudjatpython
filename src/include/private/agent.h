@@ -46,6 +46,10 @@
 			Udjat::Abstract::Agent::failed(summary,body);
 		}
 
+		inline void rename(const char *name) {
+			Udjat::Abstract::Agent::rename(name);
+		}
+
 		bool setup(const XML::Node &node) override;
 
 	};
