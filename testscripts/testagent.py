@@ -13,7 +13,5 @@ class SampleAgent(agent):
 		self.info("Updating values")
 		return False;
 
-def agent_factory(properties):
-	agent = SampleAgent(properties)
-	agent.info("Agent factory method was called")
-	return agent
+def AgentFactory(properties):
+	return SampleAgent(properties)

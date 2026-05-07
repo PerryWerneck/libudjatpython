@@ -87,7 +87,7 @@ static struct PyModuleDef definition = {
 	.m_free = (freefunc) cleanup
 };
 
-PyMODINIT_FUNC PyInit_udjat(void)
+PyMODINIT_FUNC PyModule_Initialize(void)
 {
     PyObject *module = PyModule_Create(&definition);
 

@@ -45,7 +45,7 @@
  namespace Udjat {
 
 	Python::Agent::Agent(const char *pysource,const XML::Node &node) 
-		: self{Python::factory(pysource,"agent_factory",node)} {
+		: self{Python::factory(pysource,"AgentFactory",node)} {
 
 		lock_guard<recursive_mutex> lock(Python::guard);
 

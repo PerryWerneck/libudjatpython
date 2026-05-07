@@ -67,7 +67,7 @@
 		}
 
 		// Add built-in modules, before Py_Initialize
-		if (PyImport_AppendInittab("udjat", PyInit_udjat) == -1) {
+		if (PyImport_AppendInittab("udjat", PyModule_Initialize) == -1) {
 			throw runtime_error("Error: could not extend in-built modules table");
 		}
 

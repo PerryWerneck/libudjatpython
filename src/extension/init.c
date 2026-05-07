@@ -17,24 +17,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
- /// @brief Declare python interpreter class.
-
- #pragma once
  #include <Python.h>
 
- #ifdef __cplusplus
-	extern "C" {
- #endif // __cplusplus
+ #ifdef HAVE_CONFIG_H
+	#include <config.h>
+ #endif
 
- /// @brief Initialize the udjat module.
- PyMODINIT_FUNC PyModule_Initialize(void);
+ #include <private/modules.h>
 
- /// @brief Initialize the logger module.
- PyMODINIT_FUNC PyModule_Create_logger(void);
-
- /// @brief  Initialize the config file handler module.
- PyMODINIT_FUNC PyModule_Create_config(void);
-
- #ifdef __cplusplus
-	}
- #endif // __cplusplus
+ PyMODINIT_FUNC PyInit_udjat(void) {
+	return PyModule_Initialize();
+ }

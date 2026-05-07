@@ -138,6 +138,7 @@ py_modules = [
   'src/library/object.cc',
   'src/library/xml.cc',
   'src/library/agent.cc',
+  'src/library/state.cc',
   'src/library/types/object.c',
   'src/library/types/agent.c',
   'src/library/types/xml.c',
@@ -311,31 +312,33 @@ dynamic_library = declare_dependency(
   include_directories: includes_dir,
 )
 
-#py_inst.extension_module(
-#  'udjat',
-#  py_modules + [
-#    'src/extension/init.c',
-#  ],
-#  c_args: [ 
-#    '-DPACKAGE_VERSION="@0@.@1@.@2@"'.format(pkg_major_version,pkg_minor_version,pkg_micro_version),
-#    '-DPACKAGE_REVISION="@0@"'.format(time_epoch),
-#    '-fvisibility=hidden',
-#  ],
-#  cpp_args: [
-#    '-std=c++1z',
-#    '-Wno-overloaded-virtual',
-#    '-fvisibility=hidden',
-#    '-DPACKAGE_VERSION="@0@.@1@.@2@"'.format(pkg_major_version,pkg_minor_version,pkg_micro_version),
-#    '-DPACKAGE_REVISION="@0@"'.format(time_epoch),
-#  ],
-#  install: true,
-#  install_tag: 'python', 
-#  dependencies: [
-#    libudjat,
-#    py_inst.dependency(),
-#  ],
-#  include_directories: includes_dir
-#)
+py_inst.extension_module(
+  'udjat',
+  [
+    'src/extension/init.c',
+  ],
+  c_args: [ 
+    '-DPACKAGE_VERSION="@0@.@1@.@2@"'.format(pkg_major_version,pkg_minor_version,pkg_micro_version),
+    '-DPACKAGE_REVISION="@0@"'.format(time_epoch),
+    '-fvisibility=hidden',
+  ],
+  cpp_args: [
+    '-std=c++1z',
+    '-Wno-overloaded-virtual',
+    '-fvisibility=hidden',
+    '-DPACKAGE_VERSION="@0@.@1@.@2@"'.format(pkg_major_version,pkg_minor_version,pkg_micro_version),
+    '-DPACKAGE_REVISION="@0@"'.format(time_epoch),
+  ],
+  install: true,
+  install_tag: 'python', 
+  link_with: [ 
+    dynamic
+  ],
+  dependencies: [
+    py_inst.dependency(),
+  ],
+  include_directories: includes_dir
+)
 
 executable(
   meson.project_name(),
