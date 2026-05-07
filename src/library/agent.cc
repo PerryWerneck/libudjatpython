@@ -238,6 +238,45 @@
 
  }
 
+ UDJAT_PRIVATE int agent_setattr(PyObject *self, PyObject *attr, PyObject *value) {
+	
+	pyAbstractObject *object = ((pyAbstractObject *) self);
+
+	if(object->handler) {
+
+		auto *handler = dynamic_cast<Python::Agent *>(object->handler);
+		if(handler) {
+
+			switch(String{PyUnicode_AsUTF8(attr)}.select("name","label","summary","url","icon",NULL)) {
+			case 0: // Name.
+				handler->rename(String{PyUnicode_AsUTF8(value)}.as_quark());
+				return 0;
+
+			case 1: // Label.
+				handler->label(String{PyUnicode_AsUTF8(value)}.as_quark());
+				return 0;
+
+			case 2: // Summary.
+				handler->summary(String{PyUnicode_AsUTF8(value)}.as_quark());
+				return 0;
+
+			case 3: // URL.
+				handler->url(String{PyUnicode_AsUTF8(value)}.as_quark());
+				return 0;
+
+			case 4: // Icon.
+				handler->icon(String{PyUnicode_AsUTF8(value)}.as_quark());
+				return 0;
+
+
+			}
+		}
+
+	}
+	
+	return PyObject_GenericSetAttr(self, attr, value);
+ }
+
  UDJAT_PRIVATE PyObject * agent_setup(PyObject *self, PyObject *args) {
 
 	debug(__FUNCTION__);

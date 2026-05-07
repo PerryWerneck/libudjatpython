@@ -46,10 +46,26 @@
 			Udjat::Abstract::Agent::failed(summary,body);
 		}
 
-		inline void rename(const char *name) {
-			Udjat::Abstract::Agent::rename(name);
+		inline void rename(const char *value) {
+			Udjat::Abstract::Agent::rename(value);
 		}
 
+		inline void label(const char *value) {
+			properties.label = value;
+		}
+
+		inline void summary(const char *value) {
+			properties.summary = value;
+		}
+
+		inline void url(const char *value) {
+			properties.url = value;
+		}
+
+		inline void icon(const char *value) {
+			properties.icon = value;
+		}
+	
 		bool setup(const XML::Node &node) override;
 
 	};
@@ -66,6 +82,7 @@
 
  UDJAT_PRIVATE int		  agent_init(PyObject *self, PyObject *args, PyObject *kwds);
  UDJAT_PRIVATE void		  agent_finalize(PyObject *self);
+ UDJAT_PRIVATE int 		  agent_setattr(PyObject *self, PyObject *attr, PyObject *value);
 
  UDJAT_PRIVATE PyObject * agent_setup(PyObject *self, PyObject *args);
  UDJAT_PRIVATE PyObject * agent_failed(PyObject *self, PyObject *args);
