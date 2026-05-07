@@ -29,18 +29,35 @@
  #ifdef __cplusplus
 
  #include <udjat/agent/abstract.h>
+ #include <private/tools.h>
 
  namespace Udjat::Python {
 
 	class UDJAT_API Agent : public Udjat::Abstract::Agent {
 	private:
 		PyObject * self = nullptr;
+		PyObject * value = nullptr;
+
 
 	public:
 		Agent(const char *pysource,const XML::Node &node);
 		Agent(const XML::Node &node);
 		Agent(const char *pysource);
 		~Agent() override;
+
+		bool refresh(bool ondemand) override;
+		std::string to_string() const noexcept override;
+
+		inline bool operator==(PyObject *obj) const {
+			return Python::compare(this->value,obj);
+		}
+
+		inline bool operator!=(PyObject *obj) const {
+			return !Python::compare(this->value,obj);
+		}
+
+		void set_value(PyObject *value);
+
 
 		inline void failed(const char *summary, const char *body) noexcept {
 			Udjat::Abstract::Agent::failed(summary,body);

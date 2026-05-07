@@ -76,6 +76,11 @@
 
 		lock_guard<recursive_mutex> lock(Python::guard);
 
+		if(value) {
+			Py_DecRef(value);
+			value = NULL;
+		}
+
 		if(self) {
 			pyAbstractObject *object = ((pyAbstractObject *) self);
 			object->handler = nullptr;
@@ -85,10 +90,79 @@
 
 	}
 
+	void Python::Agent::set_value(PyObject *value) {
+
+		lock_guard<recursive_mutex> lock(Python::guard);
+
+		if(Python::compare(this->value,value)) {
+			// Objects are equal
+			updated(false);
+			return;
+		}
+
+		// Objects are NOT equal
+
+		Py_DecRef(this->value);
+
+		this->value = value;
+		if(this->value) {
+			Py_IncRef(this->value);
+		}
+
+		Logger::Message{_("Agent value changed to {}"),to_string().c_str()}.info(name());
+
+		updated(true);
+
+	}
+
 	bool Python::Agent::setup(const XML::Node &node) {
 		return object_setup(self,name(),node);
 	}
 	
+	bool Python::Agent::refresh(bool ondemand) {
+	
+		lock_guard<recursive_mutex> lock(Python::guard);
+
+		try {
+
+			auto func = make_handle(PyObject_GetAttrString(self, "refresh"));
+			if(!func) {
+				return super::refresh(ondemand);
+			}
+
+			if(!PyCallable_Check(func.get())) {
+				throw logic_error(Logger::Message{_("The method {} is not callable on {}"),"refresh",Py_TYPE(self)->tp_name});
+			}
+
+			auto arg = make_handle(PyBool_FromLong(ondemand));
+			auto args = make_handle(PyTuple_Pack(1, arg.get()));
+
+			PyObject *response = PyObject_CallObject(func.get(), args.get());
+
+			if(!response) {
+				throw runtime_error(exception());
+			}
+
+			return response;
+
+		} catch(const std::exception &e) {
+
+			super::failed(_("Failed to refresh agent"),e);
+
+		} catch(...) {
+
+			super::failed(_("Failed to refresh agent"),_("Unexpected error"));
+
+		}
+
+		return true;
+
+	}
+
+	std::string Python::Agent::to_string() const noexcept {
+		return Python::to_string(value);
+	}
+
  }
 
  // ---------------------------------------------------------------------------------------
@@ -247,24 +321,28 @@
 		auto *handler = dynamic_cast<Python::Agent *>(object->handler);
 		if(handler) {
 
-			switch(String{PyUnicode_AsUTF8(attr)}.select("name","label","summary","url","icon",NULL)) {
-			case 0: // Name.
+			switch(String{PyUnicode_AsUTF8(attr)}.select("value","name","label","summary","url","icon",NULL)) {
+			case 0:	// Value.
+				handler->set_value(value);
+				return 0;
+
+			case 1: // Name.
 				handler->rename(String{PyUnicode_AsUTF8(value)}.as_quark());
 				return 0;
 
-			case 1: // Label.
+			case 2: // Label.
 				handler->label(String{PyUnicode_AsUTF8(value)}.as_quark());
 				return 0;
 
-			case 2: // Summary.
+			case 3: // Summary.
 				handler->summary(String{PyUnicode_AsUTF8(value)}.as_quark());
 				return 0;
 
-			case 3: // URL.
+			case 4: // URL.
 				handler->url(String{PyUnicode_AsUTF8(value)}.as_quark());
 				return 0;
 
-			case 4: // Icon.
+			case 5: // Icon.
 				handler->icon(String{PyUnicode_AsUTF8(value)}.as_quark());
 				return 0;
 

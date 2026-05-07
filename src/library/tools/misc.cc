@@ -106,5 +106,65 @@
 		
 	}
 
+	std::string Python::to_string(PyObject *value) noexcept {
+
+		if(!value) {
+			return "";
+		}
+
+		lock_guard<recursive_mutex> lock(Python::guard);
+
+		if (PyUnicode_Check(value)) {
+    		// It is a Python string (str)		
+			return PyUnicode_AsUTF8(value);
+		}
+
+		if (PyLong_Check(value)) {
+			// It is a Python int (or a subclass of int)
+			return std::to_string(PyLong_AsLong(value));
+		}
+
+		// It's an object, convert it.
+		auto pyStr = make_handle(PyObject_Str(value));
+		if(!pyStr) {
+			return "";
+		}
+
+		return PyUnicode_AsUTF8(pyStr.get());
+
+	}
+
+	bool Python::compare(PyObject *a, PyObject *b) {
+
+		if(a == b) {
+			return true;
+		}
+
+		if(!a || !b) {
+			return false;
+		}
+
+		lock_guard<recursive_mutex> lock(Python::guard);
+
+		int result = PyObject_RichCompareBool(a, b, Py_EQ);
+
+		if (result == 1) {
+			
+			// Objects are equal
+			return true;
+			
+		} else if (result == 0) {
+
+			// Objects are NOT equal
+			return false;
+
+		} else {
+
+			// An error occurred (result == -1)
+			throw runtime_error(Python::exception());
+
+		}
+		
+	}
 
  }

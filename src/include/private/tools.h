@@ -62,7 +62,11 @@
 	PyObject * call(int required_args, PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
 	PyObject * call(int required_args, PyObject *args, const std::function<void (PyObject *args)> &callback) noexcept;
 
+	std::string to_string(PyObject *value) noexcept;
+	bool compare(PyObject *a, PyObject *b);
+
+
  }
 
-
+ 
  
