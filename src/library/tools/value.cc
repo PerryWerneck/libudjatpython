@@ -17,6 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #include <Python.h>
+
  #ifdef HAVE_CONFIG_H
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
@@ -30,8 +32,6 @@
  #include <functional>
  #include <errno.h>
  #include <stdexcept>
-
- #include <Python.h>
 
  using namespace std;
 
@@ -162,4 +162,43 @@
 		return NULL;
 	}
 
+	Udjat::Value & Python::get(Udjat::Value &value, PyObject *obj) noexcept {
+
+		if(!obj) {
+
+			value = "";
+
+		} else {
+
+			lock_guard<recursive_mutex> lock(Python::guard);
+
+			if (PyUnicode_Check(obj)) {
+
+				// It is a Python string (str)		
+				value = PyUnicode_AsUTF8(obj);
+
+			} else if (PyLong_Check(obj)) {
+
+				// It is a Python int (or a subclass of int)
+				value = PyLong_AsLong(obj);
+
+			} else {
+
+				// It's an object, convert it.
+				auto pyStr = make_handle(PyObject_Str(obj));
+				if(pyStr) {
+					value = PyUnicode_AsUTF8(pyStr.get());
+				} else {
+					value = "";
+				}
+
+			}
+
+		}
+
+		return value;
+
+	}
+
  }
+

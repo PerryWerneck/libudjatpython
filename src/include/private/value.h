@@ -35,6 +35,8 @@
 	/// @return Python Object.
 	PyObject * ObjectFactory(const Udjat::Value &value) noexcept;
 
+	Udjat::Value & get(Udjat::Value &value, PyObject *obj) noexcept;
+
  }
 
 

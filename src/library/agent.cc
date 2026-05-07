@@ -30,6 +30,7 @@
  #include <private/agent.h>
  #include <private/tools.h>
  #include <private/xml.h>
+ #include <private/value.h>
  #include <udjat/tools/xml.h>
  #include <udjat/tools/memory.h>
  #include <string>
@@ -90,6 +91,14 @@
 
 	}
 
+	std::shared_ptr<Abstract::State> Python::Agent::computeState() {
+		throw runtime_error("Incomplete");
+	}
+
+	Udjat::Value & Python::Agent::get(Udjat::Value &value) const {
+		return Python::get(value,this->value);
+	}
+
 	void Python::Agent::set_value(PyObject *value) {
 
 		lock_guard<recursive_mutex> lock(Python::guard);
@@ -113,6 +122,16 @@
 
 		updated(true);
 
+	}
+
+	bool Python::Agent::assign(const char *value) {
+		return false;
+	}
+
+	std::shared_ptr<Abstract::State> Python::Agent::StateFactory(const XML::Node &node) {
+		auto state = make_shared<Python::State>(node);
+		states.push_back(state);
+		return state;
 	}
 
 	bool Python::Agent::setup(const XML::Node &node) {

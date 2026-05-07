@@ -30,6 +30,8 @@
 
  #include <udjat/agent/abstract.h>
  #include <private/tools.h>
+ #include <private/state.h>
+ #include <udjat/tools/value.h>
 
  namespace Udjat::Python {
 
@@ -38,6 +40,13 @@
 		PyObject * self = nullptr;
 		PyObject * value = nullptr;
 
+		/// @brief Agent states.
+		std::vector<std::shared_ptr<Python::State>> states;
+
+	protected:
+
+		std::shared_ptr<Abstract::State> computeState() override;
+		Udjat::Value & get(Udjat::Value &value) const override;
 
 	public:
 		Agent(const char *pysource,const XML::Node &node);
@@ -46,7 +55,14 @@
 		~Agent() override;
 
 		bool refresh(bool ondemand) override;
+
 		std::string to_string() const noexcept override;
+
+		bool assign(const char *value) override;
+
+		std::shared_ptr<Abstract::State> StateFactory(const XML::Node &node) override;
+	
+		void set_value(PyObject *value);
 
 		inline bool operator==(PyObject *obj) const {
 			return Python::compare(this->value,obj);
@@ -55,9 +71,6 @@
 		inline bool operator!=(PyObject *obj) const {
 			return !Python::compare(this->value,obj);
 		}
-
-		void set_value(PyObject *value);
-
 
 		inline void failed(const char *summary, const char *body) noexcept {
 			Udjat::Abstract::Agent::failed(summary,body);
