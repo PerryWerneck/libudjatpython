@@ -50,6 +50,10 @@
 
 		std::string value() const override;
 
+		inline bool equal(PyObject *obj) const {
+			return Python::compare(this->current_value,obj);
+		}
+
 		inline bool operator==(PyObject *obj) const {
 			return Python::compare(this->current_value,obj);
 		}

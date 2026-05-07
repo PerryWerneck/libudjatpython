@@ -92,7 +92,13 @@
 	}
 
 	std::shared_ptr<Abstract::State> Python::Agent::computeState() {
-		throw runtime_error("Incomplete");
+		for(auto state : states) {
+			lock_guard<recursive_mutex> lock(Python::guard);
+			if(state->equal(value)) {
+				return state;
+			}
+		}
+		return super::computeState();
 	}
 
 	Udjat::Value & Python::Agent::get(Udjat::Value &value) const {
