@@ -41,7 +41,7 @@
 
 	try {
 
-		return callback(get_private<Abstract::Object>(self));
+		return callback(*object_get_private<Abstract::Object>(self));
 
 	} catch(const std::exception &e) {
 
@@ -67,14 +67,31 @@
 
  }
 
+ UDJAT_PRIVATE PyObject	* object_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
+
+	debug(__FUNCTION__);
+	if (PyErr_Occurred()) {
+        return NULL; // Exit early if something else already failed
+    }
+
+	PyObject *self = type->tp_alloc(type,0);
+	((pyAbstractObject *) self)->pvt = new ObjectPrivate();
+
+ }
+
+ UDJAT_PRIVATE void	object_dealloc(PyObject * self) {
+	pyAbstractObject *object = ((pyAbstractObject *) self);
+	if(object && object->pvt) {
+		delete object->pvt;
+		object->pvt = NULL;
+	}
+ }
+
+
  UDJAT_PRIVATE int object_setattr(PyObject *self, PyObject *attr, PyObject *value) {
 	
-	pyAbstractObject *object = ((pyAbstractObject *) self);
-	if(object->handler) {
-		auto *handler = dynamic_cast<Abstract::Object *>(object->handler);
-		if(handler && handler->setProperty(PyUnicode_AsUTF8(attr),PyUnicode_AsUTF8(value))) {
-			return 0;
-		}
+	if(object_has_private(self) && object_get_private<Abstract::Object>(self)->setProperty(PyUnicode_AsUTF8(attr),PyUnicode_AsUTF8(value))) {
+		return 0;
 	}
 	
 	return PyObject_GenericSetAttr(self, attr, value);
@@ -86,21 +103,15 @@
 	const char *attrname = PyUnicode_AsUTF8(attr);
 	debug(__FUNCTION__,"(",attrname,")");
 
-	if(attrname && *attrname != '_' && ((pyAbstractObject *) self)->handler) {
+	if(attrname && *attrname != '_' && object_has_private(self)) {
 
 		try {
 
-			pyAbstractObject *object = ((pyAbstractObject *) self);
-			if(object->handler) {
-				auto *handler = dynamic_cast<Abstract::Object *>(object->handler);
-				if(handler) {
-					string response;
-					if(handler->getProperty(attrname,response)) {
-						return PyUnicode_FromString(
-							response.c_str()
-						);
-					}
-				}
+			string response;
+			if(object_get_private<Abstract::Object>(self)->getProperty(attrname,response)) {
+				return PyUnicode_FromString(
+					response.c_str()
+				);
 			}
 
 		} catch(const std::exception &e) {
@@ -115,16 +126,6 @@
 
 		}
 
-		/*
-		return call(self,[attrname](Abstract::Object &object) -> PyObject * {
-
-			return PyUnicode_FromString(
-				object.getProperty(attrname).c_str()
-			);
-
-		});
-	*/
-	
 	}
 
 	return PyObject_GenericGetAttr(self, attr);
@@ -141,10 +142,9 @@
 	try {
 
 		const char *name = "python";
-		pyAbstractObject *object = ((pyAbstractObject *) self);
-		
-		if(object->handler) {
-			name = object->handler->name();
+
+		if(object_has_private(self)) {
+			name = object_get_private<Abstract::Object>(self)->name();
 		}
 		
 		const char *msg = "";

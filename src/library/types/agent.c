@@ -114,8 +114,8 @@
 	.tp_itemsize = 0,
 	.tp_flags = Py_TPFLAGS_HAVE_FINALIZE|Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,
 
-	.tp_new = agent_alloc,
-	.tp_dealloc = agent_dealloc,
+	.tp_new = object_alloc,
+	.tp_dealloc = object_dealloc,
 
 	.tp_init = agent_init,
 	.tp_finalize = agent_finalize,

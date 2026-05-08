@@ -32,19 +32,21 @@
 	#include <udjat/tools/xml.h>
 	#include <udjat/tools/logger.h>
 	#include <stdexcept>
+	#include <memory>
  #endif // __cplusplus
+
+ typedef struct _ObjectPrivate ObjectPrivate;
 
  typedef struct {	
 	PyObject_HEAD;
- #ifdef __cplusplus
-	Udjat::Abstract::Object *handler;
- #else
-	 void *handler;
- #endif // __cplusplus
-
+ 	ObjectPrivate *pvt;
  } pyAbstractObject;
 
  #ifdef __cplusplus
+
+	struct _ObjectPrivate {
+		std::shared_ptr<Abstract::Object> object;
+	};
 
 	UDJAT_PRIVATE bool object_setup(PyObject *self, const char *name, const Udjat::XML::Node &node);
 	
@@ -82,14 +84,23 @@
 		return PyObject_GenericSetAttr(self, attr, value);
 	}
 
-	template <class T>
-	T & get_private(PyObject *self) {
+	inline bool object_has_private(PyObject *self) noexcept {
 		pyAbstractObject *object = ((pyAbstractObject *) self);
-		auto *result = dynamic_cast<T *>(object->handler);
-		if(!result) {
-			throw std::logic_error(_("The object is invalid at this context"));
+		return !(object && object->pvt);
+	}
+
+	inline bool object_is_clear(PyObject *self) noexcept {
+		pyAbstractObject *object = ((pyAbstractObject *) self);
+		return !(object && object->pvt);
+	}
+
+	template <class T>
+	std::shared_ptr<T> & object_get_private(PyObject *self) {
+		pyAbstractObject *object = ((pyAbstractObject *) self);
+		if(object->pvt) {
+			return std::dynamic_pointer_cast<T>(object->pvt->object);
 		}
-		return *result;
+		throw std::logic_error(_("The object is empty"))
 	}
 
  #endif // __cplusplus

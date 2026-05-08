@@ -61,18 +61,13 @@
 	}
 
 	Python::State::~State() {
-		if(current_value) {
-			lock_guard<recursive_mutex> lock(Python::guard);
-			Py_DecRef(current_value);
-			current_value = NULL;
-		}
 	}
 
 	std::string Python::State::value() const {
 		return Python::to_string(current_value);
 	}
 
-	std::shared_ptr<PyObject> Python::State::factory(Abstract::State *st) {
+	std::shared_ptr<PyObject> Python::State::factory(std::shared_ptr<Abstract::State> st) {
 
 		lock_guard<recursive_mutex> lock(guard);
 
@@ -85,10 +80,7 @@
 		}
 
 		// Store State in the object.
-		{
-			pyAbstractObject *native = ((pyAbstractObject *) state.get());
-			native->handler = dynamic_cast<Udjat::Abstract::Object *>(st);
-		}
+		((pyAbstractObject *) state.get())->pvt->object = st;
 
 		return state;
 	}
@@ -99,26 +91,6 @@
  // Python bindings
  // ---------------------------------------------------------------------------------------
 
- UDJAT_PRIVATE PyObject	* state_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
-
-	debug(__FUNCTION__);
-	if (PyErr_Occurred()) {
-        return NULL; // Exit early if something else already failed
-    }
-
-	PyObject *self = type->tp_alloc(type,0);
-
-	if(self) {
-		((pyAbstractObject *) self)->handler = NULL;
-	}
-
-	return self;
- }
-
- UDJAT_PRIVATE void state_dealloc(PyObject * self) {
-	Py_TYPE(self)->tp_free(self);
- } 
- 
  UDJAT_PRIVATE int state_init(PyObject *self, PyObject *args, PyObject *kwds) {
 
 	debug(__FUNCTION__," ",Py_TYPE(self)->tp_name, " with ",PyTuple_Size(args)," argument(s)");
@@ -139,16 +111,22 @@
 	};
 
 	pyAbstractObject *object = ((pyAbstractObject *) self);
+	if(!object->pvt->object) {
+		object->pvt->object = make_shared<State>(args);
+	}
 
 	return 0;
 
+ }
+
+ UDJAT_PRIVATE void state_finalize(PyObject *self) {	
  }
 
  static PyObject * call(PyObject *self,const std::function<PyObject *(Udjat::Abstract::State &state)> &callback) {
 
 	try {
 
-		return callback(get_private<Udjat::Abstract::State>(self));
+		return callback(*object_get_private<Udjat::Abstract::State>(self));
 
 	} catch(const std::exception &e) {
 

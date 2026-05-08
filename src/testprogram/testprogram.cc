@@ -53,9 +53,8 @@
 	*/
 
 
-	Python::Agent agent{"testagent"};
-	agent.setup(XML::Node());
-
+	auto agent = Python::Agent::Factory::AgentFactory("testagent");
+	agent->setup(XML::Node());
 
 	/*
 	return loader(argc,argv,[](Application &app) -> int {

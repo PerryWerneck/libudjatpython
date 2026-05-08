@@ -36,23 +36,24 @@
  namespace Udjat::Python {
 
 	class UDJAT_API Agent : public Udjat::Abstract::Agent {
-	private:
-		PyObject * self = nullptr;
-		PyObject * value = nullptr;
-
-		/// @brief Agent states.
-		std::vector<std::shared_ptr<Python::State>> states;
-
 	protected:
 
 		std::shared_ptr<Abstract::State> computeState() override;
 		Udjat::Value & get(Udjat::Value &value) const override;
 
 	public:
-		Agent(const char *pysource,const XML::Node &node);
-		Agent(const XML::Node &node);
-		Agent(const char *pysource);
-		~Agent() override;
+
+		class UDJAT_API Factory : public Abstract::Agent::Factory {
+		public:
+			Factory(const char *name = "python");
+			~Factory() override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const XML::Node &node) const override;
+
+			static std::shared_ptr<Abstract::Agent> AgentFactory(const char *pysource, const XML::Node &node);
+			static std::shared_ptr<Abstract::Agent> AgentFactory(const char *pysource);
+		};
+
+		friend class Factory;
 
 		inline operator PyObject *() const noexcept {
 			return value;
@@ -102,6 +103,16 @@
 	
 		bool setup(const XML::Node &node) override;
 
+	private:
+		PyObject * self = nullptr;
+		PyObject * value = nullptr;
+
+		/// @brief Agent states.
+		std::vector<std::shared_ptr<Python::State>> states;
+
+		Agent(const char *pysource,const XML::Node &node);
+		~Agent() override;
+
 	};
 
  };
@@ -110,9 +121,6 @@
  #endif // __cplusplus
 
  extern UDJAT_PRIVATE PyTypeObject agent_type;
-
- UDJAT_PRIVATE PyObject	* agent_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds);
- UDJAT_PRIVATE void		  agent_dealloc(PyObject * self);
 
  UDJAT_PRIVATE int		  agent_init(PyObject *self, PyObject *args, PyObject *kwds);
  UDJAT_PRIVATE void		  agent_finalize(PyObject *self);

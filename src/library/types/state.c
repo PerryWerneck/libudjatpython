@@ -75,8 +75,8 @@
 	.tp_itemsize = 0,
 	.tp_flags = Py_TPFLAGS_HAVE_FINALIZE|Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,
 
-	.tp_new = state_alloc,
-	.tp_dealloc = state_dealloc,
+	.tp_new = object_alloc,
+	.tp_dealloc = object_dealloc,
 
 	.tp_init = state_init,
 	.tp_finalize = state_finalize,

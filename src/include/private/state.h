@@ -54,7 +54,7 @@
 		State(const XML::Node &node, const Type type = Type::String);
 		~State() override;
 
-		static std::shared_ptr<PyObject> factory(Abstract::State *state);
+		static std::shared_ptr<PyObject> factory(std::shared_ptr<Abstract::State> state);
 
 		std::string value() const override;
 
@@ -83,9 +83,6 @@
  #endif // __cplusplus
 
  extern UDJAT_PRIVATE PyTypeObject state_type;
-
- UDJAT_PRIVATE PyObject	* state_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds);
- UDJAT_PRIVATE void		  state_dealloc(PyObject * self);
 
  UDJAT_PRIVATE int		  state_init(PyObject *self, PyObject *args, PyObject *kwds);
  UDJAT_PRIVATE void		  state_finalize(PyObject *self);

@@ -46,6 +46,26 @@
 
  namespace Udjat {
 
+	Python::Agent::Factory::Factory(const char *name) : Abstract::Agent::Factory{name} {
+	}
+
+	Python::Agent::Factory::~Factory() {
+	}
+
+	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const char *pysource, const XML::Node &node) {
+		auto agent = make_shared<Python::Agent>(pysource,node);
+		((pyAbstractObject *) agent->self)->pvt->object = dynamic_pointer_cast<Abstract::Object>(agent);
+		return agent;
+	}
+
+	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const char *pysource) {
+		return AgentFactory(pysource,XML::Node{});
+	}
+
+	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const XML::Node &node) const {
+		return AgentFactory(XML::AttributeFactory(node,"src").as_string(),node);
+	}
+
 	Python::Agent::Agent(const char *pysource,const XML::Node &node) 
 		: self{Python::factory(pysource,"AgentFactory",node)} {
 
@@ -53,43 +73,15 @@
 
 		debug("Initializing ",Py_TYPE(self)->tp_name);
 
-#ifdef DEBUG
-		printf("\nAgent self at %s(): %p (handler=%p)\n",__FUNCTION__,self,((pyAbstractObject *) self)->handler);
-#endif // DEBUG
-
 		if(!PyObject_IsInstance(self, (PyObject *)&agent_type)) {
 			Py_DecRef(self);
 			self = NULL;
 			throw logic_error(_("The object returned from factory method is not an agent"));
 		}
 
-		pyAbstractObject *object = ((pyAbstractObject *) self);
-		object->handler = this;
-
-	}
-
-	Python::Agent::Agent(const XML::Node &node) : Agent{XML::AttributeFactory(node,"src").as_string(),node} {
-	}
-
-	Python::Agent::Agent(const char *pysource) : Agent{pysource,XML::Node{}} {
 	}
 
 	Python::Agent::~Agent() {
-
-		lock_guard<recursive_mutex> lock(Python::guard);
-
-		if(value) {
-			Py_DecRef(value);
-			value = NULL;
-		}
-
-		if(self) {
-			pyAbstractObject *object = ((pyAbstractObject *) self);
-			object->handler = nullptr;
-			Py_DecRef(self);
-			self = NULL;
-		}
-
 	}
 
 	std::shared_ptr<Abstract::State> Python::Agent::computeState() {
@@ -195,30 +187,6 @@
  // Python bindings
  // ---------------------------------------------------------------------------------------
 
- UDJAT_PRIVATE PyObject	* agent_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
-
-	debug(__FUNCTION__);
-	if (PyErr_Occurred()) {
-        return NULL; // Exit early if something else already failed
-    }
-
-	PyObject *self = type->tp_alloc(type,0);
-
-	if(self) {
-		((pyAbstractObject *) self)->handler = NULL;
-	}
-
-#ifdef DEBUG
-	printf("\nAgent self at %s: %p (handler=%p)\n",__FUNCTION__,self,((pyAbstractObject *) self)->handler);
-#endif // DEBUG
-
-	return self;
- }
-
- UDJAT_PRIVATE void agent_dealloc(PyObject * self) {
-	Py_TYPE(self)->tp_free(self);
- } 
- 
  UDJAT_PRIVATE int agent_init(PyObject *self, PyObject *args, PyObject *kwds) {
 
 	debug(__FUNCTION__," ",Py_TYPE(self)->tp_name, " with ",PyTuple_Size(args)," argument(s)");
@@ -235,7 +203,7 @@
 
 	try {
 
-		return callback(get_private<Udjat::Python::Agent>(self));
+		return callback(*object_get_private<Udjat::Python::Agent>(self));
 
 	} catch(const std::exception &e) {
 
@@ -340,40 +308,34 @@
 
  UDJAT_PRIVATE int agent_setattr(PyObject *self, PyObject *attr, PyObject *value) {
 	
-	pyAbstractObject *object = ((pyAbstractObject *) self);
+	if(object_has_private(self)) {
 
-	if(object->handler) {
+		auto agent = object_get_private<Python::Agent>(self);
+		switch(String{PyUnicode_AsUTF8(attr)}.select("value","name","label","summary","url","icon",NULL)) {
+		case 0:	// Value.
+			agent->set_value(value);
+			return 0;
 
-		auto *handler = dynamic_cast<Python::Agent *>(object->handler);
-		if(handler) {
+		case 1: // Name.
+			agent->rename(String{PyUnicode_AsUTF8(value)}.as_quark());
+			return 0;
 
-			switch(String{PyUnicode_AsUTF8(attr)}.select("value","name","label","summary","url","icon",NULL)) {
-			case 0:	// Value.
-				handler->set_value(value);
-				return 0;
+		case 2: // Label.
+			agent->label(String{PyUnicode_AsUTF8(value)}.as_quark());
+			return 0;
 
-			case 1: // Name.
-				handler->rename(String{PyUnicode_AsUTF8(value)}.as_quark());
-				return 0;
+		case 3: // Summary.
+			agent->summary(String{PyUnicode_AsUTF8(value)}.as_quark());
+			return 0;
 
-			case 2: // Label.
-				handler->label(String{PyUnicode_AsUTF8(value)}.as_quark());
-				return 0;
+		case 4: // URL.
+			agent->url(String{PyUnicode_AsUTF8(value)}.as_quark());
+			return 0;
 
-			case 3: // Summary.
-				handler->summary(String{PyUnicode_AsUTF8(value)}.as_quark());
-				return 0;
+		case 5: // Icon.
+			agent->icon(String{PyUnicode_AsUTF8(value)}.as_quark());
+			return 0;
 
-			case 4: // URL.
-				handler->url(String{PyUnicode_AsUTF8(value)}.as_quark());
-				return 0;
-
-			case 5: // Icon.
-				handler->icon(String{PyUnicode_AsUTF8(value)}.as_quark());
-				return 0;
-
-
-			}
 		}
 
 	}
@@ -386,22 +348,21 @@
 	const char *attrname = PyUnicode_AsUTF8(attr);
 	debug(__FUNCTION__,"(",attrname,")");
 
-	if(attrname && *attrname != '_' && ((pyAbstractObject *) self)->handler) {
+	if(attrname && *attrname != '_' && object_has_private(self)) {
 
 		try {
 
-			auto &agent = get_private<Python::Agent>(self);
-
+			auto agent = object_get_private<Python::Agent>(self);
 			if(!strcmp(attrname,"value")) {
-				return (PyObject *) agent;
+				return (PyObject *) *agent;
 			}
 
 			if(!strcmp(attrname,"state")) {
-				return Python::State::factory(agent.state().get()).get();
+				return Python::State::factory(agent->state().get()).get();
 			}
 
 			string response;
-			if(agent.getProperty(attrname,response)) {
+			if(agent->getProperty(attrname,response)) {
 				return PyUnicode_FromString(
 					response.c_str()
 				);
