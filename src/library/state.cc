@@ -123,11 +123,24 @@
 
 	debug(__FUNCTION__," ",Py_TYPE(self)->tp_name, " with ",PyTuple_Size(args)," argument(s)");
 
+	class State : public Python::State {
+	private:
+
+	public:
+		State(PyObject *args) {
+
+		}
+
+		~State() override {
+
+		}
+
+
+	};
+
+	pyAbstractObject *object = ((pyAbstractObject *) self);
+
 	return 0;
-
- }
-
- UDJAT_PRIVATE void state_finalize(PyObject *self) {
 
  }
 

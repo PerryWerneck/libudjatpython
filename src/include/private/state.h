@@ -29,14 +29,20 @@
  #ifdef __cplusplus
 
  #include <udjat/agent/abstract.h>
+ #include <udjat/agent/state.h>
  #include <private/tools.h>
  #include <cstdint>
+ #include <string>
 
  namespace Udjat::Python {
 
 	class UDJAT_API State : public Udjat::Abstract::State {
 	private:
 		PyObject * current_value = nullptr;
+
+	protected:
+		State() : Udjat::Abstract::State{"Python"} {		
+		}
 
 	public:
 
