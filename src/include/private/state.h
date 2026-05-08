@@ -48,6 +48,8 @@
 		State(const XML::Node &node, const Type type = Type::String);
 		~State() override;
 
+		static std::shared_ptr<PyObject> factory(Abstract::State *state);
+
 		std::string value() const override;
 
 		inline bool equal(PyObject *obj) const {

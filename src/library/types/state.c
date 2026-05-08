@@ -22,7 +22,7 @@
  #endif // HAVE_CONFIG_H
 
  #include <private/object.h>
- #include <private/agent.h>
+ #include <private/state.h>
  #include <Python.h>
 
  static PyMethodDef methods[] = {
@@ -50,79 +50,40 @@
 		.ml_flags = METH_VARARGS,
 		.ml_doc =	"Write informational message to log file\n"
     },
-	{
-		.ml_name = "failed",
-		.ml_meth = (PyCFunction) agent_failed,
-		.ml_flags = METH_VARARGS,
-		.ml_doc =	"Set agent to failed state\n\n"
-					"failed(message): Set message for failed state\n"
-    },
-    {
-		.ml_name = "get_by_path",
-		.ml_meth = (PyCFunction) agent_get_by_path,
-		.ml_flags = METH_VARARGS,
-		.ml_doc =	"Get agent by path\n\n"
-					"get_by_path(path): Get agent by path\n"
-    
-    },
-    {
-		.ml_name = "invalidate",
-		.ml_meth = (PyCFunction) agent_invalidate,
-		.ml_flags = METH_VARARGS,
-		.ml_doc =	"Schedule agent update\n\n"
-					"invalidate(seconds): Schedule agent update for 'seconds'\n"
-    
-    },
-    {
-		.ml_name = "start",
-		.ml_meth = (PyCFunction) agent_start,
-		.ml_flags = METH_VARARGS,
-		.ml_doc =	"Start agent\n"
-    },
-    {
-		.ml_name = "stop",
-		.ml_meth = (PyCFunction) agent_stop,
-		.ml_flags = METH_VARARGS,
-		.ml_doc =	"Stop agent\n"
-    },
-    {
-		.ml_name = "refresh",
-		.ml_meth = (PyCFunction) agent_refresh,
-		.ml_flags = METH_VARARGS,
-		.ml_doc =	"Refresh agent\n"
-    },
+	/*
     {
 		.ml_name = "setup",
-		.ml_meth = (PyCFunction) agent_setup,
+		.ml_meth = (PyCFunction) state_setup,
 		.ml_flags = METH_VARARGS,
 		.ml_doc =	"Setup agent from properties object\n\n"
 					"setup(properties): Apply 'properties' on agent\n"
     },
+	*/
 
     {
     	NULL
 	}
  };
 
- PyTypeObject agent_type = {
+ PyTypeObject state_type = {
 
 	PyVarObject_HEAD_INIT(NULL, 0)
 
-	.tp_name = "udjat.Agent",
-	.tp_doc = "UDJAT Agent Object",
+	.tp_name = "udjat.State",
+	.tp_doc = "UDJAT State Object",
 	.tp_basicsize = sizeof(pyAbstractObject),
 	.tp_itemsize = 0,
 	.tp_flags = Py_TPFLAGS_HAVE_FINALIZE|Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,
 
-	.tp_new = agent_alloc,
-	.tp_dealloc = agent_dealloc,
+	.tp_new = state_alloc,
+	.tp_dealloc = state_dealloc,
 
-	.tp_init = agent_init,
-	.tp_finalize = agent_finalize,
+	.tp_init = state_init,
+	.tp_finalize = state_finalize,
 
 	.tp_str = object_str,
-	.tp_getattro = agent_getattr,
-	.tp_setattro = agent_setattr,
+	.tp_getattro = object_getattr,
+	.tp_setattro = object_setattr,
 
 	.tp_methods = methods,
 

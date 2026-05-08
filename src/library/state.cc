@@ -72,6 +72,27 @@
 		return Python::to_string(current_value);
 	}
 
+	std::shared_ptr<PyObject> Python::State::factory(Abstract::State *st) {
+
+		lock_guard<recursive_mutex> lock(guard);
+
+		debug("Building state...");
+		auto state = make_handle(PyObject_CallFunction((PyObject*)&state_type, "O", Py_None));
+
+		if(!state) {
+			debug("Failed building python state");
+			throw runtime_error(exception());
+		}
+
+		// Store State in the object.
+		{
+			pyAbstractObject *native = ((pyAbstractObject *) state.get());
+			native->handler = dynamic_cast<Udjat::Abstract::Object *>(st);
+		}
+
+		return state;
+	}
+
  }
 
  // ---------------------------------------------------------------------------------------
@@ -94,7 +115,7 @@
 	return self;
  }
 
- UDJAT_PRIVATE void state_alloc(PyObject * self) {
+ UDJAT_PRIVATE void state_dealloc(PyObject * self) {
 	Py_TYPE(self)->tp_free(self);
  } 
  

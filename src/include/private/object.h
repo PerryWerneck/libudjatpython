@@ -53,6 +53,7 @@
 
  UDJAT_PRIVATE PyObject * object_str(PyObject *self);
  UDJAT_PRIVATE PyObject * object_getattr(PyObject *self, PyObject *attr);
+ UDJAT_PRIVATE int 		  object_setattr(PyObject *self, PyObject *attr, PyObject *value);
  UDJAT_PRIVATE PyObject * object_trace(PyObject *self, PyObject *msg);
  UDJAT_PRIVATE PyObject * object_error(PyObject *self, PyObject *msg);
  UDJAT_PRIVATE PyObject * object_warning(PyObject *self, PyObject *msg);

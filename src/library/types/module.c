@@ -26,6 +26,7 @@
  #include <udjat/tools/intl.h>
  #include <private/modules.h>
  #include <private/agent.h>
+ #include <private/state.h>
  #include <private/xml.h>
 
  static void cleanup(PyObject *module);
@@ -102,18 +103,31 @@ PyMODINIT_FUNC PyModule_Initialize(void)
         	return NULL;
 		}
 
-		if (PyType_Ready(&agent_type) < 0) {
-        	Py_DECREF(module);
-			PyErr_SetString(PyExc_RuntimeError, _("Agent type is not ready"));
-        	return NULL;
+		static const struct {
+			const char *name;
+			PyTypeObject *type;
+		} objects[] = {
+			{ "Agent", &agent_type },
+			{ "State", &state_type },
+		};
+
+		for (size_t i = 0; i < sizeof(objects) / sizeof(objects[0]); i++) {
+
+			if (PyType_Ready(objects[i].type) < 0) {
+				Py_DECREF(module);
+				PyErr_SetString(PyExc_RuntimeError, _("Required object type is not ready"));
+				return NULL;
+			}
+
+			Py_INCREF(objects[i].type); // AddObject steals a reference
+			if (PyModule_AddObject(module, objects[i].name, (PyObject *)objects[i].type) < 0) {
+				Py_DECREF(module);
+				PyErr_SetString(PyExc_RuntimeError, _("Failed inserting required object type"));
+				return NULL;
+			}
+
 		}
 
-		Py_INCREF(&agent_type); // AddObject steals a reference
-    	if (PyModule_AddObject(module, "agent", (PyObject *)&agent_type) < 0) {
-        	Py_DECREF(module);
-			PyErr_SetString(PyExc_RuntimeError, _("Failed inserting agent type"));
-        	return NULL;
-		}
     }
 
     return module;

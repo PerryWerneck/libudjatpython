@@ -67,6 +67,20 @@
 
  }
 
+ UDJAT_PRIVATE int object_setattr(PyObject *self, PyObject *attr, PyObject *value) {
+	
+	pyAbstractObject *object = ((pyAbstractObject *) self);
+	if(object->handler) {
+		auto *handler = dynamic_cast<Abstract::Object *>(object->handler);
+		if(handler && handler->setProperty(PyUnicode_AsUTF8(attr),PyUnicode_AsUTF8(value))) {
+			return 0;
+		}
+	}
+	
+	return PyObject_GenericSetAttr(self, attr, value);
+ }
+
+
  UDJAT_PRIVATE PyObject * object_getattr(PyObject *self, PyObject *attr) {
 
 	const char *attrname = PyUnicode_AsUTF8(attr);
@@ -76,11 +90,17 @@
 
 		try {
 
-			string response;
-			if(get_private<Abstract::Object>(self).getProperty(attrname,response)) {
-				return PyUnicode_FromString(
-					response.c_str()
-				);
+			pyAbstractObject *object = ((pyAbstractObject *) self);
+			if(object->handler) {
+				auto *handler = dynamic_cast<Abstract::Object *>(object->handler);
+				if(handler) {
+					string response;
+					if(handler->getProperty(attrname,response)) {
+						return PyUnicode_FromString(
+							response.c_str()
+						);
+					}
+				}
 			}
 
 		} catch(const std::exception &e) {

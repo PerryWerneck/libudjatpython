@@ -143,6 +143,7 @@ py_modules = [
   'src/library/types/agent.c',
   'src/library/types/xml.c',
   'src/library/types/module.c',
+  'src/library/types/state.c',
 ]
 
 module_src = [

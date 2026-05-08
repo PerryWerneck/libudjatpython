@@ -71,14 +71,6 @@
 			throw runtime_error("Error: could not extend in-built modules table");
 		}
 
-		//if (PyImport_AppendInittab("logger", PyInit_logger) == -1) {
-		//	throw runtime_error("Error: could not extend in-built modules table");
-		//}
-
-		//if (PyImport_AppendInittab("config", PyInit_config) == -1) {
-		//	throw runtime_error("Error: could not extend in-built modules table");
-		//}
-
 		// Initialize the interpreter from this config
 		status = Py_InitializeFromConfig(&config);
 		if (PyStatus_Exception(status)) {

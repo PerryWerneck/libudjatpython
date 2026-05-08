@@ -30,6 +30,7 @@
  #include <private/agent.h>
  #include <private/tools.h>
  #include <private/xml.h>
+ #include <private/state.h>
  #include <private/value.h>
  #include <udjat/tools/xml.h>
  #include <udjat/tools/memory.h>
@@ -377,7 +378,7 @@
 
 	}
 	
-	return PyObject_GenericSetAttr(self, attr, value);
+	return object_setattr(self, attr, value);
  }
 
  UDJAT_PRIVATE PyObject * agent_getattr(PyObject *self, PyObject *attr) {
@@ -393,6 +394,10 @@
 
 			if(!strcmp(attrname,"value")) {
 				return (PyObject *) agent;
+			}
+
+			if(!strcmp(attrname,"state")) {
+				return Python::State::factory(agent.state().get()).get();
 			}
 
 			string response;
