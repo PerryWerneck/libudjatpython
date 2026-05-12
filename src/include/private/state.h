@@ -54,7 +54,10 @@
 		State(const XML::Node &node, const Type type = Type::String);
 		~State() override;
 
-		static std::shared_ptr<PyObject> factory(std::shared_ptr<Abstract::State> state);
+		/// @brief Build Python state object reflecting a shared_ptr
+		/// @param state The state to convert into a python object.
+		/// @return The python object for the state.
+		static PyObject * factory(std::shared_ptr<Abstract::State> state);
 
 		std::string value() const override;
 

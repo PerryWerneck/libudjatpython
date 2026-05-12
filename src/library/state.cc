@@ -29,6 +29,7 @@
  #include <private/object.h>
  #include <private/state.h>
  #include <private/tools.h>
+ #include <udjat/agent/state.h>
  #include <cstdint>
 
  using namespace Udjat;
@@ -68,12 +69,12 @@
 		return Python::to_string(current_value);
 	}
 
-	std::shared_ptr<PyObject> Python::State::factory(std::shared_ptr<Abstract::State> st) {
+	PyObject * Python::State::factory(std::shared_ptr<Abstract::State> st) {
 
 		lock_guard<recursive_mutex> lock(guard);
 
-		debug("Building state...");
-		auto state = make_handle(PyObject_CallFunction((PyObject*)&state_type, "O", Py_None));
+		debug("Building state from native object...");
+		auto state = PyObject_CallFunction((PyObject*)&state_type, "O", Py_None);
 
 		if(!state) {
 			debug("Failed building python state");
@@ -81,7 +82,7 @@
 		}
 
 		// Store State in the object.
-		((pyAbstractObject *) state.get())->pvt->object = st;
+		((pyAbstractObject *) state)->pvt->object = st;
 
 		return state;
 	}
@@ -102,9 +103,9 @@
 	public:
 		State(PyObject *args) {
 		
-			debug("Initializing state from ",Py_TYPE(args)->tp_name);
 
-	}
+
+		}
 
 		~State() override {
 		}
@@ -112,16 +113,28 @@
 
 	};
 
-	pyAbstractObject *object = ((pyAbstractObject *) self);
-	if(!object->pvt->object) {
-		object->pvt->object = make_shared<State>(args);
+	if(PyTuple_Check(args) && PyTuple_Size(args) == 1 && !(Py_IsNone(PyTuple_GetItem(args, 0)))) {
+
+		debug("Building internal object with passed parameters");
+
+		pyAbstractObject *object = ((pyAbstractObject *) self);
+		if(!object->pvt->object) {
+			object->pvt->object = make_shared<State>(args);
+		}
 	}
+#ifdef DEBUG 
+	else {
+		debug("Building empty state");
+	}
+#endif
 
 	return 0;
 
  }
 
  UDJAT_PRIVATE void state_finalize(PyObject *self) {	
+	debug(__FUNCTION__);
+
  }
 
  static PyObject * call(PyObject *self,const std::function<PyObject *(Udjat::Abstract::State &state)> &callback) {

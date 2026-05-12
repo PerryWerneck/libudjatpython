@@ -81,6 +81,7 @@
  }
 
  UDJAT_PRIVATE void	object_dealloc(PyObject * self) {
+	debug(__FUNCTION__);
 	pyAbstractObject *object = ((pyAbstractObject *) self);
 	if(object && object->pvt) {
 		delete object->pvt;
@@ -102,7 +103,11 @@
  UDJAT_PRIVATE PyObject * object_getattr(PyObject *self, PyObject *attr) {
 
 	const char *attrname = PyUnicode_AsUTF8(attr);
-	debug(__FUNCTION__,"(",attrname,")");
+	debug(
+		__FUNCTION__,"(",attrname,
+		") has_private=",(object_has_private(self) ? "true" : "false"),
+		" has_ptr=",(((pyAbstractObject *) self)->pvt ? "true" : "false")
+	);
 
 	if(attrname && *attrname != '_' && object_has_private(self)) {
 

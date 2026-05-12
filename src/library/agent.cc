@@ -358,7 +358,7 @@
 			}
 
 			if(!strcmp(attrname,"state")) {
-				return Python::State::factory(agent->state()).get();
+				return Python::State::factory(agent->state());
 			}
 
 			string response;
