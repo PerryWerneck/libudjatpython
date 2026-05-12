@@ -51,6 +51,9 @@
 
 		};
 
+		Agent(const char *pysource,const XML::Node &node);
+		~Agent() override;
+
 		static std::shared_ptr<Abstract::Agent> Factory(const char *pysource, const XML::Node &node);
 		static std::shared_ptr<Abstract::Agent> Factory(const char *pysource);
 
@@ -108,9 +111,6 @@
 
 		/// @brief Agent states.
 		std::vector<std::shared_ptr<Python::State>> states;
-
-		Agent(const char *pysource,const XML::Node &node);
-		~Agent() override;
 
 	};
 

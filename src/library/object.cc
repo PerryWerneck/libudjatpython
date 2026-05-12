@@ -77,6 +77,7 @@
 	PyObject *self = type->tp_alloc(type,0);
 	((pyAbstractObject *) self)->pvt = new ObjectPrivate();
 
+	return self;
  }
 
  UDJAT_PRIVATE void	object_dealloc(PyObject * self) {
