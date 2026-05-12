@@ -7,12 +7,14 @@ class SampleAgent(Agent):
 		self.name = "SampleAgent"
 		self.info("Setting up from properties")
 		self.value = 0
+
 		print('state: label={} summary={} icon={} level={}'.format(
 			self.state.label,
 			self.state.summary,
 			self.state.icon,
 			self.state.level
 		))
+
 		return super().setup(properties)
 	
 	def refresh(self,ondemand):

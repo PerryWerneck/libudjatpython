@@ -69,7 +69,7 @@
 
 	inline bool object_has_private(PyObject *self) noexcept {
 		pyAbstractObject *object = ((pyAbstractObject *) self);
-		return !(object && object->pvt);
+		return (object && object->pvt);
 	}
 
 	inline bool object_is_clear(PyObject *self) noexcept {
