@@ -52,18 +52,18 @@
 	Python::Agent::Factory::~Factory() {
 	}
 
-	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const char *pysource, const XML::Node &node) {
+	std::shared_ptr<Abstract::Agent> Python::Agent::Factory(const char *pysource, const XML::Node &node) {
 		auto agent = make_shared<Python::Agent>(pysource,node);
 		((pyAbstractObject *) agent->self)->pvt->object = dynamic_pointer_cast<Abstract::Object>(agent);
 		return agent;
 	}
 
-	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const char *pysource) {
-		return AgentFactory(pysource,XML::Node{});
+	std::shared_ptr<Abstract::Agent> Python::Agent::Factory(const char *pysource) {
+		return Factory(pysource,XML::Node{});
 	}
 
 	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const XML::Node &node) const {
-		return AgentFactory(XML::AttributeFactory(node,"src").as_string(),node);
+		return Python::Agent::Factory(XML::AttributeFactory(node,"src").as_string(),node);
 	}
 
 	Python::Agent::Agent(const char *pysource,const XML::Node &node) 
@@ -358,7 +358,7 @@
 			}
 
 			if(!strcmp(attrname,"state")) {
-				return Python::State::factory(agent->state().get()).get();
+				return Python::State::factory(agent->state()).get();
 			}
 
 			string response;

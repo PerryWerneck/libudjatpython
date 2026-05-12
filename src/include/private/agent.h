@@ -49,11 +49,10 @@
 			~Factory() override;
 			std::shared_ptr<Abstract::Agent> AgentFactory(const XML::Node &node) const override;
 
-			static std::shared_ptr<Abstract::Agent> AgentFactory(const char *pysource, const XML::Node &node);
-			static std::shared_ptr<Abstract::Agent> AgentFactory(const char *pysource);
 		};
 
-		friend class Factory;
+		static std::shared_ptr<Abstract::Agent> Factory(const char *pysource, const XML::Node &node);
+		static std::shared_ptr<Abstract::Agent> Factory(const char *pysource);
 
 		inline operator PyObject *() const noexcept {
 			return value;

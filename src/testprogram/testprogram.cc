@@ -53,7 +53,7 @@
 	*/
 
 
-	auto agent = Python::Agent::Factory::AgentFactory("testagent");
+	auto agent = Python::Agent::Factory("testagent");
 	agent->setup(XML::Node());
 
 	/*

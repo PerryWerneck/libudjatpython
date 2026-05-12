@@ -45,13 +45,16 @@
  #ifdef __cplusplus
 
 	struct _ObjectPrivate {
-		std::shared_ptr<Abstract::Object> object;
+		std::shared_ptr<Udjat::Abstract::Object> object;
 	};
 
 	UDJAT_PRIVATE bool object_setup(PyObject *self, const char *name, const Udjat::XML::Node &node);
 	
 	extern "C" {
  #endif // __cplusplus
+
+ UDJAT_PRIVATE PyObject	* object_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds);
+ UDJAT_PRIVATE void		  object_dealloc(PyObject * self);
 
  UDJAT_PRIVATE PyObject * object_str(PyObject *self);
  UDJAT_PRIVATE PyObject * object_getattr(PyObject *self, PyObject *attr);
@@ -64,26 +67,6 @@
  #ifdef __cplusplus
  }
 
-	template <class T>
-	int set_property(PyObject *self, PyObject *attr, PyObject *value) {
-		const char *attrname = PyUnicode_AsUTF8(attr);
-		if(attrname && *attrname != '_') {
-			pyAbstractObject *object = ((pyAbstractObject *) self);
-			auto *handler = dynamic_cast<T *>(object->handler);
-			if(handler) {
-				const char *val = PyUnicode_AsUTF8(value);
-				try {
-					if(handler->setProperty(attrname,val)) {
-						return 0;
-					}
-				} catch(const std::exception &e) {
-					Udjat::Logger::String{e.what()}.warning(handler->name());
-				}
-			}
-		}
-		return PyObject_GenericSetAttr(self, attr, value);
-	}
-
 	inline bool object_has_private(PyObject *self) noexcept {
 		pyAbstractObject *object = ((pyAbstractObject *) self);
 		return !(object && object->pvt);
@@ -95,12 +78,33 @@
 	}
 
 	template <class T>
-	std::shared_ptr<T> & object_get_private(PyObject *self) {
+	int set_property(PyObject *self, PyObject *attr, PyObject *value) {
+		const char *attrname = PyUnicode_AsUTF8(attr);
+		if(attrname && *attrname != '_') {
+			pyAbstractObject *object = ((pyAbstractObject *) self);
+			if(object->pvt && object->pvt->object) {
+				auto handler = std::dynamic_pointer_cast<T>(object->pvt->object); 
+				if(handler) {
+					try {
+						if(handler->setProperty(attrname,PyUnicode_AsUTF8(value))) {
+							return 0;
+						}
+					} catch(const std::exception &e) {
+						Udjat::Logger::String{e.what()}.warning(handler->name());
+					}
+				}
+			}
+		}
+		return PyObject_GenericSetAttr(self, attr, value);
+	}
+
+	template <class T>
+	std::shared_ptr<T> object_get_private(PyObject *self) {
 		pyAbstractObject *object = ((pyAbstractObject *) self);
-		if(object->pvt) {
+		if(object->pvt && object->pvt->object) {
 			return std::dynamic_pointer_cast<T>(object->pvt->object);
 		}
-		throw std::logic_error(_("The object is empty"))
+		throw std::logic_error(_("The object is empty"));
 	}
 
  #endif // __cplusplus

@@ -17,14 +17,14 @@ class SampleAgent(Agent):
 	
 	def refresh(self,ondemand):
 		self.info("Updating values")
-#		state = State(
-#			name= 'sample',
-#			level = 'info',
-#			label = 'Sample state',
-#			summary= 'Summary for sample state',
-#			body= 'This is the body for the current state, show a more detailed info',
-#			url= 'https://google.com',
-#		)
+		state = State(
+			name= 'sample',
+			level = 'info',
+			label = 'Sample state',
+			summary= 'Summary for sample state',
+			body= 'This is the body for the current state, show a more detailed info',
+			url= 'https://google.com',
+		)
 		print(self.value)
 		return False
 
