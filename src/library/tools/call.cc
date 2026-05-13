@@ -17,6 +17,8 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+ #include <Python.h>
+
  #ifdef HAVE_CONFIG_H
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
@@ -25,10 +27,13 @@
  #include <private/modules.h>
  #include <private/tools.h>
  #include <udjat/tools/intl.h>
+ #include <udjat/tools/logger.h>
  #include <functional>
  #include <errno.h>
+ #include <mutex>
+ #include <stdexcept>
 
- #include <Python.h>
+ using namespace std;
 
  namespace Udjat {
 
@@ -118,7 +123,44 @@
 
 		return NULL;
 
-
 	}
+
+	UDJAT_PRIVATE PyObject * Python::call(PyObject *self, const char *method_name, PyObject *arg, ...) {
+
+		debug("Calling ",Py_TYPE(self)->tp_name, ".",method_name);
+
+		lock_guard<recursive_mutex> lock(Python::guard);
+
+		auto func = Python::make_handle(PyObject_GetAttrString(self, method_name));
+
+		if(!PyCallable_Check(func.get())) {
+			throw logic_error(Logger::Message{_("The method {} is not callable on {}"),method_name,Py_TYPE(self)->tp_name});
+		}
+
+		vector<PyObject *> args;
+
+		va_list list;
+		va_start(list,arg);
+		while(arg) {
+			args.push_back(arg);
+			arg	= va_arg(list, PyObject *);
+		}
+		va_end(list);
+
+		auto tuple = Python::make_handle(PyTuple_New(args.size()));
+		for(size_t i = 0; i < args.size(); i++) {
+			PyTuple_SetItem(tuple.get(), i, args[i]);
+		}
+
+		PyObject *response = PyObject_CallObject(func.get(), tuple.get());
+
+		if(!response) {
+			throw runtime_error(Python::exception());
+		}
+
+		return response;
+		
+	}
+
 
  }

@@ -35,7 +35,7 @@
  #include <udjat/tools/xml.h>
  #include <udjat/tools/memory.h>
  #include <string>
-
+ #include <cstdarg>
 
  using namespace Udjat;
  using namespace std;
@@ -137,31 +137,31 @@
 		return object_setup(self,name(),node);
 	}
 	
+	void Python::Agent::start() {
+		debug(__FUNCTION__);
+		lock_guard<recursive_mutex> lock(Python::guard);
+
+	}
+
+	void Python::Agent::stop() {
+		debug(__FUNCTION__);
+		lock_guard<recursive_mutex> lock(Python::guard);
+
+	}
+
+	bool Python::Agent::refresh() {
+		return refresh(false);
+	}
+
 	bool Python::Agent::refresh(bool ondemand) {
 	
+		debug(__FUNCTION__);
 		lock_guard<recursive_mutex> lock(Python::guard);
 
 		try {
 
-			auto func = make_handle(PyObject_GetAttrString(self, "refresh"));
-			if(!func) {
-				return super::refresh(ondemand);
-			}
-
-			if(!PyCallable_Check(func.get())) {
-				throw logic_error(Logger::Message{_("The method {} is not callable on {}"),"refresh",Py_TYPE(self)->tp_name});
-			}
-
 			auto arg = make_handle(PyBool_FromLong(ondemand));
-			auto args = make_handle(PyTuple_Pack(1, arg.get()));
-
-			PyObject *response = PyObject_CallObject(func.get(), args.get());
-
-			if(!response) {
-				throw runtime_error(exception());
-			}
-
-			return response;
+			return Python::call(self,"refresh",arg.get(),NULL);
 
 		} catch(const std::exception &e) {
 
@@ -278,6 +278,7 @@
 
  UDJAT_PRIVATE PyObject * agent_start(PyObject *self, PyObject *args) {
 
+	debug(__FUNCTION__);
 	return call(self,[](Udjat::Python::Agent &agent) -> PyObject * {
 
 
@@ -288,6 +289,7 @@
 
  UDJAT_PRIVATE PyObject * agent_stop(PyObject *self, PyObject *args) {
 
+	debug(__FUNCTION__);
 	return call(self,[](Udjat::Python::Agent &agent) -> PyObject * {
 
 
@@ -298,6 +300,7 @@
 
  UDJAT_PRIVATE PyObject * agent_refresh(PyObject *self, PyObject *args) {
 
+	debug(__FUNCTION__);
 	return call(self,[](Udjat::Python::Agent &agent) -> PyObject * {
 
 

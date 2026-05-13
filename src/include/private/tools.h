@@ -43,27 +43,29 @@
 	/// @return The exception message.
 	UDJAT_PRIVATE std::string exception(bool write_to_log = true);
 
-	PyObject * call(const std::function<PyObject *(void)> &callback) noexcept;
+	UDJAT_PRIVATE PyObject * call(const std::function<PyObject *(void)> &callback) noexcept;
 
-	PyObject * call(PyObject *self,const std::function<PyObject *(Abstract::Object *object)> &callback);
+	UDJAT_PRIVATE PyObject * call(PyObject *self, const char *method_name, PyObject *arg, ...) __attribute__((__sentinel__));
+
+	UDJAT_PRIVATE PyObject * call(PyObject *self,const std::function<PyObject *(Abstract::Object *object)> &callback);
 
 	/// @brief Run callback, convert exception in python errors.
 	/// @param args The arguments for the callback.
 	/// @param callback The method to call.
 	/// @return The callback return.
-	PyObject * call(PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
+	UDJAT_PRIVATE PyObject * call(PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
 
 	/// @brief Check argument count, run callback, convert exception in python errors.
 	/// @param args The arguments for the callback.
 	/// @param callback The method to call.
 	/// @return The callback return.
-	PyObject * call(int required_args, PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
+	UDJAT_PRIVATE PyObject * call(int required_args, PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
 
-	PyObject * call(int required_args, PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
-	PyObject * call(int required_args, PyObject *args, const std::function<void (PyObject *args)> &callback) noexcept;
+	UDJAT_PRIVATE PyObject * call(int required_args, PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
+	UDJAT_PRIVATE PyObject * call(int required_args, PyObject *args, const std::function<void (PyObject *args)> &callback) noexcept;
 
-	std::string to_string(PyObject *value) noexcept;
-	bool compare(PyObject *a, PyObject *b);
+	UDJAT_PRIVATE std::string to_string(PyObject *value) noexcept;
+	UDJAT_PRIVATE bool compare(PyObject *a, PyObject *b);
 
 
  }

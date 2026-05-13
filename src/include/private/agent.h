@@ -61,6 +61,10 @@
 			return value;
 		}
 
+		void start() override;
+		void stop() override;
+
+		bool refresh() override;
 		bool refresh(bool ondemand) override;
 
 		std::string to_string() const noexcept override;

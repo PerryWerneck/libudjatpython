@@ -8,17 +8,19 @@ class SampleAgent(Agent):
 		self.info("Setting up from properties")
 		self.value = 0
 
+		st = self.state	
 		print('state: label={} summary={} icon={} level={}'.format(
-			self.state.label,
-			self.state.summary,
-			self.state.icon,
-			self.state.level
+			st.label,
+			st.summary,
+			st.icon,
+			st.level
 		))
 
 		return super().setup(properties)
 	
 	def refresh(self,ondemand):
 		self.info("Updating values")
+		print('------------------------------------------------------------')
 		state = State(
 			name= 'sample',
 			level = 'info',
@@ -27,6 +29,7 @@ class SampleAgent(Agent):
 			body= 'This is the body for the current state, show a more detailed info',
 			url= 'https://google.com',
 		)
+		print('------------------------------------------------------------')
 		print(self.value)
 		return False
 

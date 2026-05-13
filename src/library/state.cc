@@ -113,9 +113,9 @@
 
 	};
 
-	if(PyTuple_Check(args) && PyTuple_Size(args) == 1 && !(Py_IsNone(PyTuple_GetItem(args, 0)))) {
+	if(PyTuple_Check(args) && PyTuple_Size(args) >= 1 && !(Py_IsNone(PyTuple_GetItem(args, 0)))) {
 
-		debug("Building internal object with passed parameters");
+		debug("Building internal object with arguments");
 
 		pyAbstractObject *object = ((pyAbstractObject *) self);
 		if(!object->pvt->object) {

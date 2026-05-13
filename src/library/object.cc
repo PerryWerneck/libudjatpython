@@ -81,7 +81,7 @@
  }
 
  UDJAT_PRIVATE void	object_dealloc(PyObject * self) {
-	debug(__FUNCTION__);
+	debug(__FUNCTION__," ",Py_TYPE(self)->tp_name);
 	pyAbstractObject *object = ((pyAbstractObject *) self);
 	if(object && object->pvt) {
 		delete object->pvt;
