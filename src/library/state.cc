@@ -97,30 +97,53 @@
 
 	debug(__FUNCTION__," ",Py_TYPE(self)->tp_name, " with ",PyTuple_Size(args)," argument(s)");
 
-	class State : public Python::State {
-	private:
+	if(kwds) {
 
-	public:
-		State(PyObject *args) {
-		
+		// Building state with a list of properties.
+		static const char * const kwlist[] = {
+			"name",
+			"level",
+			"label",
+			"summary",
+			"body",
+			"url",
+			NULL
+		};
 
+		PyObject *prop_list = NULL;
+		// Format String Breakdown:
+		// '|' -> Makes everything after it optional
+		// 'O' -> PyObject* (Properties List)
+		// 's' -> const char* (Host String)
+		// 'i' -> int (Port)
+		// 'i' -> int (Timeout)
+		// 'p' -> int/boolean predicate (Verbose)
+		// 'i' -> int (Retry)
+		const char *name = "Python";
+		const char *level = "unimportant";
+		const char *label = "";
+		const char *summary = "";
+		const char *body = "";
+		const char *url = "";
 
-		}
+		if (!PyArg_ParseTupleAndKeywords(args, kwds, "|ssssss", kwlist, &name, &level, &label, &summary, &body, &url)) {
+        	return -1; 
+    	}
 
-		~State() override {
-		}
+		debug("name=",name);
+		debug("level=",level);
+		debug("label=",label);
+		debug("summary=",summary);
+		debug("body=",body);
+		debug("url=",url);
 
-
-	};
-
-	if(PyTuple_Check(args) && PyTuple_Size(args) >= 1 && !(Py_IsNone(PyTuple_GetItem(args, 0)))) {
-
-		debug("Building internal object with arguments");
-
+		/*
 		pyAbstractObject *object = ((pyAbstractObject *) self);
 		if(!object->pvt->object) {
-			object->pvt->object = make_shared<State>(args);
+			object->pvt->object = make_shared<State>(prop_list);
 		}
+		*/
+
 	}
 #ifdef DEBUG 
 	else {

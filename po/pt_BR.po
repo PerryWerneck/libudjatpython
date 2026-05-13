@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: udjathttp 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-13 12:39-0300\n"
+"POT-Creation-Date: 2026-05-13 12:51-0300\n"
 "PO-Revision-Date: 2026-04-23 21:47-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -29,8 +29,8 @@ msgstr "Mensagem de log precisa ser uma string"
 #: src/library/config.cc:94 src/library/config.cc:100 src/library/config.cc:106
 #: src/library/config.cc:111 src/library/config.cc:133
 #: src/library/config.cc:139 src/library/config.cc:145
-#: src/library/config.cc:150 src/library/xml.cc:243 src/library/agent.cc:234
-#: src/library/agent.cc:240 src/library/agent.cc:245 src/library/agent.cc:273
+#: src/library/config.cc:150 src/library/xml.cc:243 src/library/agent.cc:238
+#: src/library/agent.cc:244 src/library/agent.cc:249 src/library/agent.cc:277
 msgid "Invalid argument"
 msgstr ""
 
@@ -38,7 +38,7 @@ msgstr ""
 #: src/library/tools/call.cc:101 src/library/tools/call.cc:120
 #: src/library/tools/value.cc:159 src/library/xml.cc:185
 #: src/library/state.cc:152 src/library/object.cc:52 src/library/object.cc:130
-#: src/library/agent.cc:216 src/library/agent.cc:350
+#: src/library/agent.cc:220 src/library/agent.cc:354
 msgid "Unexpected error in python callback."
 msgstr "Erro inesperado em chamada python."
 
@@ -114,20 +114,20 @@ msgstr ""
 msgid "Agent value changed to {}"
 msgstr ""
 
-#: src/library/agent.cc:170 src/library/agent.cc:174
+#: src/library/agent.cc:174 src/library/agent.cc:178
 msgid "Failed to refresh agent"
 msgstr ""
 
-#: src/library/agent.cc:174
+#: src/library/agent.cc:178
 #, fuzzy
 msgid "Unexpected error"
 msgstr "Erro inesperado em chamada python."
 
-#: src/library/agent.cc:370
+#: src/library/agent.cc:374
 msgid "Agent setup requires a properties object as argument"
 msgstr ""
 
-#: src/library/agent.cc:382
+#: src/library/agent.cc:386
 msgid "Agent.setup() requires a valid properties object"
 msgstr ""
 

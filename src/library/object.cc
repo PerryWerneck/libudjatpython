@@ -69,7 +69,8 @@
 
  UDJAT_PRIVATE PyObject	* object_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
 
-	debug(__FUNCTION__);
+	debug(__FUNCTION__," args=",Py_TYPE(args)->tp_name," argument(s)");
+	
 	if (PyErr_Occurred()) {
         return NULL; // Exit early if something else already failed
     }
