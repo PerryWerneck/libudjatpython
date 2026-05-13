@@ -106,6 +106,7 @@
 			"label",
 			"summary",
 			"body",
+			"icon",
 			"url",
 			NULL
 		};
@@ -119,24 +120,25 @@
 		// 'i' -> int (Timeout)
 		// 'p' -> int/boolean predicate (Verbose)
 		// 'i' -> int (Retry)
-		const char *name = "Python";
-		const char *level = "unimportant";
-		const char *label = "";
-		const char *summary = "";
-		const char *body = "";
-		const char *url = "";
+		const char *props[] = {
+			"python", // name
+			"unimportant", // level
+			"", // label
+			"", // summary
+			"", // body
+			"", // icon
+			"", // url
+		};
 
-		if (!PyArg_ParseTupleAndKeywords(args, kwds, "|ssssss", kwlist, &name, &level, &label, &summary, &body, &url)) {
+		if (!PyArg_ParseTupleAndKeywords(args, kwds, "|sssssss", kwlist, &props[0], &props[1], &props[2], &props[3], &props[4], &props[5])) {
         	return -1; 
     	}
 
-		debug("name=",name);
-		debug("level=",level);
-		debug("label=",label);
-		debug("summary=",summary);
-		debug("body=",body);
-		debug("url=",url);
-
+#ifdef DEBUG
+		for(size_t ix = 0; ix < sizeof(props)/sizeof(props[0]); ix++) {
+			debug(kwlist[ix],"=",props[ix]);
+		}
+#endif
 		/*
 		pyAbstractObject *object = ((pyAbstractObject *) self);
 		if(!object->pvt->object) {
