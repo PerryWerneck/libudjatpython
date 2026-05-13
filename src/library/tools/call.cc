@@ -149,9 +149,9 @@
 		
 	}
 
-	UDJAT_PRIVATE PyObject * Python::call(PyObject *self, const char *method_name, PyObject *arg, ...) {
+	static PyObject * call_method(PyObject *self, const char *method_name, vector<PyObject *> &args) {
 
-		debug("Calling ",Py_TYPE(self)->tp_name, ".",method_name);
+		debug("Calling ",Py_TYPE(self)->tp_name, ".",method_name," with ",args.size()," arguments");
 
 		lock_guard<recursive_mutex> lock(Python::guard);
 
@@ -160,16 +160,6 @@
 		if(!PyCallable_Check(func.get())) {
 			throw logic_error(Logger::Message{_("The method {} is not callable on {}"),method_name,Py_TYPE(self)->tp_name});
 		}
-
-		vector<PyObject *> args;
-
-		va_list list;
-		va_start(list,arg);
-		while(arg) {
-			args.push_back(arg);
-			arg	= va_arg(list, PyObject *);
-		}
-		va_end(list);
 
 		auto tuple = Python::make_handle(PyTuple_New(args.size()));
 		for(size_t i = 0; i < args.size(); i++) {
@@ -183,6 +173,22 @@
 		}
 
 		return response;
+		
+	}
+
+	UDJAT_PRIVATE PyObject * Python::call(PyObject *self, const char *method_name, PyObject *arg, ...) {
+
+		vector<PyObject *> args;
+
+		va_list list;
+		va_start(list,arg);
+		while(arg) {
+			args.push_back(arg);
+			arg	= va_arg(list, PyObject *);
+		}
+		va_end(list);
+
+		return call_method(self,method_name,args);
 		
 	}
 

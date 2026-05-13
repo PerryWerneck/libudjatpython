@@ -162,8 +162,12 @@
 
 		try {
 
-			auto arg = make_handle(PyBool_FromLong(ondemand));
-			return Python::call(self,"refresh",arg.get(),NULL);
+			return Python::call(
+					self,
+					"refresh",
+					make_handle(PyBool_FromLong(ondemand)).get(),
+					NULL
+			);
 
 		} catch(const std::exception &e) {
 

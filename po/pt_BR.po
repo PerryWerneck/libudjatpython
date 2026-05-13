@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: udjathttp 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-06 08:15-0300\n"
+"POT-Creation-Date: 2026-05-13 12:39-0300\n"
 "PO-Revision-Date: 2026-04-23 21:47-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -20,85 +20,127 @@ msgstr ""
 "X-Poedit-SourceCharset: utf-8\n"
 "X-Generator: Poedit 3.8\n"
 
-#: src/library/interpreter.cc:182
-msgid "Unknown Python Error"
-msgstr ""
-
-#: src/library/interpreter.cc:245
-#, c++-format
-msgid "The method {}(settings) is required on '{}"
-msgstr ""
-
-#: src/library/interpreter.cc:249
-#, c++-format
-msgid "The method {}(settings) is not callable on '{}"
-msgstr ""
-
 #: src/library/logger.cc:104 src/library/logger.cc:113
 #: src/library/logger.cc:122 src/library/logger.cc:131
-#: src/library/logger.cc:140 src/library/object.cc:133
+#: src/library/logger.cc:140 src/library/object.cc:158
 msgid "The log message should be a string"
 msgstr "Mensagem de log precisa ser uma string"
 
 #: src/library/config.cc:94 src/library/config.cc:100 src/library/config.cc:106
 #: src/library/config.cc:111 src/library/config.cc:133
 #: src/library/config.cc:139 src/library/config.cc:145
-#: src/library/config.cc:150 src/library/agent.cc:155 src/library/agent.cc:161
-#: src/library/agent.cc:166 src/library/agent.cc:193 src/library/xml.cc:137
+#: src/library/config.cc:150 src/library/xml.cc:243 src/library/agent.cc:234
+#: src/library/agent.cc:240 src/library/agent.cc:245 src/library/agent.cc:273
 msgid "Invalid argument"
 msgstr ""
 
-#: src/library/tools/call.cc:47 src/library/tools/call.cc:71
-#: src/library/tools/call.cc:96 src/library/tools/call.cc:115
-#: src/library/tools/value.cc:156 src/library/agent.cc:137
-#: src/library/object.cc:50 src/library/object.cc:107 src/library/xml.cc:79
+#: src/library/tools/call.cc:52 src/library/tools/call.cc:76
+#: src/library/tools/call.cc:101 src/library/tools/call.cc:120
+#: src/library/tools/value.cc:159 src/library/xml.cc:185
+#: src/library/state.cc:152 src/library/object.cc:52 src/library/object.cc:130
+#: src/library/agent.cc:216 src/library/agent.cc:350
 msgid "Unexpected error in python callback."
 msgstr "Erro inesperado em chamada python."
 
-#: src/library/tools/value.cc:51
+#: src/library/tools/call.cc:137 src/library/tools/call.cc:161
+#: src/library/xml.cc:116
+#, c++-format
+msgid "The method {} is not callable on {}"
+msgstr ""
+
+#: src/library/tools/value.cc:54
 msgid "Error creating python list."
 msgstr ""
 
-#: src/library/tools/value.cc:77
+#: src/library/tools/value.cc:80
 msgid "Error creating python dictionary."
 msgstr ""
 
-#: src/library/tools/value.cc:144 src/library/tools/value.cc:148
+#: src/library/tools/value.cc:147 src/library/tools/value.cc:151
 #, fuzzy
 msgid "Unexpected value type in python callback."
 msgstr "Erro inesperado em chamada python."
 
-#: src/library/agent.cc:102
-msgid "Agent initializer requires a single argument"
+#: src/library/tools/misc.cc:60
+msgid "Unknown Python Error"
 msgstr ""
 
-#: src/library/object.cc:118
-msgid "Too many arguments"
+#: src/library/xml.cc:52
+#, c++-format
+msgid "The method {}(settings) is required on '{}"
+msgstr ""
+
+#: src/library/xml.cc:56
+#, c++-format
+msgid "The method {}(settings) is not callable on '{}"
+msgstr ""
+
+#: src/library/xml.cc:71
+msgid "Unexpected response from factory method"
+msgstr ""
+
+#: src/library/xml.cc:112
+#, c++-format
+msgid "The method {} is required on {}"
+msgstr ""
+
+#: src/library/xml.cc:161
+msgid "The properties object is empty"
+msgstr ""
+
+#: src/library/xml.cc:171
+msgid "The object is empty"
+msgstr ""
+
+#: src/library/xml.cc:237
+msgid "Method requires 2 arguments"
 msgstr ""
 
 #: src/library/object.cc:144
+msgid "Too many arguments"
+msgstr ""
+
+#: src/library/object.cc:169
 #, fuzzy
 msgid "Unexpected error in python logger."
 msgstr "Erro inesperado em chamada python."
 
-#: src/library/xml.cc:65
-msgid "The object is empty"
+#: src/library/agent.cc:79
+msgid "The object returned from factory method is not an agent"
 msgstr ""
 
-#: src/library/xml.cc:131
-msgid "Method requires 2 arguments"
+#: src/library/agent.cc:120
+#, c++-format
+msgid "Agent value changed to {}"
 msgstr ""
 
-#: src/library/types/module.c:101
+#: src/library/agent.cc:170 src/library/agent.cc:174
+msgid "Failed to refresh agent"
+msgstr ""
+
+#: src/library/agent.cc:174
+#, fuzzy
+msgid "Unexpected error"
+msgstr "Erro inesperado em chamada python."
+
+#: src/library/agent.cc:370
+msgid "Agent setup requires a properties object as argument"
+msgstr ""
+
+#: src/library/agent.cc:382
+msgid "Agent.setup() requires a valid properties object"
+msgstr ""
+
+#: src/library/types/module.c:102
 msgid "XML parser is not ready"
 msgstr ""
 
-#: src/library/types/module.c:107
-msgid "Agent type is not ready"
+#: src/library/types/module.c:118
+msgid "Required object type is not ready"
 msgstr ""
 
-#: src/library/types/module.c:114
-msgid "Failed inserting agent type"
+#: src/library/types/module.c:125
+msgid "Failed inserting required object type"
 msgstr ""
 
 #~ msgid "HTTP operation failed"
