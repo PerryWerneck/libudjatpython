@@ -64,7 +64,6 @@
 		void start() override;
 		void stop() override;
 
-		bool refresh() override;
 		bool refresh(bool ondemand) override;
 
 		std::string to_string() const noexcept override;
@@ -134,9 +133,6 @@
  UDJAT_PRIVATE PyObject * agent_failed(PyObject *self, PyObject *args);
  UDJAT_PRIVATE PyObject * agent_get_by_path(PyObject *self, PyObject *args);
  UDJAT_PRIVATE PyObject * agent_invalidate(PyObject *self, PyObject *args);
- UDJAT_PRIVATE PyObject * agent_start(PyObject *self, PyObject *args);
- UDJAT_PRIVATE PyObject * agent_stop(PyObject *self, PyObject *args);
- UDJAT_PRIVATE PyObject * agent_refresh(PyObject *self, PyObject *args);
 
  #ifdef __cplusplus
 	}

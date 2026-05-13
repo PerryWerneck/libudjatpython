@@ -125,6 +125,30 @@
 
 	}
 
+	UDJAT_PRIVATE PyObject * Python::call(PyObject *self, const char *method_name) {
+
+		debug("Calling ",Py_TYPE(self)->tp_name, ".",method_name," without any arguments");
+
+		lock_guard<recursive_mutex> lock(Python::guard);
+
+		auto func = Python::make_handle(PyObject_GetAttrString(self, method_name));
+
+		if(!PyCallable_Check(func.get())) {
+			throw logic_error(Logger::Message{_("The method {} is not callable on {}"),method_name,Py_TYPE(self)->tp_name});
+		}
+
+		auto tuple = Python::make_handle(PyTuple_New(0));
+
+		PyObject *response = PyObject_CallObject(func.get(), tuple.get());
+
+		if(!response) {
+			throw runtime_error(Python::exception());
+		}
+
+		return response;
+		
+	}
+
 	UDJAT_PRIVATE PyObject * Python::call(PyObject *self, const char *method_name, PyObject *arg, ...) {
 
 		debug("Calling ",Py_TYPE(self)->tp_name, ".",method_name);

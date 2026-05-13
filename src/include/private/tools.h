@@ -45,6 +45,7 @@
 
 	UDJAT_PRIVATE PyObject * call(const std::function<PyObject *(void)> &callback) noexcept;
 
+	UDJAT_PRIVATE PyObject * call(PyObject *self, const char *method_name);
 	UDJAT_PRIVATE PyObject * call(PyObject *self, const char *method_name, PyObject *arg, ...) __attribute__((__sentinel__));
 
 	UDJAT_PRIVATE PyObject * call(PyObject *self,const std::function<PyObject *(Abstract::Object *object)> &callback);

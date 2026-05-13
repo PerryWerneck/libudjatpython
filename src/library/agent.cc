@@ -139,23 +139,25 @@
 	
 	void Python::Agent::start() {
 		debug(__FUNCTION__);
-		lock_guard<recursive_mutex> lock(Python::guard);
-
+		Python::call(self,"start");
+		super::start();
 	}
 
 	void Python::Agent::stop() {
 		debug(__FUNCTION__);
 		lock_guard<recursive_mutex> lock(Python::guard);
-
-	}
-
-	bool Python::Agent::refresh() {
-		return refresh(false);
+		Python::call(self,"stop");
+		super::stop();
 	}
 
 	bool Python::Agent::refresh(bool ondemand) {
 	
 		debug(__FUNCTION__);
+
+		if(super::refresh(ondemand)) {
+			return true;
+		}
+
 		lock_guard<recursive_mutex> lock(Python::guard);
 
 		try {
@@ -270,39 +272,6 @@
 		if(PyTuple_Size(args) != 1) {
 			throw runtime_error(_("Invalid argument"));
 		}
-
-		return Py_None;
-	});
-
- }
-
- UDJAT_PRIVATE PyObject * agent_start(PyObject *self, PyObject *args) {
-
-	debug(__FUNCTION__);
-	return call(self,[](Udjat::Python::Agent &agent) -> PyObject * {
-
-
-		return Py_None;
-	});
-
- }
-
- UDJAT_PRIVATE PyObject * agent_stop(PyObject *self, PyObject *args) {
-
-	debug(__FUNCTION__);
-	return call(self,[](Udjat::Python::Agent &agent) -> PyObject * {
-
-
-		return Py_None;
-	});
-
- }
-
- UDJAT_PRIVATE PyObject * agent_refresh(PyObject *self, PyObject *args) {
-
-	debug(__FUNCTION__);
-	return call(self,[](Udjat::Python::Agent &agent) -> PyObject * {
-
 
 		return Py_None;
 	});

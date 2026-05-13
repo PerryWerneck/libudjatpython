@@ -75,19 +75,19 @@
     },
     {
 		.ml_name = "start",
-		.ml_meth = (PyCFunction) agent_start,
-		.ml_flags = METH_VARARGS,
+		.ml_meth = (PyCFunction) object_return_none,
+		.ml_flags = METH_NOARGS,
 		.ml_doc =	"Start agent\n"
     },
     {
 		.ml_name = "stop",
-		.ml_meth = (PyCFunction) agent_stop,
-		.ml_flags = METH_VARARGS,
+		.ml_meth = (PyCFunction) object_return_none,
+		.ml_flags = METH_NOARGS,
 		.ml_doc =	"Stop agent\n"
     },
     {
 		.ml_name = "refresh",
-		.ml_meth = (PyCFunction) agent_refresh,
+		.ml_meth = (PyCFunction) object_return_none,
 		.ml_flags = METH_VARARGS,
 		.ml_doc =	"Refresh agent\n"
     },

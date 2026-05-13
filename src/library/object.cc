@@ -189,6 +189,10 @@
 	return write_log(Logger::Info,self,msg);
  }
 
+ UDJAT_PRIVATE PyObject * object_return_none(PyObject *, PyObject *) {
+	return Py_None;
+ }
+
  UDJAT_PRIVATE bool object_setup(PyObject *self, const char *name, const XML::Node &node) {
 
 	lock_guard<recursive_mutex> lock(Python::guard);

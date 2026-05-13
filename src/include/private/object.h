@@ -55,6 +55,7 @@
 
  UDJAT_PRIVATE PyObject	* object_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds);
  UDJAT_PRIVATE void		  object_dealloc(PyObject * self);
+ UDJAT_PRIVATE PyObject * object_return_none(PyObject *self, PyObject *args);
 
  UDJAT_PRIVATE PyObject * object_str(PyObject *self);
  UDJAT_PRIVATE PyObject * object_getattr(PyObject *self, PyObject *attr);
