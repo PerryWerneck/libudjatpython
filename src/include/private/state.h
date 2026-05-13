@@ -31,20 +31,36 @@
  #include <udjat/agent/abstract.h>
  #include <udjat/agent/state.h>
  #include <private/tools.h>
+ #include <udjat/tools/abstract/object.h>
  #include <cstdint>
  #include <string>
 
  namespace Udjat::Python {
 
 	class UDJAT_API State : public Udjat::Abstract::State {
-	private:
-		PyObject * current_value = nullptr;
-
 	protected:
-		State() : Udjat::Abstract::State{"Python"} {		
+		State(const char *name = "Python") : Udjat::Abstract::State{"python"}  {	
+			rename(name);	
 		}
 
+		State(const char *name, const char *level, const char *summary, const char *body)
+			: Udjat::Abstract::State{"python",level} {
+			rename(name);
+			properties[Property::Summary] = summary;
+			properties[Property::Body] = body;
+		}
 	public:
+
+		enum Property : uint8_t {
+			Name,
+			Label,
+			Summary,
+			Body,
+			Icon,
+			Url,
+
+			PropertyCount
+		};
 
 		enum Type {
 			Numeric,
@@ -74,9 +90,18 @@
 		}
 
 		inline void rename(const char *value) {
-			Udjat::Abstract::State::rename(value);
+			properties[Property::Name] = value;
+			Udjat::Abstract::State::rename(properties[Property::Name].c_str());
 		}
 
+		bool setProperty(const char *key, const char *value) override;
+		bool getProperty(const char *key, std::string &value) const override;
+
+	private:
+
+		PyObject * current_value = nullptr;
+
+		std::string properties[PropertyCount];
 
 	};
 

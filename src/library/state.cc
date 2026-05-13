@@ -41,6 +41,17 @@
 
  namespace Udjat {
 
+	/*
+		if(!(Object::properties.icon && *Object::properties.icon)) {
+			Object::properties.icon = IconNameFactory(properties.level);
+		}
+
+		properties.level = LevelFactory(node);
+		properties.body = String{node,"body",properties.body}.as_quark();
+		options.forward = node.attribute("forward-to-children").as_bool(options.forward);
+
+	*/
+
 	Python::State::State(const XML::Node &node, const Type type) : Udjat::Abstract::State{node} {
 
 		lock_guard<recursive_mutex> lock(Python::guard);
@@ -93,6 +104,21 @@
  // Python bindings
  // ---------------------------------------------------------------------------------------
 
+ static const char * const kwlist[Python::State::PropertyCount+2] = {
+
+	// Object properties
+	"name",
+	"label",
+	"summary",
+	"body",
+	"icon",
+	"url",
+
+	// Extra values
+	"level",
+	NULL
+ };
+
  UDJAT_PRIVATE int state_init(PyObject *self, PyObject *args, PyObject *kwds) {
 
 	debug(__FUNCTION__," ",Py_TYPE(self)->tp_name, " with ",PyTuple_Size(args)," argument(s)");
@@ -100,16 +126,6 @@
 	if(kwds) {
 
 		// Building state with a list of properties.
-		static const char * const kwlist[] = {
-			"name",
-			"level",
-			"label",
-			"summary",
-			"body",
-			"icon",
-			"url",
-			NULL
-		};
 
 		PyObject *prop_list = NULL;
 		// Format String Breakdown:
@@ -120,9 +136,8 @@
 		// 'i' -> int (Timeout)
 		// 'p' -> int/boolean predicate (Verbose)
 		// 'i' -> int (Retry)
-		const char *props[] = {
+		const char *props[Python::State::PropertyCount] = {
 			"python", // name
-			"unimportant", // level
 			"", // label
 			"", // summary
 			"", // body
@@ -130,21 +145,37 @@
 			"", // url
 		};
 
-		if (!PyArg_ParseTupleAndKeywords(args, kwds, "|sssssss", kwlist, &props[0], &props[1], &props[2], &props[3], &props[4], &props[5])) {
+		std::string level = "unimportant";
+
+		if (!PyArg_ParseTupleAndKeywords(args, kwds, "|sssssss", kwlist, &props[0], &props[1], &props[2], &props[3], &props[4], &props[5], &level)) {
         	return -1; 
     	}
 
 #ifdef DEBUG
-		for(size_t ix = 0; ix < sizeof(props)/sizeof(props[0]); ix++) {
+		debug("level=",level);
+		for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
 			debug(kwlist[ix],"=",props[ix]);
 		}
 #endif
-		/*
-		pyAbstractObject *object = ((pyAbstractObject *) self);
-		if(!object->pvt->object) {
-			object->pvt->object = make_shared<State>(prop_list);
+
+		try {
+
+			auto state = make_shared<Python::State>("python",level);
+
+			for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
+				state->setProperty(kwlist[ix],props[ix]);
+			}
+
+			pyAbstractObject *object = ((pyAbstractObject *) self);
+			if(!object->pvt->object) {
+				object->pvt->object = state;
+			}
+
+		} catch(const std::exception &e) {
+
+			PyErr_SetString(PyExc_RuntimeError, e.what());
+			return -1;
 		}
-		*/
 
 	}
 #ifdef DEBUG 
@@ -155,6 +186,30 @@
 
 	return 0;
 
+ }
+
+ bool Python::State::setProperty(const char *key, const char *value) {
+
+	for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
+		if(!strcasecmp(key,kwlist[ix])) {
+			properties[ix] = value;
+			return true;
+		}
+	}
+
+	return Udjat::Abstract::State::setProperty(key,value);
+ }
+
+ bool Python::State::getProperty(const char *key, std::string &value) const {
+
+	for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
+		if(!strcasecmp(key,kwlist[ix])) {
+			value = properties[ix];
+			return true;
+		}
+	}
+
+	return Udjat::Abstract::State::getProperty(key,value);	
  }
 
  UDJAT_PRIVATE void state_finalize(PyObject *self) {	
