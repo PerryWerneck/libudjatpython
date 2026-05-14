@@ -46,6 +46,18 @@
 
  namespace Udjat {
 
+	static const char * const kwlist[Python::Agent::PropertyCount+1] = {
+
+		// Object properties
+		"name",
+		"label",
+		"summary",
+		"icon",
+		"url",
+
+		NULL
+	};
+
 	Python::Agent::Factory::Factory(const char *name) : Abstract::Agent::Factory{name} {
 	}
 
@@ -68,6 +80,10 @@
 
 	Python::Agent::Agent(const char *pysource,const XML::Node &node) 
 		: self{Python::factory(pysource,"AgentFactory",node)} {
+
+		for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
+			super::getProperty(kwlist[ix],properties[ix]);
+		}
 
 		lock_guard<recursive_mutex> lock(Python::guard);
 
@@ -185,6 +201,46 @@
 
 	std::string Python::Agent::to_string() const noexcept {
 		return Python::to_string(value);
+	}
+
+	bool Python::Agent::setProperty(const char *key, const char *value) {
+
+		for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
+			if(!strcasecmp(key,kwlist[ix])) {
+
+				// Store value.
+				properties[ix] = value;
+
+				// Update object.
+				switch(ix) {
+					case Python::Agent::Name:
+						rename(properties[ix].c_str());
+						break;
+
+					case Python::Agent::Label:
+						Udjat::Object::properties.label = properties[ix].c_str();
+						break;
+
+					case Python::Agent::Summary:
+						Udjat::Object::properties.summary = properties[ix].c_str();
+						break;
+
+					case Python::Agent::Icon:
+						Udjat::Object::properties.icon = properties[ix].c_str();
+						break;
+
+					case Python::Agent::Url:
+						Udjat::Object::properties.url = properties[ix].c_str();
+						break;
+
+				}
+
+				return true;
+
+			}
+		}
+
+		return super::setProperty(key,value);
 	}
 
  }

@@ -51,8 +51,20 @@
 
 		};
 
+		enum Property : uint8_t {
+			Name,
+			Label,
+			Summary,
+			Icon,
+			Url,
+
+			PropertyCount
+		};
+
 		Agent(const char *pysource,const XML::Node &node);
 		~Agent() override;
+
+		bool setProperty(const char *key, const char *value) override;
 
 		static std::shared_ptr<Abstract::Agent> Factory(const char *pysource, const XML::Node &node);
 		static std::shared_ptr<Abstract::Agent> Factory(const char *pysource);
@@ -111,6 +123,9 @@
 	private:
 		PyObject * self = nullptr;
 		PyObject * value = nullptr;
+
+		/// @brief Storage for agent properties.
+		std::string properties[PropertyCount];
 
 		/// @brief Agent states.
 		std::vector<std::shared_ptr<Python::State>> states;

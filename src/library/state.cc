@@ -41,16 +41,21 @@
 
  namespace Udjat {
 
-	/*
-		if(!(Object::properties.icon && *Object::properties.icon)) {
-			Object::properties.icon = IconNameFactory(properties.level);
-		}
+	static const char * const kwlist[Python::State::PropertyCount+2] = {
 
-		properties.level = LevelFactory(node);
-		properties.body = String{node,"body",properties.body}.as_quark();
-		options.forward = node.attribute("forward-to-children").as_bool(options.forward);
+		// Object properties
+		"name",
+		"label",
+		"summary",
+		"body",
+		"icon",
+		"url",
 
-	*/
+		// Extra values
+		"level",
+		NULL
+
+	};
 
 	Python::State::State(const XML::Node &node, const Type type) : Udjat::Abstract::State{node} {
 
@@ -69,6 +74,10 @@
 			);
 			break;
 
+		}
+
+		for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
+			Udjat::Abstract::State::getProperty(kwlist[ix],properties[ix]);
 		}
 
 	}
@@ -103,21 +112,6 @@
  // ---------------------------------------------------------------------------------------
  // Python bindings
  // ---------------------------------------------------------------------------------------
-
- static const char * const kwlist[Python::State::PropertyCount+2] = {
-
-	// Object properties
-	"name",
-	"label",
-	"summary",
-	"body",
-	"icon",
-	"url",
-
-	// Extra values
-	"level",
-	NULL
- };
 
  UDJAT_PRIVATE int state_init(PyObject *self, PyObject *args, PyObject *kwds) {
 
@@ -190,9 +184,47 @@
 
  bool Python::State::setProperty(const char *key, const char *value) {
 
+	debug(key,"='",value,"'");
+
+	if(!strcasecmp(key,"level")) {
+		Abstract::State::properties.level = LevelFactory(value);
+		return true;
+	}
+
 	for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
 		if(!strcasecmp(key,kwlist[ix])) {
+
+			// Store value.
 			properties[ix] = value;
+
+			// Update object.
+			switch(ix) {
+				case Python::State::Name:
+					rename(properties[ix].c_str());
+					break;
+
+				case Python::State::Label:
+					Udjat::Object::properties.label = properties[ix].c_str();
+					break;
+
+				case Python::State::Summary:
+					Udjat::Object::properties.summary = properties[ix].c_str();
+					break;
+
+				case Python::State::Body:
+					Abstract::State::properties.body = properties[ix].c_str();
+					break;
+
+				case Python::State::Icon:
+					Udjat::Object::properties.icon = properties[ix].c_str();
+					break;
+
+				case Python::State::Url:
+					Udjat::Object::properties.url = properties[ix].c_str();
+					break;
+
+			}
+
 			return true;
 		}
 	}
@@ -201,6 +233,11 @@
  }
 
  bool Python::State::getProperty(const char *key, std::string &value) const {
+
+	if(!strcasecmp(key,"level")) {
+		value = std::to_string(Abstract::State::properties.level);
+		return true;
+	}
 
 	for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
 		if(!strcasecmp(key,kwlist[ix])) {
