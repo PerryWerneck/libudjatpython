@@ -343,6 +343,11 @@
 	if(object_has_private(self)) {
 
 		auto agent = object_get_private<Python::Agent>(self);
+
+		/*
+
+		// Unnecessary, object_setattr will call setProperty
+
 		switch(String{PyUnicode_AsUTF8(attr)}.select("value","name","label","summary","url","icon",NULL)) {
 		case 0:	// Value.
 			agent->set_value(value);
@@ -369,6 +374,7 @@
 			return 0;
 
 		}
+		*/
 
 	}
 	
@@ -393,12 +399,17 @@
 				return Python::State::factory(agent->state());
 			}
 
+			/*
+			
+			Unnecessary, object_getproperty will call
+
 			string response;
 			if(agent->getProperty(attrname,response)) {
 				return PyUnicode_FromString(
 					response.c_str()
 				);
 			}
+			*/
 
 		} catch(const std::exception &e) {
 
@@ -414,7 +425,7 @@
 	
 	}
 
-	return PyObject_GenericGetAttr(self, attr);
+	return object_getattr(self, attr);
 
  }
 

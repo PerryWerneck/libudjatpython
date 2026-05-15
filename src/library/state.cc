@@ -120,8 +120,6 @@
 	if(kwds) {
 
 		// Building state with a list of properties.
-
-		PyObject *prop_list = NULL;
 		// Format String Breakdown:
 		// '|' -> Makes everything after it optional
 		// 'O' -> PyObject* (Properties List)
@@ -154,7 +152,7 @@
 
 		try {
 
-			auto state = make_shared<Python::State>("python",level);
+			auto state = make_shared<Python::State>(props[Python::State::Name],level.c_str());
 
 			for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
 				state->setProperty(kwlist[ix],props[ix]);

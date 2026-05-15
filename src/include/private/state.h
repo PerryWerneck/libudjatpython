@@ -43,12 +43,11 @@
 			rename(name);	
 		}
 
-		State(const char *name, const char *level, const char *summary, const char *body)
+		State(const char *name, const char *level)
 			: Udjat::Abstract::State{"python",level} {
 			rename(name);
-			properties[Property::Summary] = summary;
-			properties[Property::Body] = body;
 		}
+
 	public:
 
 		enum Property : uint8_t {
@@ -115,6 +114,7 @@
  UDJAT_PRIVATE int		  state_init(PyObject *self, PyObject *args, PyObject *kwds);
  UDJAT_PRIVATE void		  state_finalize(PyObject *self);
  UDJAT_PRIVATE int 		  state_setattr(PyObject *self, PyObject *attr, PyObject *value);
+ UDJAT_PRIVATE PyObject * state_getattr(PyObject *self, PyObject *attr);
 
  #ifdef __cplusplus
 	}

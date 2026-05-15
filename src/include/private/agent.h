@@ -65,6 +65,7 @@
 		~Agent() override;
 
 		bool setProperty(const char *key, const char *value) override;
+		bool getProperty(const char *key, std::string &value) const override;
 
 		static std::shared_ptr<Abstract::Agent> Factory(const char *pysource, const XML::Node &node);
 		static std::shared_ptr<Abstract::Agent> Factory(const char *pysource);
@@ -102,22 +103,6 @@
 			Udjat::Abstract::Agent::rename(value);
 		}
 
-		inline void label(const char *value) {
-			properties.label = value;
-		}
-
-		inline void summary(const char *value) {
-			properties.summary = value;
-		}
-
-		inline void url(const char *value) {
-			properties.url = value;
-		}
-
-		inline void icon(const char *value) {
-			properties.icon = value;
-		}
-	
 		bool setup(const XML::Node &node) override;
 
 	private:
