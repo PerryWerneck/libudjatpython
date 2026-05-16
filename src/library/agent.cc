@@ -81,7 +81,7 @@
 	Python::Agent::Agent(const char *pysource,const XML::Node &node) 
 		: self{Python::factory(pysource,"AgentFactory",node)} {
 
-		for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
+		for(size_t ix = 0; ix < Python::Agent::PropertyCount; ix++) {
 			super::getProperty(kwlist[ix],properties[ix]);
 		}
 
@@ -203,9 +203,19 @@
 		return Python::to_string(value);
 	}
 
+	bool Python::Agent::getProperty(const char *key, std::string &value) const {
+		for(size_t ix = 0; ix < Python::Agent::PropertyCount; ix++) {
+			if(!strcasecmp(key,kwlist[ix])) {
+				value = properties[ix];
+				return true;
+			}
+		}
+		return super::getProperty(key,value);
+	}
+
 	bool Python::Agent::setProperty(const char *key, const char *value) {
 
-		for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
+		for(size_t ix = 0; ix < Python::Agent::PropertyCount; ix++) {
 			if(!strcasecmp(key,kwlist[ix])) {
 
 				// Store value.

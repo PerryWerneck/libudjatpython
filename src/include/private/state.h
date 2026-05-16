@@ -38,17 +38,10 @@
  namespace Udjat::Python {
 
 	class UDJAT_API State : public Udjat::Abstract::State {
-	protected:
-		State(const char *name = "Python") : Udjat::Abstract::State{"python"}  {	
-			rename(name);	
-		}
-
-		State(const char *name, const char *level)
-			: Udjat::Abstract::State{"python",level} {
-			rename(name);
-		}
-
 	public:
+
+		State(const char *level) : Udjat::Abstract::State{"python",level} {
+		}
 
 		enum Property : uint8_t {
 			Name,
@@ -86,6 +79,12 @@
 
 		inline bool operator!=(PyObject *obj) const {
 			return !Python::compare(this->current_value,obj);
+		}
+
+		void set(PyObject *value);
+
+		PyObject * get() const {
+			return current_value;
 		}
 
 		inline void rename(const char *value) {

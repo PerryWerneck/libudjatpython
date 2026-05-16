@@ -107,6 +107,14 @@
 		return state;
 	}
 
+	void Python::State::set(PyObject *value) {
+		Py_DecRef(this->current_value);
+		this->current_value = value;
+		if(this->current_value) {
+			Py_IncRef(this->current_value);
+		}
+	}
+
  }
 
  // ---------------------------------------------------------------------------------------
@@ -152,7 +160,7 @@
 
 		try {
 
-			auto state = make_shared<Python::State>(props[Python::State::Name],level.c_str());
+			auto state = make_shared<Python::State>(level.c_str());
 
 			for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
 				state->setProperty(kwlist[ix],props[ix]);
@@ -161,6 +169,8 @@
 			pyAbstractObject *object = ((pyAbstractObject *) self);
 			if(!object->pvt->object) {
 				object->pvt->object = state;
+			} else {
+				Logger::String{"Python State object double initialization detected"}.error("python");
 			}
 
 		} catch(const std::exception &e) {
@@ -252,6 +262,7 @@
 
  }
 
+ /*
  static PyObject * call(PyObject *self,const std::function<PyObject *(Udjat::Abstract::State &state)> &callback) {
 
 	try {
@@ -270,5 +281,30 @@
 
 	return NULL;
 	
+ }
+ */
+
+ UDJAT_PRIVATE int state_setattr(PyObject *self, PyObject *attr, PyObject *value) {
+	if(!strcmp(PyUnicode_AsUTF8(attr),"value")) {
+		if(!object_has_private(self	)) {
+			PyErr_SetString(PyExc_RuntimeError, _("Object is empty"));
+			return -1;
+		}
+		auto state = object_get_private<Python::State>(self);
+		state->set(value);
+		return 0;
+	}
+	return object_setattr(self, attr, value);
+ }
+
+ UDJAT_PRIVATE PyObject * state_getattr(PyObject *self, PyObject *attr) {
+	if(!strcmp(PyUnicode_AsUTF8(attr),"value")) {
+		if(!object_has_private(self)) {
+			PyErr_SetString(PyExc_RuntimeError, _("Object is empty"));
+			return NULL;
+		}
+		return object_get_private<Python::State>(self)->get();
+	}
+	return object_getattr(self, attr);
  }
 
