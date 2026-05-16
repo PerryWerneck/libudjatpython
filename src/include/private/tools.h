@@ -65,11 +65,14 @@
 	UDJAT_PRIVATE PyObject * call(int required_args, PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
 	UDJAT_PRIVATE PyObject * call(int required_args, PyObject *args, const std::function<void (PyObject *args)> &callback) noexcept;
 
-	UDJAT_PRIVATE std::string to_string(PyObject *value) noexcept;
 	UDJAT_PRIVATE bool compare(PyObject *a, PyObject *b);
 
 
  }
 
- 
+ namespace std {
+
+	UDJAT_PRIVATE std::string to_string(PyObject *value) noexcept;
+
+ }
  

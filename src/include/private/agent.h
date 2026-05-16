@@ -70,6 +70,8 @@
 		static std::shared_ptr<Abstract::Agent> Factory(const char *pysource, const XML::Node &node);
 		static std::shared_ptr<Abstract::Agent> Factory(const char *pysource);
 
+		PyObject * get_value() const noexcept;
+
 		inline operator PyObject *() const noexcept {
 			return value;
 		}

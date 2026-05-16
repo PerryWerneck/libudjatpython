@@ -4,9 +4,14 @@ from udjat import Agent, State
 
 class SampleAgent(Agent):
 	def setup(self,properties):
-		self.name = "SampleAgent"
+		
 		self.info("Setting up from properties")
-		self.value = 0
+		self.name = "SampleAgent"
+		self.summary = "This is only a sample agent"
+		self.label = "Sample"
+		self.test = 0
+
+		print('value={} ({})'.format(self.value,self.summary));
 
 		st = self.state	
 		print('state: label={} summary={} icon={} level={}'.format(
@@ -20,15 +25,15 @@ class SampleAgent(Agent):
 	
 	def refresh(self,ondemand):
 		self.info("Updating values")
-		print('------------------------------------------------------------')
-		state = State(
-			name= 'sample',
-			level = 'info',
-			label = 'Sample state',
-			summary= 'Summary for sample state',
-			body= 'This is the body for the current state, show a more detailed info',
-			url= 'https://google.com',
-		)
+		#print('------------------------------------------------------------')
+		#state = State(
+		#	name= 'sample',
+		#	level = 'info',
+		#	label = 'Sample state',
+		#	summary= 'Summary for sample state',
+		#	body= 'This is the body for the current state, show a more detailed info',
+		#	url= 'https://google.com',
+		#)
 		print('------------------------------------------------------------')
 		print(self.value)
 		return False

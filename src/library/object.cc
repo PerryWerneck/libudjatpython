@@ -69,15 +69,17 @@
 
  UDJAT_PRIVATE PyObject	* object_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds) {
 
-	debug(__FUNCTION__," args=",Py_TYPE(args)->tp_name," argument(s)");
+	debug(__FUNCTION__," ",Py_TYPE(type)->tp_name," args=",Py_TYPE(args)->tp_name," argument(s)");
 	
 	if (PyErr_Occurred()) {
+		debug(__FUNCTION__,": PyErr_Occurred()")
         return NULL; // Exit early if something else already failed
     }
 
 	PyObject *self = type->tp_alloc(type,0);
 	((pyAbstractObject *) self)->pvt = new ObjectPrivate();
 
+	debug(__FUNCTION__,": returning ",Py_TYPE(self)->tp_name);
 	return self;
  }
 
@@ -92,13 +94,15 @@
 
 
  UDJAT_PRIVATE int object_setattr(PyObject *self, PyObject *attr, PyObject *value) {
-	
-	if(object_has_private(self) && object_get_private<Abstract::Object>(self)->setProperty(PyUnicode_AsUTF8(attr),PyUnicode_AsUTF8(value))) {
+
+	if(object_has_private(self) && object_get_private<Abstract::Object>(self)->setProperty(to_string(attr).c_str(),to_string(value).c_str())) {
+		debug(__FUNCTION__,": ",PyUnicode_AsUTF8(attr),"='",PyUnicode_AsUTF8(value),"'");
 		return 0;
 	}
 	
 	return PyObject_GenericSetAttr(self, attr, value);
- }
+
+}
 
 
  UDJAT_PRIVATE PyObject * object_getattr(PyObject *self, PyObject *attr) {

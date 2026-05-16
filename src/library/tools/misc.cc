@@ -106,34 +106,6 @@
 		
 	}
 
-	std::string Python::to_string(PyObject *value) noexcept {
-
-		if(!value) {
-			return "";
-		}
-
-		lock_guard<recursive_mutex> lock(Python::guard);
-
-		if (PyUnicode_Check(value)) {
-    		// It is a Python string (str)		
-			return PyUnicode_AsUTF8(value);
-		}
-
-		if (PyLong_Check(value)) {
-			// It is a Python int (or a subclass of int)
-			return std::to_string(PyLong_AsLong(value));
-		}
-
-		// It's an object, convert it.
-		auto pyStr = make_handle(PyObject_Str(value));
-		if(!pyStr) {
-			return "";
-		}
-
-		return PyUnicode_AsUTF8(pyStr.get());
-
-	}
-
 	bool Python::compare(PyObject *a, PyObject *b) {
 
 		if(a == b) {
@@ -168,3 +140,35 @@
 	}
 
  }
+
+ namespace std {
+
+ 	string to_string(PyObject *value) noexcept {
+
+		if(!value) {
+			return "";
+		}
+
+		lock_guard<recursive_mutex> lock(Udjat::Python::guard);
+
+		if (PyUnicode_Check(value)) {
+    		// It is a Python string (str)		
+			return PyUnicode_AsUTF8(value);
+		}
+
+		if (PyLong_Check(value)) {
+			// It is a Python int (or a subclass of int)
+			return std::to_string(PyLong_AsLong(value));
+		}
+
+		// It's an object, convert it.
+		auto pyStr = Udjat::Python::make_handle(PyObject_Str(value));
+		if(!pyStr) {
+			return "";
+		}
+
+		return PyUnicode_AsUTF8(pyStr.get());
+
+	}
+
+}

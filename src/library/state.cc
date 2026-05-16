@@ -86,12 +86,19 @@
 	}
 
 	std::string Python::State::value() const {
-		return Python::to_string(current_value);
+		return std::to_string(current_value);
 	}
 
 	PyObject * Python::State::factory(std::shared_ptr<Abstract::State> st) {
 
+		debug(__FUNCTION__);
+
 		lock_guard<recursive_mutex> lock(guard);
+
+		if (PyErr_Occurred()) {
+			debug(__FUNCTION__,": PyErr_Occurred()")
+			throw runtime_error(exception());
+	    }
 
 		debug("Building state from native object...");
 		auto state = PyObject_CallFunction((PyObject*)&state_type, "O", Py_None);

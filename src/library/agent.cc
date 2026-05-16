@@ -200,7 +200,17 @@
 	}
 
 	std::string Python::Agent::to_string() const noexcept {
-		return Python::to_string(value);
+		if(this->value) {
+			return std::to_string(value);
+		}
+		return "";
+	}
+
+	PyObject * Python::Agent::get_value() const noexcept {
+		if(this->value) {
+			return this->value;
+		}
+		return Py_None;
 	}
 
 	bool Python::Agent::getProperty(const char *key, std::string &value) const {
@@ -349,49 +359,24 @@
  }
 
  UDJAT_PRIVATE int agent_setattr(PyObject *self, PyObject *attr, PyObject *value) {
-	
-	if(object_has_private(self)) {
+		
+	if(!strcmp(std::to_string(attr).c_str(),"value")) {
+		debug("Updating internal value");
 
-		auto agent = object_get_private<Python::Agent>(self);
-
-		/*
-
-		// Unnecessary, object_setattr will call setProperty
-
-		switch(String{PyUnicode_AsUTF8(attr)}.select("value","name","label","summary","url","icon",NULL)) {
-		case 0:	// Value.
-			agent->set_value(value);
-			return 0;
-
-		case 1: // Name.
-			agent->rename(String{PyUnicode_AsUTF8(value)}.as_quark());
-			return 0;
-
-		case 2: // Label.
-			agent->label(String{PyUnicode_AsUTF8(value)}.as_quark());
-			return 0;
-
-		case 3: // Summary.
-			agent->summary(String{PyUnicode_AsUTF8(value)}.as_quark());
-			return 0;
-
-		case 4: // URL.
-			agent->url(String{PyUnicode_AsUTF8(value)}.as_quark());
-			return 0;
-
-		case 5: // Icon.
-			agent->icon(String{PyUnicode_AsUTF8(value)}.as_quark());
-			return 0;
-
-		}
-		*/
-
+		return 0;
 	}
-	
+
 	return object_setattr(self, attr, value);
  }
 
  UDJAT_PRIVATE PyObject * agent_getattr(PyObject *self, PyObject *attr) {
+
+	/*
+	if (PyErr_Occurred()) {
+		debug(__FUNCTION__,": PyErr_Occurred()")
+		return NULL;
+	}
+	*/
 
 	const char *attrname = PyUnicode_AsUTF8(attr);
 	debug(__FUNCTION__,"(",attrname,")");
@@ -402,16 +387,17 @@
 
 			auto agent = object_get_private<Python::Agent>(self);
 			if(!strcmp(attrname,"value")) {
-				return (PyObject *) *agent;
+				return agent->get_value();
 			}
 
 			if(!strcmp(attrname,"state")) {
+				debug("Getting selected state");
 				return Python::State::factory(agent->state());
 			}
 
 			/*
 			
-			Unnecessary, object_getproperty will call
+			Unnecessary, object_getattr will call
 
 			string response;
 			if(agent->getProperty(attrname,response)) {
