@@ -134,43 +134,38 @@
 
 	if(kwds) {
 
-		// Building state with a list of properties.
-		// Format String Breakdown:
-		// '|' -> Makes everything after it optional
-		// 'O' -> PyObject* (Properties List)
-		// 's' -> const char* (Host String)
-		// 'i' -> int (Port)
-		// 'i' -> int (Timeout)
-		// 'p' -> int/boolean predicate (Verbose)
-		// 'i' -> int (Retry)
-		const char *props[Python::State::PropertyCount] = {
+		debug("Building state object with ",Py_TYPE(kwds)->tp_name," arguments");
+
+		std::string props[Python::State::PropertyCount+1] = {
 			"python", // name
 			"", // label
 			"", // summary
 			"", // body
 			"", // icon
 			"", // url
+
+			"unimportant", // level
 		};
 
-		std::string level = "unimportant";
+		for(size_t ix = 0; ix < Python::State::PropertyCount+1; ix++) {
 
-		if (!PyArg_ParseTupleAndKeywords(args, kwds, "|sssssss", kwlist, &props[0], &props[1], &props[2], &props[3], &props[4], &props[5], &level)) {
-        	return -1; 
-    	}
+			PyObject* pValue = PyDict_GetItemString(kwds, kwlist[ix]);
 
-#ifdef DEBUG
-		debug("level=",level);
-		for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
-			debug(kwlist[ix],"=",props[ix]);
+			if(pValue && pValue != Py_None) {
+
+				props[ix] = std::to_string(pValue);
+				debug(kwlist[ix],"= '",props[ix].c_str(),"'");
+
+			}
+
 		}
-#endif
 
 		try {
 
-			auto state = make_shared<Python::State>(level.c_str());
+			auto state = make_shared<Python::State>(props[Python::State::PropertyCount].c_str());
 
 			for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
-				state->setProperty(kwlist[ix],props[ix]);
+				state->setProperty(kwlist[ix],props[ix].c_str());
 			}
 
 			pyAbstractObject *object = ((pyAbstractObject *) self);
@@ -193,13 +188,12 @@
 	}
 #endif
 
+	debug(__FUNCTION__," is complete");
 	return 0;
 
  }
 
  bool Python::State::setProperty(const char *key, const char *value) {
-
-	debug(key,"='",value,"'");
 
 	if(!strcasecmp(key,"level")) {
 		Abstract::State::properties.level = LevelFactory(value);
@@ -208,6 +202,8 @@
 
 	for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
 		if(!strcasecmp(key,kwlist[ix])) {
+
+			debug(__FUNCTION__," ",key,"='",value,"'");
 
 			// Store value.
 			properties[ix] = value;
