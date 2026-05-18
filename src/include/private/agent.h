@@ -107,6 +107,10 @@
 
 		bool setup(const XML::Node &node) override;
 
+		inline bool set_state(std::shared_ptr<Python::State> state) {
+			return super::set(state);
+		}
+
 	private:
 		PyObject * self = nullptr;
 		PyObject * value = nullptr;

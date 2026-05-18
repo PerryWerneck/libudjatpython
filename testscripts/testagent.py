@@ -26,7 +26,7 @@ class SampleAgent(Agent):
 	def refresh(self,ondemand):
 		self.info("Updating values")
 		print('------------------------------------------------------------')
-		state = State(
+		self.state = State(
 			name= 'sample',
 			level = 'ready',
 			label = 'Sample state',

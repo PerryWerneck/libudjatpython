@@ -360,29 +360,50 @@
 
  UDJAT_PRIVATE int agent_setattr(PyObject *self, PyObject *attr, PyObject *value) {
 		
-	if(!strcmp(std::to_string(attr).c_str(),"value")) {
-		
-		debug("Updating internal value");
+	try {
 
-		try {
+		if(!strcmp(std::to_string(attr).c_str(),"value")) {
+			
+			debug("Updating internal value");
+
+				auto agent = object_get_private<Udjat::Python::Agent>(self);
+				if(!agent) {
+					PyErr_SetString(PyExc_RuntimeError, _("Cant set value on empty agent"));
+					return -1;
+				}
+
+				agent->set_value(value);
+				return 0;
+
+		} else if(!strcmp(std::to_string(attr).c_str(),"state")) {
 
 			auto agent = object_get_private<Udjat::Python::Agent>(self);
 			if(!agent) {
-				PyErr_SetString(PyExc_RuntimeError, _("Cant set value on empty agent"));
+				PyErr_SetString(PyExc_RuntimeError, _("Cant set state on empty agent"));
 				return -1;
 			}
 
-			agent->set_value(value);
+			if(PyObject_IsInstance(value, (PyObject *) &state_type)) {
+
+				debug("Updating agent state from state object");
+				agent->set_state(object_get_private<Udjat::Python::State>(value));
+				
+			} else {
+
+				debug("Updating agent state from ",Py_TYPE(value)->tp_name," object");
+
+			}
+
 			return 0;
-
-		} catch(const std::exception &e) {
-
-			PyErr_SetString(PyExc_RuntimeError, e.what());
-			return -1;
-
 		}
 
+	} catch(const std::exception &e) {
+
+		PyErr_SetString(PyExc_RuntimeError, e.what());
+		return -1;
+
 	}
+
 
 	return object_setattr(self, attr, value);
  }
