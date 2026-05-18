@@ -361,9 +361,27 @@
  UDJAT_PRIVATE int agent_setattr(PyObject *self, PyObject *attr, PyObject *value) {
 		
 	if(!strcmp(std::to_string(attr).c_str(),"value")) {
+		
 		debug("Updating internal value");
 
-		return 0;
+		try {
+
+			auto agent = object_get_private<Udjat::Python::Agent>(self);
+			if(!agent) {
+				PyErr_SetString(PyExc_RuntimeError, _("Cant set value on empty agent"));
+				return -1;
+			}
+
+			agent->set_value(value);
+			return 0;
+
+		} catch(const std::exception &e) {
+
+			PyErr_SetString(PyExc_RuntimeError, e.what());
+			return -1;
+
+		}
+
 	}
 
 	return object_setattr(self, attr, value);

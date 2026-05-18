@@ -9,7 +9,7 @@ class SampleAgent(Agent):
 		self.name = "SampleAgent"
 		self.summary = "This is only a sample agent"
 		self.label = "Sample"
-		self.test = 0
+		self.value = 0
 
 		print('value={} ({})'.format(self.value,self.summary));
 
@@ -35,7 +35,7 @@ class SampleAgent(Agent):
 		#	url= 'https://google.com',
 		#)
 		print('------------------------------------------------------------')
-		print(self.value)
+		print('self.value={}'.format(self.value))
 		return False
 
 def AgentFactory(properties):

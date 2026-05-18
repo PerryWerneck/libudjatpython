@@ -95,9 +95,18 @@
 
  UDJAT_PRIVATE int object_setattr(PyObject *self, PyObject *attr, PyObject *value) {
 
-	if(object_has_private(self) && object_get_private<Abstract::Object>(self)->setProperty(to_string(attr).c_str(),to_string(value).c_str())) {
-		debug(__FUNCTION__,": ",PyUnicode_AsUTF8(attr),"='",PyUnicode_AsUTF8(value),"'");
-		return 0;
+	try {
+
+		if(object_has_private(self) && object_get_private<Abstract::Object>(self)->setProperty(to_string(attr).c_str(),to_string(value).c_str())) {
+			debug(__FUNCTION__,": ",PyUnicode_AsUTF8(attr),"='",PyUnicode_AsUTF8(value),"'");
+			return 0;
+		}
+
+	} catch(const std::exception &e) {
+
+		PyErr_SetString(PyExc_RuntimeError, e.what());
+		return -1;
+
 	}
 	
 	return PyObject_GenericSetAttr(self, attr, value);
