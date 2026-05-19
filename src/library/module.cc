@@ -30,6 +30,7 @@
  #include <udjat/tools/url/handler/python.h>
  #include <udjat/module/python.h>
  #include <private/modules.h>
+ #include <private/agent.h>
  #include <private/tools.h>
  #include <mutex>
 
@@ -39,23 +40,12 @@
 
 	Udjat::Module * Python::Module::Factory(const char *name) {
 
-		class Module : public Python::Module, private Python::Handler::Factory {
-		private:
-			// PyObject *object = nullptr;
-
+		class Module : public Python::Module, private Python::Handler::Factory, private Python::Agent::Factory {
 		public:
-			Module(const char *name, const char *description) 
-				: Python::Module{name,description} {
+			Module(const char *name, const char *description) : Python::Module{name,description} {
 			}
 
 			virtual ~Module() {
-				/*
-				if(object) {
-					lock_guard<recursive_mutex> guard(Python::guard);
-					Py_DecRef(object);
-					object = nullptr;
-				}
-				*/
 			}
 
 		};
