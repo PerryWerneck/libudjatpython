@@ -67,6 +67,8 @@
 		/// @return The python object for the state.
 		static PyObject * factory(std::shared_ptr<Abstract::State> state);
 
+		static std::shared_ptr<Python::State> factory(PyObject *args);
+
 		std::string value() const override;
 
 		inline bool equal(PyObject *obj) const {

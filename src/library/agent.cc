@@ -390,7 +390,7 @@
 				
 			} else {
 
-				debug("Updating agent state from ",Py_TYPE(value)->tp_name," object");
+				agent->set_state(Python::State::factory(value));
 
 			}
 

@@ -122,6 +122,50 @@
 		}
 	}
 
+	static void load(PyObject *args, std::string props[Python::State::PropertyCount+1]) {
+
+		debug("Building state object with ",Py_TYPE(args)->tp_name," arguments");
+
+		props[0] = "python";
+		props[Python::State::PropertyCount] = "unimportant";
+
+		if(PyDict_Check(args)) {
+
+			// It's a dict, use it.
+			for(size_t ix = 0; ix < Python::State::PropertyCount+1; ix++) {
+
+				PyObject* pValue = PyDict_GetItemString(args, kwlist[ix]);
+
+				if(pValue && pValue != Py_None) {
+
+					props[ix] = std::to_string(pValue);
+					debug(kwlist[ix],"= '",props[ix].c_str(),"'");
+
+				}
+
+			}
+
+		} else {
+
+			throw runtime_error(_("Invalid argument"));
+		}
+
+	}
+
+	std::shared_ptr<Python::State> Python::State::factory(PyObject *args) {
+
+		std::string props[Python::State::PropertyCount+1];
+		load(args,props);
+
+		auto state = make_shared<Python::State>(props[Python::State::PropertyCount].c_str());
+
+		for(size_t ix = 0; ix < Python::State::PropertyCount; ix++) {
+			state->setProperty(kwlist[ix],props[ix].c_str());
+		}
+
+		return state;
+	}
+
  }
 
  // ---------------------------------------------------------------------------------------
@@ -134,33 +178,10 @@
 
 	if(kwds) {
 
-		debug("Building state object with ",Py_TYPE(kwds)->tp_name," arguments");
-
-		std::string props[Python::State::PropertyCount+1] = {
-			"python", // name
-			"", // label
-			"", // summary
-			"", // body
-			"", // icon
-			"", // url
-
-			"unimportant", // level
-		};
-
-		for(size_t ix = 0; ix < Python::State::PropertyCount+1; ix++) {
-
-			PyObject* pValue = PyDict_GetItemString(kwds, kwlist[ix]);
-
-			if(pValue && pValue != Py_None) {
-
-				props[ix] = std::to_string(pValue);
-				debug(kwlist[ix],"= '",props[ix].c_str(),"'");
-
-			}
-
-		}
-
 		try {
+
+			std::string props[Python::State::PropertyCount+1];
+			load(kwds,props);
 
 			auto state = make_shared<Python::State>(props[Python::State::PropertyCount].c_str());
 
