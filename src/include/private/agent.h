@@ -48,7 +48,10 @@
 		public:
 			Factory(const char *name = "python");
 			~Factory() override;
+
 			std::shared_ptr<Abstract::Agent> AgentFactory(const XML::Node &node) const override;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const char *pysource, const XML::Node &node) const;
+			std::shared_ptr<Abstract::Agent> AgentFactory(const char *pysource) const;
 
 		};
 
@@ -68,8 +71,6 @@
 		bool setProperty(const char *key, const char *value) override;
 		bool getProperty(const char *key, std::string &value) const override;
 
-		static std::shared_ptr<Abstract::Agent> Factory(const char *pysource, const XML::Node &node);
-		static std::shared_ptr<Abstract::Agent> Factory(const char *pysource);
 
 		PyObject * get_value() const noexcept;
 

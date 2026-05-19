@@ -147,6 +147,7 @@ py_modules = [
 ]
 
 module_src = [
+  'src/module/init.cc',
 ]
 
 test_src = [
@@ -343,7 +344,7 @@ py_inst.extension_module(
 
 executable(
   meson.project_name(),
-  config_src + test_src,
+  config_src + test_src + module_src,
   install: false,
   link_with : [ dynamic, module ],
   dependencies: [ libudjat, py_dep ],

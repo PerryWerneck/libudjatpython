@@ -64,18 +64,19 @@
 	Python::Agent::Factory::~Factory() {
 	}
 
-	std::shared_ptr<Abstract::Agent> Python::Agent::Factory(const char *pysource, const XML::Node &node) {
+	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const char *pysource, const XML::Node &node) const {
+		lock_guard<recursive_mutex> lock(Python::guard);
 		auto agent = make_shared<Python::Agent>(pysource,node);
 		((pyAbstractObject *) agent->self)->pvt->object = dynamic_pointer_cast<Abstract::Object>(agent);
 		return agent;
 	}
 
-	std::shared_ptr<Abstract::Agent> Python::Agent::Factory(const char *pysource) {
-		return Factory(pysource,XML::Node{});
+	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const char *pysource) const {
+		return AgentFactory(pysource,XML::Node{});
 	}
 
 	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const XML::Node &node) const {
-		return Python::Agent::Factory(XML::AttributeFactory(node,"src").as_string(),node);
+		return AgentFactory(XML::AttributeFactory(node,"src").as_string(),node);
 	}
 
 	Python::Agent::Agent(const char *pysource,const XML::Node &node) 

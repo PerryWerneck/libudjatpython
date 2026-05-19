@@ -53,16 +53,22 @@
 	*/
 
 
-	auto agent = Python::Agent::Factory("testagent");
-	agent->setup(XML::Node());
-	agent->start();
-	agent->refresh();
-	agent->stop();
+	{
+		// auto agent = Python::Agent::Factory("testagent");
+		auto agent = Python::Agent::Factory().AgentFactory("testagent", XML::Node());
+		agent->setup(XML::Node());
+		agent->start();
+		agent->refresh();
+		agent->stop();
+		return 0;
+	}
 
 	/*
 	return loader(argc,argv,[](Application &app) -> int {
 
+		debug("Initializing " PACKAGE_NAME "...");
 		udjat_module_init();
+		debug("... initilization of " PACKAGE_NAME " is complete");
 
 		return 0;
 	});

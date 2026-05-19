@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<udjat>
+
+	<module name='http' preload='yes' required='no' />
+	
+	<agent name='sample1' src='testagent' type='python' value='0' update-timer='10'>
+
+
+	</agent>
+
+	
+</udjat>
