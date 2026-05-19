@@ -41,14 +41,21 @@
  namespace Udjat {
 
 	std::recursive_mutex Python::Guard::guard;
+	size_t Python::Guard::refcount = 0;
 
 	Python::Guard::Guard() {
 		guard.lock();
-		gstate = PyGILState_Ensure();
+		if(refcount++ == 0) {
+			debug("Acquiring GIL lock");
+			gstate = PyGILState_Ensure();
+		}
 	}
 
 	Python::Guard::~Guard() {
-		PyGILState_Release(gstate);
+		if(--refcount == 0) {
+			debug("Releasing GIL lock");
+			PyGILState_Release(gstate);	
+		}
 		guard.unlock();
 	}
 
@@ -91,15 +98,18 @@
 			throw runtime_error("Unable to initialize python interpreter");
 		}
 
+		main_state = PyEval_SaveThread();
 	}
 
 	Python::Interpreter::~Interpreter() {
 		Logger::String{"Deinitializing python " PY_VERSION " interpreter"}.info();
 
-		Python::Guard guard;
+		lock_guard<recursive_mutex> guard(Python::Guard::guard);
 
+		PyEval_RestoreThread(main_state);
 		PyConfig_Clear(&config);
 		Py_Finalize();
+		
 	}
 
 	int Python::Interpreter::run(const char *, const char *script_text) {

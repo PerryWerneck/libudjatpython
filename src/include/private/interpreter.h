@@ -43,6 +43,7 @@
 
 			PyConfig config;
 			PyStatus status;
+			PyThreadState* main_state; 
 
 			Interpreter();
 

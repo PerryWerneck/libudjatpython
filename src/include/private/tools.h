@@ -34,9 +34,10 @@
 
  namespace Udjat::Python {
 
-	class UDJAT_PRIVATE Guard {
+	class UDJAT_API Guard {
 	private:
 		PyGILState_STATE gstate;
+		static size_t refcount;
 
 	public:
 		static std::recursive_mutex guard;
