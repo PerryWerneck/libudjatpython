@@ -5,6 +5,8 @@ from udjat import Agent, State
 class SampleAgent(Agent):
 	def setup(self,properties):
 		
+		print("-----> Setting up agent")
+
 		self.info("Setting up from properties")
 		self.name = "SampleAgent"
 		self.summary = "This is only a sample agent"
@@ -24,7 +26,7 @@ class SampleAgent(Agent):
 		return super().setup(properties)
 	
 	def refresh(self,ondemand):
-		self.info("Updating values")
+		self.info("-----> Updating agent value")
 		print('------------------------------------------------------------')
 		#self.state = State(
 		#	name= 'sample',
