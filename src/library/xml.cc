@@ -37,7 +37,7 @@
 
  PyObject * Udjat::Python::factory(const char *pysource, const char *method, const XML::Node &node) {
 
-	lock_guard<recursive_mutex> lock(guard);
+	Python::Guard guard;
 
 	debug("Creating object from ",pysource," using ",method,"(settings)");
 	auto module = Python::make_handle(PyImport_ImportModule(pysource));
@@ -78,7 +78,7 @@
 
  std::shared_ptr<PyObject> Udjat::Python::factory(const Udjat::XML::Node &node) {
 
-	lock_guard<recursive_mutex> lock(guard);
+	Python::Guard guard;
 
 	debug("Building settings...");
 	auto settings = make_handle(PyObject_CallFunction((PyObject*)&xml_type, "O", Py_None));
@@ -99,7 +99,7 @@
 
  UDJAT_PRIVATE PyObject * Udjat::Python::call(PyObject *self, const char *method, const Udjat::XML::Node &node) {
 
-	lock_guard<recursive_mutex> lock(guard);
+	Python::Guard guard;
 
 	debug("Searching for '",method,"'");
 

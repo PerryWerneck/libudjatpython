@@ -65,7 +65,8 @@
 	}
 
 	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const char *pysource, const XML::Node &node) const {
-		lock_guard<recursive_mutex> lock(Python::guard);
+		debug(__FUNCTION__);
+		Python::Guard guard;
 		auto agent = make_shared<Python::Agent>(pysource,node);
 		((pyAbstractObject *) agent->self)->pvt->object = dynamic_pointer_cast<Abstract::Object>(agent);
 		return agent;
@@ -86,7 +87,7 @@
 			super::getProperty(kwlist[ix],properties[ix]);
 		}
 
-		lock_guard<recursive_mutex> lock(Python::guard);
+		Python::Guard guard;
 
 		debug("Initializing ",Py_TYPE(self)->tp_name);
 
@@ -103,7 +104,7 @@
 
 	std::shared_ptr<Abstract::State> Python::Agent::computeState() {
 
-		lock_guard<recursive_mutex> lock(Python::guard);
+		Python::Guard guard;
 
 		for(auto state : states) {
 			if(state->equal(value)) {
@@ -115,7 +116,7 @@
 
 	std::shared_ptr<Abstract::State> Python::Agent::StateFactory(const XML::Node &node) {
 
-		lock_guard<recursive_mutex> lock(Python::guard);
+		Python::Guard guard;
 
 		if(!value) {
 			throw logic_error(_("Cant factory state for empty agent"));
@@ -143,7 +144,7 @@
 
 	void Python::Agent::set_value(PyObject *value) {
 
-		lock_guard<recursive_mutex> lock(Python::guard);
+		Python::Guard guard;
 
 		if(Python::compare(this->value,value)) {
 			// Objects are equal
@@ -182,7 +183,7 @@
 
 	void Python::Agent::stop() {
 		debug(__FUNCTION__);
-		lock_guard<recursive_mutex> lock(Python::guard);
+		Python::Guard guard;
 		Python::call(self,"stop");
 		super::stop();
 	}
@@ -195,7 +196,7 @@
 			return true;
 		}
 
-		lock_guard<recursive_mutex> lock(Python::guard);
+		Python::Guard guard;
 
 		try {
 

@@ -34,7 +34,16 @@
 
  namespace Udjat::Python {
 
-	extern UDJAT_PRIVATE std::recursive_mutex guard;
+	class UDJAT_PRIVATE Guard {
+	private:
+		PyGILState_STATE gstate;
+
+	public:
+		static std::recursive_mutex guard;
+		Guard();
+		~Guard();
+
+	};
 
 	std::shared_ptr<PyObject> make_handle(PyObject *self);
 

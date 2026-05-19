@@ -29,27 +29,26 @@
  #include <udjat/tools/memory.h>
  #include <udjat/tools/xml.h>
  #include <udjat/tools/logger.h>
+ #include <private/tools.h>
  #include <memory>
 
  using namespace std;
 
  namespace Udjat {
 
-	UDJAT_PRIVATE std::recursive_mutex Python::guard;
-
 	static void decref(PyObject *self) {
-		lock_guard<recursive_mutex> lock(Python::guard);
+		Python::Guard guard;
 		Py_DecRef(self);
 	}
 
 	std::shared_ptr<PyObject> Python::make_handle(PyObject *self) {
-		lock_guard<recursive_mutex> lock(guard);
+		Python::Guard guard;
 		return Udjat::make_handle(self,decref);
 	}
 
 	std::string Python::exception(bool write_to_log) {
 
-		lock_guard<recursive_mutex> lock(guard);
+		Python::Guard guard;
 
 		string response;
 
@@ -116,7 +115,7 @@
 			return false;
 		}
 
-		lock_guard<recursive_mutex> lock(Python::guard);
+		Python::Guard guard;
 
 		int result = PyObject_RichCompareBool(a, b, Py_EQ);
 
@@ -149,7 +148,7 @@
 			return "";
 		}
 
-		lock_guard<recursive_mutex> lock(Udjat::Python::guard);
+		Udjat::Python::Guard guard;
 
 		if (PyUnicode_Check(value)) {
     		// It is a Python string (str)		

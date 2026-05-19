@@ -40,6 +40,18 @@
 
  namespace Udjat {
 
+	std::recursive_mutex Python::Guard::guard;
+
+	Python::Guard::Guard() {
+		guard.lock();
+		gstate = PyGILState_Ensure();
+	}
+
+	Python::Guard::~Guard() {
+		PyGILState_Release(gstate);
+		guard.unlock();
+	}
+
 	Python::Interpreter & Python::Interpreter::getInstance() {
 		static Interpreter instance;
 		return instance;
@@ -48,8 +60,9 @@
 	Python::Interpreter::Interpreter() {
 
 		Logger::String{"Initializing python " PY_VERSION " interpreter"}.info();
-		
-		lock_guard<recursive_mutex> lock(guard);
+
+		// PyGILState cant be called before PyInitialize, then, I'm using just the semaphore here.
+		lock_guard<recursive_mutex> guard(Python::Guard::guard);
 
 		// Initialize the config with default Python settings
 		PyConfig_InitPythonConfig(&config);
@@ -83,7 +96,7 @@
 	Python::Interpreter::~Interpreter() {
 		Logger::String{"Deinitializing python " PY_VERSION " interpreter"}.info();
 
-		lock_guard<recursive_mutex> lock(guard);
+		Python::Guard guard;
 
 		PyConfig_Clear(&config);
 		Py_Finalize();
@@ -91,7 +104,7 @@
 
 	int Python::Interpreter::run(const char *, const char *script_text) {
 
-		lock_guard<recursive_mutex> lock(guard);
+		Python::Guard guard;
 
 		int rc = PyRun_SimpleString(script_text);
 		if (PyErr_Occurred()) {
@@ -110,7 +123,7 @@
 
 	int Python::Interpreter::run(const char *, const char *script_text, const std::function<bool(uint64_t current, uint64_t total, const void *data, size_t len)> &progress) {
 
-		lock_guard<recursive_mutex> lock(guard);
+		Python::Guard guard;
 
 		int rc;
 
@@ -143,7 +156,7 @@
 
 	PyObject * Python::Interpreter::import(const char *pysource) {
 
-		lock_guard<recursive_mutex> lock(guard);
+		Python::Guard guard;
 
 		PyObject *pName = PyUnicode_FromString(pysource);
  		PyObject* pModule = PyImport_Import(pName);
@@ -159,7 +172,7 @@
 
 	PyObject * Python::Interpreter::module(const char *module_name) {
 
-		lock_guard<recursive_mutex> lock(guard);
+		Python::Guard guard;
 
 		return PyImport_ImportModule(module_name);
 	}

@@ -39,7 +39,7 @@
 
 	PyObject * Python::ObjectFactory(const Udjat::Value &value) noexcept {
 
-		lock_guard<recursive_mutex> lock(guard);
+		Python::Guard guard;
 
 		try {
 
@@ -170,7 +170,7 @@
 
 		} else {
 
-			lock_guard<recursive_mutex> lock(Python::guard);
+			Python::Guard guard;
 
 			if (PyUnicode_Check(obj)) {
 

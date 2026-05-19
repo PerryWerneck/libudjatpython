@@ -53,6 +53,7 @@
 	*/
 
 
+	/*
 	{
 		// auto agent = Python::Agent::Factory("testagent");
 		auto agent = Python::Agent::Factory().AgentFactory("testagent", XML::Node());
@@ -62,8 +63,8 @@
 		agent->stop();
 		return 0;
 	}
+	*/
 
-	/*
 	return loader(argc,argv,[](Application &app) -> int {
 
 		debug("Initializing " PACKAGE_NAME "...");
@@ -72,7 +73,6 @@
 
 		return 0;
 	});
-	*/
 
  }
 

@@ -59,7 +59,7 @@
 
 	Python::State::State(const XML::Node &node, const Type type) : Udjat::Abstract::State{node} {
 
-		lock_guard<recursive_mutex> lock(Python::guard);
+		Python::Guard guard;
 
 		switch(type) {
 		case Type::Numeric:
@@ -83,7 +83,7 @@
 	}
 
 	Python::State::~State() {
-		lock_guard<recursive_mutex> lock(Python::guard);
+		Python::Guard guard;
 		if(this->current_value) {
 			Py_DecRef(this->current_value);
 			this->current_value = NULL;
@@ -98,7 +98,7 @@
 
 		debug(__FUNCTION__);
 
-		lock_guard<recursive_mutex> lock(guard);
+		Python::Guard guard;
 
 		if (PyErr_Occurred()) {
 			debug(__FUNCTION__,": PyErr_Occurred()")
@@ -121,7 +121,7 @@
 
 	void Python::State::set(PyObject *value) {
 
-		lock_guard<recursive_mutex> lock(Python::guard);
+		Python::Guard guard;
 
 		if(this->current_value) {
 			Py_DecRef(this->current_value);

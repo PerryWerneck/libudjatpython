@@ -129,7 +129,7 @@
 
 		debug("Calling ",Py_TYPE(self)->tp_name, ".",method_name," without any arguments");
 
-		lock_guard<recursive_mutex> lock(Python::guard);
+		Python::Guard guard;
 
 		auto func = Python::make_handle(PyObject_GetAttrString(self, method_name));
 
@@ -153,7 +153,7 @@
 
 		debug("Calling ",Py_TYPE(self)->tp_name, ".",method_name," with ",args.size()," arguments");
 
-		lock_guard<recursive_mutex> lock(Python::guard);
+		Python::Guard guard;
 
 		auto func = Python::make_handle(PyObject_GetAttrString(self, method_name));
 
