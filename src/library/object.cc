@@ -209,6 +209,8 @@
 
  UDJAT_PRIVATE bool object_setup(PyObject *self, const char *name, const XML::Node &node) {
 
+	debug("----------------------> ",__FUNCTION__);
+	
 	Python::Guard guard;
 
 	auto response = Python::make_handle(Python::call(self, "setup", node));

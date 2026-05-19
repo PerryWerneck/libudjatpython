@@ -46,7 +46,7 @@
 
  namespace Udjat {
 
-	static const char * const kwlist[Python::Agent::PropertyCount+1] = {
+	static const char * const kwlist[Python::Agent::PropertyCount+3] = {
 
 		// Object properties
 		"name",
@@ -55,6 +55,9 @@
 		"icon",
 		"url",
 
+		// Extra properties.
+		"value",
+		"state",
 		NULL
 	};
 
@@ -65,38 +68,33 @@
 	}
 
 	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const char *pysource, const XML::Node &node) const {
+
 		debug(__FUNCTION__);
-		Python::Guard guard;
-		auto agent = make_shared<Python::Agent>(pysource,node);
-		((pyAbstractObject *) agent->self)->pvt->object = dynamic_pointer_cast<Abstract::Object>(agent);
-		return agent;
-	}
-
-	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const char *pysource) const {
-		return AgentFactory(pysource,XML::Node{});
-	}
-
-	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const XML::Node &node) const {
-		return AgentFactory(XML::AttributeFactory(node,"src").as_string(),node);
-	}
-
-	Python::Agent::Agent(const char *pysource,const XML::Node &node) 
-		: self{Python::factory(pysource,"AgentFactory",node)} {
-
-		for(size_t ix = 0; ix < Python::Agent::PropertyCount; ix++) {
-			super::getProperty(kwlist[ix],properties[ix]);
-		}
 
 		Python::Guard guard;
+
+		PyObject *self = Python::factory(pysource,"AgentFactory",node);
 
 		debug("Initializing ",Py_TYPE(self)->tp_name);
 
 		if(!PyObject_IsInstance(self, (PyObject *)&agent_type)) {
 			Py_DecRef(self);
-			self = NULL;
 			throw logic_error(_("The object returned from factory method is not an agent"));
 		}
 
+		return object_get_private<Abstract::Agent>(self);
+
+	}
+
+	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const XML::Node &node) const {
+		return AgentFactory(XML::AttributeFactory(node,"src").as_string(),XML::Node());
+	}
+
+	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const char *pysource) const {
+		return AgentFactory(pysource,XML::Node());
+	}
+
+	Python::Agent::Agent(const XML::Node &node) : Abstract::Agent{node} {
 	}
 
 	Python::Agent::~Agent() {
@@ -171,10 +169,6 @@
 		return false;
 	}
 
-	bool Python::Agent::setup(const XML::Node &node) {
-		return object_setup(self,name(),node);
-	}
-	
 	void Python::Agent::start() {
 		debug(__FUNCTION__);
 		Python::call(self,"start");
@@ -183,7 +177,6 @@
 
 	void Python::Agent::stop() {
 		debug(__FUNCTION__);
-		Python::Guard guard;
 		Python::call(self,"stop");
 		super::stop();
 	}
@@ -294,6 +287,67 @@
  UDJAT_PRIVATE int agent_init(PyObject *self, PyObject *args, PyObject *kwds) {
 
 	debug(__FUNCTION__," ",Py_TYPE(self)->tp_name, " with ",PyTuple_Size(args)," argument(s)");
+
+	try {
+
+		std::shared_ptr<Python::Agent> agent;
+
+		switch(PyTuple_Size(args)) {
+			case 0:	// No arguments, build an empty agent.
+				agent = make_shared<Python::Agent>(XML::Node());
+				break;
+
+			case 1:	// Single argument, should be the XML definition;
+				{
+					PyObject* settings = PyTuple_GetItem(args, 0);
+					if(PyObject_TypeCheck(settings, &xml_type)) {
+
+						agent = make_shared<Python::Agent>(xml_get_native(settings));
+
+					} else {
+
+						throw logic_error(_("Agent requires a XML properties object as argument"));
+
+					}
+
+				}
+				break;
+
+			default:
+				throw logic_error(_("Too many arguments"));
+		}
+
+		if(kwds) {
+
+			
+			/*
+			// Has arguments, load then.
+			std::string props[Python::Agent::PropertyCount];
+
+			// Load current properties.
+			for(size_t ix = 0; ix < Python::Agent::PropertyCount; ix++) {
+				agent->getProperty(kwlist[ix],props[ix]);
+			}
+
+			// Parse arguments
+			load(kwds,props);
+
+			// Set parsed values
+			for(size_t ix = 0; ix < Python::Agent::PropertyCount; ix++) {
+				agent->setProperty(kwlist[ix],props[ix].c_str());
+			}
+			*/
+
+			throw runtime_error("Incomplete");
+
+		}
+
+	} catch(const std::exception &e) {
+
+		PyErr_SetString(PyExc_RuntimeError, e.what());
+		return -1;
+
+	}
 
 	return 0;
 
@@ -478,6 +532,7 @@
 
  }
 
+ /*
  UDJAT_PRIVATE PyObject * agent_setup(PyObject *self, PyObject *args) {
 
 	debug(__FUNCTION__);
@@ -506,3 +561,4 @@
 	});
 
  }
+ */

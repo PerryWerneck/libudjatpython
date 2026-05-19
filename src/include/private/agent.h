@@ -65,12 +65,11 @@
 			PropertyCount
 		};
 
-		Agent(const char *pysource,const XML::Node &node);
+		Agent(const XML::Node &node);
 		~Agent() override;
 
 		bool setProperty(const char *key, const char *value) override;
 		bool getProperty(const char *key, std::string &value) const override;
-
 
 		PyObject * get_value() const noexcept;
 
@@ -105,8 +104,6 @@
 			Udjat::Abstract::Agent::rename(value);
 		}
 
-		bool setup(const XML::Node &node) override;
-
 		inline bool set_state(std::shared_ptr<Python::State> state) {
 			return super::set(state);
 		}
@@ -135,7 +132,6 @@
  UDJAT_PRIVATE int 		  agent_setattr(PyObject *self, PyObject *attr, PyObject *value);
  UDJAT_PRIVATE PyObject * agent_getattr(PyObject *self, PyObject *attr);
 
- UDJAT_PRIVATE PyObject * agent_setup(PyObject *self, PyObject *args);
  UDJAT_PRIVATE PyObject * agent_failed(PyObject *self, PyObject *args);
  UDJAT_PRIVATE PyObject * agent_get_by_path(PyObject *self, PyObject *args);
  UDJAT_PRIVATE PyObject * agent_invalidate(PyObject *self, PyObject *args);
