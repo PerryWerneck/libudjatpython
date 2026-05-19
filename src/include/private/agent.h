@@ -40,6 +40,7 @@
 
 		std::shared_ptr<Abstract::State> computeState() override;
 		Udjat::Value & get(Udjat::Value &value) const override;
+		std::shared_ptr<Abstract::State> StateFactory(const XML::Node &node) override;
 
 	public:
 
@@ -85,8 +86,6 @@
 
 		bool assign(const char *value) override;
 
-		std::shared_ptr<Abstract::State> StateFactory(const XML::Node &node) override;
-	
 		void set_value(PyObject *value);
 
 		inline bool operator==(PyObject *obj) const {

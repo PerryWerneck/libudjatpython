@@ -101,14 +101,40 @@
 	}
 
 	std::shared_ptr<Abstract::State> Python::Agent::computeState() {
+
+		lock_guard<recursive_mutex> lock(Python::guard);
+
 		for(auto state : states) {
-			lock_guard<recursive_mutex> lock(Python::guard);
 			if(state->equal(value)) {
 				return state;
 			}
 		}
 		return super::computeState();
 	}
+
+	std::shared_ptr<Abstract::State> Python::Agent::StateFactory(const XML::Node &node) {
+
+		lock_guard<recursive_mutex> lock(Python::guard);
+
+		if(!value) {
+			throw logic_error(_("Cant factory state for empty agent"));
+		}
+
+		std::shared_ptr<Python::State> state;
+		
+		if (PyLong_Check(value)) {
+			// It is a Python int (or a subclass of int)
+			state = make_shared<Python::State>(node,Python::State::Type::Numeric);
+		} else {
+			// It's an object or a string
+			state = make_shared<Python::State>(node,Python::State::Type::String);
+		}
+
+		states.push_back(state);
+		return state;
+
+	}
+
 
 	Udjat::Value & Python::Agent::get(Udjat::Value &value) const {
 		return Python::get(value,this->value);
@@ -141,12 +167,6 @@
 
 	bool Python::Agent::assign(const char *value) {
 		return false;
-	}
-
-	std::shared_ptr<Abstract::State> Python::Agent::StateFactory(const XML::Node &node) {
-		auto state = make_shared<Python::State>(node);
-		states.push_back(state);
-		return state;
 	}
 
 	bool Python::Agent::setup(const XML::Node &node) {
