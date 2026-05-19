@@ -386,11 +386,16 @@
 			if(PyObject_IsInstance(value, (PyObject *) &state_type)) {
 
 				debug("Updating agent state from state object");
-				agent->set_state(object_get_private<Udjat::Python::State>(value));
+				auto state = object_get_private<Udjat::Python::State>(value);
+				state->set(agent->get_value());
+				agent->set_state(state);
 				
 			} else {
 
-				agent->set_state(Python::State::factory(value));
+				debug("Updating agent with new state");
+				auto state = Python::State::factory(value);
+				state->set(agent->get_value());
+				agent->set_state(state);
 
 			}
 
@@ -403,7 +408,6 @@
 		return -1;
 
 	}
-
 
 	return object_setattr(self, attr, value);
  }
@@ -433,18 +437,6 @@
 				debug("Getting selected state");
 				return Python::State::factory(agent->state());
 			}
-
-			/*
-			
-			Unnecessary, object_getattr will call
-
-			string response;
-			if(agent->getProperty(attrname,response)) {
-				return PyUnicode_FromString(
-					response.c_str()
-				);
-			}
-			*/
 
 		} catch(const std::exception &e) {
 

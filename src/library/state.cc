@@ -83,6 +83,11 @@
 	}
 
 	Python::State::~State() {
+		lock_guard<recursive_mutex> lock(Python::guard);
+		if(this->current_value) {
+			Py_DecRef(this->current_value);
+			this->current_value = NULL;
+		}
 	}
 
 	std::string Python::State::value() const {
@@ -115,8 +120,16 @@
 	}
 
 	void Python::State::set(PyObject *value) {
-		Py_DecRef(this->current_value);
+
+		lock_guard<recursive_mutex> lock(Python::guard);
+
+		if(this->current_value) {
+			Py_DecRef(this->current_value);
+			this->current_value = NULL;
+		}
+
 		this->current_value = value;
+
 		if(this->current_value) {
 			Py_IncRef(this->current_value);
 		}
