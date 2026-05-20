@@ -61,6 +61,8 @@
 	.tp_getattro = value_getattr,
 	.tp_setattro = value_setattr,
 
+	.tp_str = value_str,
+	
 	.tp_methods = value_methods,
 
  };

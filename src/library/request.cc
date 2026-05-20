@@ -95,3 +95,25 @@
 
 	return value_getattr(self,attr);
  }
+
+ /*
+ static PyObject * call(PyObject *self,const std::function<PyObject *(Udjat::Request &object)> &callback) {
+
+	try {
+
+		return callback(Python::value_get_private<Udjat::Request>(self));
+
+	} catch(const std::exception &e) {
+
+		PyErr_SetString(PyExc_RuntimeError, e.what());
+
+	} catch(...) {
+
+		PyErr_SetString(PyExc_RuntimeError, _("Unexpected error in python callback."));
+
+	}
+
+	return NULL;
+
+ }
+ */

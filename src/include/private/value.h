@@ -94,6 +94,8 @@
  UDJAT_PRIVATE int 		  value_setattr(PyObject *self, PyObject *attr, PyObject *value);
  UDJAT_PRIVATE PyObject * value_getattr(PyObject *self, PyObject *attr);
 
+ UDJAT_PRIVATE PyObject * value_str(PyObject *self);
+
  #ifdef __cplusplus
 	}
  #endif // __cplusplus

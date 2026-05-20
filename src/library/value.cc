@@ -115,10 +115,14 @@
 			return Py_None;
 
 		case Udjat::Value::Type::Array:
-			throw runtime_error("Unable to convert array to pyobject");
-
 		case Udjat::Value::Type::Object:
-			throw runtime_error("Unable to convert object to pyobject");
+		case Udjat::Value::Type::Report:
+			{
+				// Return another value object.
+				auto ptr = Python::factory(object);
+				Py_IncRef(ptr.get());
+				return ptr.get();
+			}
 
 		case Udjat::Value::Type::String:
 		case Udjat::Value::Type::Url:
@@ -164,9 +168,6 @@
 				return response ? Py_True : Py_False;
 			}
 
-		case Udjat::Value::Type::Report:
-			throw runtime_error(_("Unexpected value type in python callback."));
-
 		}
 
 		PyErr_SetString(PyExc_RuntimeError, _("Unexpected value type in python callback."));
@@ -186,3 +187,32 @@
 
  }
 
+ static PyObject * call(PyObject *self,const std::function<PyObject *(Udjat::Value &object)> &callback) {
+
+	try {
+
+		return callback(Python::value_get_private<Udjat::Value>(self));
+
+	} catch(const std::exception &e) {
+
+		PyErr_SetString(PyExc_RuntimeError, e.what());
+
+	} catch(...) {
+
+		PyErr_SetString(PyExc_RuntimeError, _("Unexpected error in python callback."));
+
+	}
+
+	return NULL;
+
+ }
+
+ UDJAT_PRIVATE PyObject * value_str(PyObject *self) {
+
+	return call(self,[](Udjat::Value &object) -> PyObject * {
+		return PyUnicode_FromString(
+			object.to_string().c_str()
+		);
+	});
+
+ }
