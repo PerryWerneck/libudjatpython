@@ -50,6 +50,8 @@
  UDJAT_PRIVATE int 		  response_setattr(PyObject *self, PyObject *attr, PyObject *value);
  UDJAT_PRIVATE PyObject * response_getattr(PyObject *self, PyObject *attr);
 
+ UDJAT_PRIVATE PyObject * response_str(PyObject *self);
+
  #ifdef __cplusplus
 	}
  #endif // __cplusplus

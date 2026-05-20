@@ -30,11 +30,13 @@
 
 	/*
     {
-		.ml_name = "get",
-		.ml_meth = (PyCFunction) xml_get,
+		.ml_name = "failed",
+		.ml_meth = (PyCFunction) response_failed,
 		.ml_flags = METH_VARARGS,
-		.ml_doc =	"Get attribute from XML definition\n\n"
-					"get(name,default): Get attribute 'name' from XML definition, use default value if not found\n"
+		.ml_doc =	"Set response as 'failed'\n\n"
+					"failed(message): Send a single message to client\n"
+					"failed(message,details): Send a message and an explanation to client\n"
+					"failed(title,message,details): Send a popup dialog do client\n"
     },
 	*/
 
@@ -62,6 +64,8 @@
 	.tp_getattro = response_getattr,
 	.tp_setattro = response_setattr,
 
+	.tp_str = response_str,
+	
 	.tp_methods = response_methods,
 
  };
