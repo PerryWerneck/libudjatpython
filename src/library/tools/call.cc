@@ -127,6 +127,10 @@
 
 	UDJAT_PRIVATE PyObject * Python::call(PyObject *self, const char *method_name) {
 
+		if(!self) {
+			throw logic_error(_("The object is not binded with python"));
+		}
+		
 		debug("Calling ",Py_TYPE(self)->tp_name, ".",method_name," without any arguments");
 
 		Python::Guard guard;

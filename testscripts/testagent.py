@@ -6,28 +6,22 @@ class SampleAgent(Agent):
 	def __init__(self,properties):
 		super().__init__(properties)
 
+		print('---------------------------------')
+		self.name = "SampleAgent"
+		self.info("Setting up from properties")
+		self.summary = "This is only a sample agent"
+		self.label = "Sample"
+		self.value = 0
 
-#	def setup(self,properties):
-#		
-#		print("-----> Setting up agent")
-#
-#		self.info("Setting up from properties")
-#		self.name = "SampleAgent"
-#		self.summary = "This is only a sample agent"
-#		self.label = "Sample"
-#		self.value = 0
-#
-#		print('value={} ({})'.format(self.value,self.summary));
-#
-#		st = self.state	
-#		print('state: label={} summary={} icon={} level={}'.format(
-#			st.label,
-#			st.summary,
-#			st.icon,
-#			st.level
-#		))
-#
-#		return super().setup(properties)
+		#print('value={} ({})'.format(self.value,self.summary));
+
+		#st = self.state	
+		#print('state: label={} summary={} icon={} level={}'.format(
+		#	st.label,
+		#	st.summary,
+		#	st.icon,
+		#	st.level
+		#))
 	
 	def refresh(self,ondemand):
 		self.info("-----> Updating agent value")

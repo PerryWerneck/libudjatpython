@@ -65,7 +65,7 @@
 			PropertyCount
 		};
 
-		Agent(const XML::Node &node);
+		Agent(PyObject *self,const XML::Node &node);
 		~Agent() override;
 
 		bool setProperty(const char *key, const char *value) override;

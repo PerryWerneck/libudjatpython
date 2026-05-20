@@ -99,7 +99,7 @@
 		return AgentFactory(pysource,XML::Node());
 	}
 
-	Python::Agent::Agent(const XML::Node &node) : Abstract::Agent{node} {
+	Python::Agent::Agent(PyObject *s, const XML::Node &node) : Abstract::Agent{node}, self{s} {
 	}
 
 	Python::Agent::~Agent() {
@@ -299,7 +299,7 @@
 
 		switch(PyTuple_Size(args)) {
 			case 0:	// No arguments, build an empty agent.
-				agent = make_shared<Python::Agent>(XML::Node());
+				agent = make_shared<Python::Agent>(self, XML::Node());
 				break;
 
 			case 1:	// Single argument, should be the XML definition;
@@ -307,7 +307,7 @@
 					PyObject* settings = PyTuple_GetItem(args, 0);
 					if(PyObject_TypeCheck(settings, &xml_type)) {
 
-						agent = make_shared<Python::Agent>(xml_get_native(settings));
+						agent = make_shared<Python::Agent>(self, xml_get_native(settings));
 
 					} else {
 
@@ -321,6 +321,8 @@
 			default:
 				throw logic_error(_("Too many arguments"));
 		}
+
+		((pyAbstractObject *) self)->pvt->object = agent;
 
 		if(kwds) {
 
