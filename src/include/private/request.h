@@ -47,8 +47,10 @@
  UDJAT_PRIVATE void		  request_dealloc(PyObject * self);
  UDJAT_PRIVATE int		  request_init(PyObject *self, PyObject *args, PyObject *kwds);
  UDJAT_PRIVATE void		  request_finalize(PyObject *self);
- UDJAT_PRIVATE int 		  request_setattr(PyObject *self, PyObject *attr, PyObject *value);
  UDJAT_PRIVATE PyObject * request_getattr(PyObject *self, PyObject *attr);
+ UDJAT_PRIVATE PyObject * request_str(PyObject *self);
+
+ UDJAT_PRIVATE PyObject * request_header(PyObject *self, PyObject *args);
 
  #ifdef __cplusplus
 	}

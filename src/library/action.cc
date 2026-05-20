@@ -56,6 +56,7 @@
 	};
 
 	Python::Action::Factory::Factory(const char *name) : Udjat::Action::Factory{name} {
+		debug("****************************** Registering action factory '",name,"'");
 	}
 
 	Python::Action::Factory::~Factory() {

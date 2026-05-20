@@ -3,10 +3,16 @@
 
 	<module name='http' preload='yes' required='no' />
 	
-	<agent name='sample1' src='testagent' type='python' value='0' update-timer='10'>
+	<agent name='sample1' src='testpython' type='python' value='0' update-timer='10'>
 
 		<state name='v0' value='0' summary='The agent value is 0' level='ready' />
-		<state name='v1' value='1' summary='The agent value is 1' level='ready' />
+
+		<state name='v1' value='1' summary='The agent value is 1' level='ready'>
+
+			<action name='v1-trigger' type='python' src='testpython' />
+
+		</state>
+
 		<state name='v2' value='2' summary='The agent value is 2' level='ready' />
 		<state name='v3' value='3' summary='The agent value is 3' level='ready' />
 

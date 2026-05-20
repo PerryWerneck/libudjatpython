@@ -28,15 +28,13 @@
 
  static PyMethodDef request_methods[] = {
 
-	/*
     {
-		.ml_name = "get",
-		.ml_meth = (PyCFunction) xml_get,
+		.ml_name = "header",
+		.ml_meth = (PyCFunction) request_header,
 		.ml_flags = METH_VARARGS,
-		.ml_doc =	"Get attribute from XML definition\n\n"
-					"get(name,default): Get attribute 'name' from XML definition, use default value if not found\n"
+		.ml_doc =	"Get header value from request\n\n"
+					"header('User-Agent'): Get value of 'User-Agent' header on this request, empty string if not found\n"
     },
-	*/
 
     {
     	NULL
@@ -58,6 +56,8 @@
 
 	.tp_init = request_init,
 	.tp_finalize = request_finalize,
+
+	.tp_str = request_str,
 
 	.tp_getattro = request_getattr,
 

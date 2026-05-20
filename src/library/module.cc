@@ -23,6 +23,10 @@
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
 
+ #ifndef DEBUG 
+	#error aqui
+ #endif
+
  #include <udjat/defs.h>
  #include <udjat/module/abstract.h>
  #include <udjat/tools/logger.h>
@@ -44,6 +48,7 @@
 		class Module : public Python::Module, private Python::Handler::Factory, private Python::Agent::Factory, private Python::Action::Factory {
 		public:
 			Module(const char *name, const char *description) : Python::Module{name,description} {
+				debug("Building python module");
 			}
 
 			virtual ~Module() {

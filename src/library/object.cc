@@ -209,7 +209,7 @@
 
  UDJAT_PRIVATE bool object_setup(PyObject *self, const char *name, const XML::Node &node) {
 
-	debug("----------------------> ",__FUNCTION__);
+	debug(__FUNCTION__);
 	
 	Python::Guard guard;
 

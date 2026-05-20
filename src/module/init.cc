@@ -31,7 +31,7 @@
 
  /// @brief Register udjat module.
  UDJAT_API Udjat::Module * udjat_module_init() {
-	debug(__FUNCTION__);
+	debug(__FUNCTION__, " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 	return Udjat::Python::Module::Factory();
  }
 

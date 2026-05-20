@@ -73,7 +73,7 @@
  };	
 
  PyMODINIT_FUNC PyModule_Create_config(void) {
-	debug("----- Registering module '",module.m_name,"'");
+	debug("Registering python module '",module.m_name,"'");
 	return PyModule_Create(&module);
  }
  

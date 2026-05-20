@@ -84,19 +84,44 @@
  UDJAT_PRIVATE void request_finalize(PyObject *self) {
  }
 
- UDJAT_PRIVATE int request_setattr(PyObject *self, PyObject *attr, PyObject *value) {
-
-
-	return value_setattr(self,attr,value);
- }
-
  UDJAT_PRIVATE PyObject * request_getattr(PyObject *self, PyObject *attr) {
 
+	const char *attrname = PyUnicode_AsUTF8(attr);
+	debug(__FUNCTION__,"(",attrname,")");
+
+	if(attrname && *attrname != '_') {
+
+		try {
+
+			const auto &request = Python::value_get_private<Udjat::Request>(self);
+
+			if(!strcasecmp(attrname,"version")) {
+
+				return PyLong_FromLong(request.version());
+
+			} else if(!strcasecmp(attrname,"path")) {
+
+				return PyUnicode_FromString(request.c_str());
+
+			}
+
+		} catch(const std::exception &e) {
+
+			PyErr_SetString(PyExc_RuntimeError, e.what());
+			return NULL;
+
+		} catch(...) {
+
+			PyErr_SetString(PyExc_RuntimeError, _("Unexpected error in python callback."));
+			return NULL;
+
+		}
+
+	}
 
 	return value_getattr(self,attr);
  }
 
- /*
  static PyObject * call(PyObject *self,const std::function<PyObject *(Udjat::Request &object)> &callback) {
 
 	try {
@@ -116,4 +141,27 @@
 	return NULL;
 
  }
- */
+
+ UDJAT_PRIVATE PyObject * request_str(PyObject *self) {
+	return call(self,[](Udjat::Request &object) -> PyObject * {
+		return PyUnicode_FromString(
+			object.c_str()
+		);
+	});
+ }
+
+ UDJAT_PRIVATE PyObject * request_header(PyObject *self, PyObject *args) {
+
+	return call(self,[args](Udjat::Request &object) -> PyObject * {
+
+		if(PyTuple_Size(args) != 1) {
+			throw logic_error(_("Method requires one argument"));
+		}
+
+		return PyUnicode_FromString(
+			object.header(std::to_string(PyTuple_GetItem(args,0)).c_str())
+		);
+
+	});
+
+ }

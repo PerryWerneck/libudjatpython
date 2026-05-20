@@ -103,7 +103,6 @@
 
 	debug("Searching for '",method,"'");
 
-	debug("---------- Getting method '",method,"'");
 	auto func = make_handle(PyObject_GetAttrString(self, method));
 	if(!func) {
 		if (PyErr_Occurred()) {
