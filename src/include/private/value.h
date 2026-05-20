@@ -26,9 +26,13 @@
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
 
+ #include <udjat/defs.h>
+
  #ifdef __cplusplus
 	#include <functional>
 	#include <udjat/tools/value.h>
+	#include <udjat/tools/intl.h>
+	#include <stdexcept>
  #endif
 
  typedef struct {
@@ -46,17 +50,18 @@
 	/// @brief Create python object from Udjat::Value
 	/// @return Python Object.
 	// PyObject * factory(const Udjat::Value &value) noexcept;
-	// Udjat::Value & get(Udjat::Value &value, PyObject *obj) noexcept;
+	
+	Udjat::Value & get(Udjat::Value &value, PyObject *obj) noexcept;
 
 	template <class T>
 	void value_set_private(PyObject *self, T &value) {
 		pyValue *object = ((pyValue *) self);
 		if(object->handler) {
-			throw logic_error(_("The object is not empty"));
+			throw std::logic_error(_("The object is not empty"));
 		}
-		object->handler = dynamic_cast<T> &value;
+		object->handler = dynamic_cast<Udjat::Value *>(&value);
 		if(object->handler) {
-			throw logic_error(_("The value to set is invalid"));
+			throw std::logic_error(_("The value to set is invalid"));
 		}
 	}
 
@@ -64,7 +69,7 @@
 	T & value_get_private(PyObject *self) {
 		pyValue *object = ((pyValue *) self);
 		if(object->handler) {
-			T *ptr = std::dynamic_cast<T>(object->handler);
+			T *ptr = dynamic_cast<T *>(object->handler);
 			if(!ptr) {
 				throw std::logic_error(_("The object is invalid"));
 			}

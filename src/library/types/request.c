@@ -23,9 +23,12 @@
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
 
- #include <private/xml.h>
+ #include <private/value.h>
+ #include <private/request.h>
 
- static PyMethodDef xml_methods[] = {
+ static PyMethodDef request_methods[] = {
+
+	/*
     {
 		.ml_name = "get",
 		.ml_meth = (PyCFunction) xml_get,
@@ -33,33 +36,32 @@
 		.ml_doc =	"Get attribute from XML definition\n\n"
 					"get(name,default): Get attribute 'name' from XML definition, use default value if not found\n"
     },
+	*/
 
     {
     	NULL
 	}
  };
 
- PyTypeObject xml_type = {
+ PyTypeObject request_type = {
 
 	PyVarObject_HEAD_INIT(NULL, 0)
 
-	.tp_name = "udjat.xml",
-	.tp_doc = "UDJAT Parsed XML Object",
-	.tp_basicsize = sizeof(pyXML),
+	.tp_name = "udjat.Request",
+	.tp_doc = "UDJAT Request",
+	.tp_basicsize = sizeof(pyValue),
 	.tp_itemsize = 0,
 	.tp_flags = Py_TPFLAGS_HAVE_FINALIZE|Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,
 
-	.tp_new = xml_alloc,
-	.tp_dealloc = xml_dealloc,
+	.tp_new = request_alloc,
+	.tp_dealloc = request_dealloc,
 
-	.tp_init = xml_init,
-	.tp_finalize = xml_finalize,
+	.tp_init = request_init,
+	.tp_finalize = request_finalize,
 
-	.tp_str = xml_str,
+	.tp_getattro = request_getattr,
 
-	.tp_getattro = xml_getattr,
-
-	.tp_methods = xml_methods,
+	.tp_methods = request_methods,
 
  };
 

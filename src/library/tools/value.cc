@@ -165,6 +165,7 @@
 
 		return NULL;
 	}
+	*/
 
 	Udjat::Value & Python::get(Udjat::Value &value, PyObject *obj) noexcept {
 
@@ -203,7 +204,6 @@
 		return value;
 
 	}
-	*/
 
  }
 

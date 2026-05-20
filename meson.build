@@ -146,6 +146,8 @@ py_modules = [
   'src/library/types/module.c',
   'src/library/types/state.c',
   'src/library/types/action.c',
+  'src/library/types/request.c',
+  'src/library/types/response.c',
 ]
 
 module_src = [
