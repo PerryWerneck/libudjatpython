@@ -92,7 +92,7 @@
 	}
 
 	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const XML::Node &node) const {
-		return AgentFactory(XML::AttributeFactory(node,"src").as_string(),XML::Node());
+		return AgentFactory(XML::AttributeFactory(node,"src").as_string(),node);
 	}
 
 	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const char *pysource) const {
@@ -100,6 +100,10 @@
 	}
 
 	Python::Agent::Agent(PyObject *s, const XML::Node &node) : Abstract::Agent{node}, self{s} {
+
+		debug("Node name='",node.name(),"'");
+		debug("--- update-timer=",XML::AttributeFactory(node,"update-timer").as_uint(0));
+
 	}
 
 	Python::Agent::~Agent() {
@@ -188,7 +192,7 @@
 
 	bool Python::Agent::refresh(bool ondemand) {
 	
-		debug(__FUNCTION__);
+		debug(__FUNCTION__," ----> Updating agent '",name(),"'");
 
 		if(super::refresh(ondemand)) {
 			return true;
@@ -299,6 +303,7 @@
 
 		switch(PyTuple_Size(args)) {
 			case 0:	// No arguments, build an empty agent.
+				debug("Building an empty agent");
 				agent = make_shared<Python::Agent>(self, XML::Node());
 				break;
 
@@ -307,7 +312,10 @@
 					PyObject* settings = PyTuple_GetItem(args, 0);
 					if(PyObject_TypeCheck(settings, &xml_type)) {
 
-						agent = make_shared<Python::Agent>(self, xml_get_native(settings));
+						auto &node = xml_get_native(settings);
+						debug("Building agent from node <",node.name(),">");
+
+						agent = make_shared<Python::Agent>(self, node);
 
 					} else {
 
