@@ -27,6 +27,7 @@
  #include <private/modules.h>
  #include <private/tools.h>
  #include <private/value.h>
+ #include <private/value.h>
  #include <udjat/tools/intl.h>
  #include <udjat/tools/value.h>
  #include <functional>
@@ -34,9 +35,12 @@
  #include <stdexcept>
 
  using namespace std;
+ using namespace Udjat;
 
  namespace Udjat {
 
+
+	/*
 	PyObject * Python::ObjectFactory(const Udjat::Value &value) noexcept {
 
 		Python::Guard guard;
@@ -199,6 +203,111 @@
 		return value;
 
 	}
+	*/
+
+ }
+
+
+ UDJAT_PRIVATE int value_setattr(PyObject *self, PyObject *attr, PyObject *value) {
+
+	try {
+
+		Udjat::Value &object = Python::value_get_private<Udjat::Value>(self);
+
+
+	} catch(const std::exception &e) {
+
+		PyErr_SetString(PyExc_RuntimeError, e.what());
+
+	} catch(...) {
+
+		PyErr_SetString(PyExc_RuntimeError, _("Unexpected error in python callback."));
+
+	}
+
+	return -1;
+
+ }
+
+ UDJAT_PRIVATE PyObject * value_getattr(PyObject *self, PyObject *attr) {
+
+	try {
+
+		Udjat::Value &object = Python::value_get_private<Udjat::Value>(self);
+
+		switch((Value::Type) object) {
+		case Udjat::Value::Type::Undefined:
+			return Py_None;
+
+		case Udjat::Value::Type::Array:
+			throw runtime_error("Unable to convert array to pyobject");
+
+		case Udjat::Value::Type::Object:
+			throw runtime_error("Unable to convert object to pyobject");
+
+		case Udjat::Value::Type::String:
+		case Udjat::Value::Type::Url:
+		case Udjat::Value::Type::State:
+		case Udjat::Value::Type::Icon:
+			{
+				std::string response;
+				object.get(response);
+				return PyUnicode_FromString(response.c_str());
+			}
+
+		case Udjat::Value::Type::Timestamp:
+			{
+				return Py_None;
+			}
+
+		case Udjat::Value::Type::Signed:
+			{
+				int response;
+				object.get(response);
+				return PyLong_FromLong(response);
+			}
+
+		case Udjat::Value::Type::Unsigned:
+			{
+				long response;
+				object.get(response);
+				return PyLong_FromLong(response);
+			}
+
+		case Udjat::Value::Type::Fraction:
+		case Udjat::Value::Type::Real:
+			{
+				double response;
+				object.get(response);
+				return PyFloat_FromDouble(response);
+			}
+
+		case Udjat::Value::Type::Boolean:
+			{
+				bool response;
+				object.get(response);
+				return response ? Py_True : Py_False;
+			}
+
+		case Udjat::Value::Type::Report:
+			throw runtime_error(_("Unexpected value type in python callback."));
+
+		}
+
+		PyErr_SetString(PyExc_RuntimeError, _("Unexpected value type in python callback."));
+
+		
+	} catch(const std::exception &e) {
+
+		PyErr_SetString(PyExc_RuntimeError, e.what());
+
+	} catch(...) {
+
+		PyErr_SetString(PyExc_RuntimeError, _("Unexpected error in python callback."));
+
+	}
+
+	return NULL;
 
  }
 

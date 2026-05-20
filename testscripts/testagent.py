@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from udjat import Agent, State
+from udjat import Agent, Action, State
 
 class SampleAgent(Agent):
 	def __init__(self,properties):
@@ -49,5 +49,13 @@ class SampleAgent(Agent):
 
 		return True
 
+class SampleAction(Action):
+	def __init__(self,properties):
+		super().__init__(properties)
+
+
 def AgentFactory(properties):
 	return SampleAgent(properties)
+
+def ActionFactory(properties):
+	return SampleAction(properties)
