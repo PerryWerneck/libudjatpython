@@ -26,26 +26,28 @@ class SampleAgent(Agent):
 	def refresh(self,ondemand):
 		self.info("-----> Updating agent value")
 		self.value = self.value + 1
-		print('------------------------------------------------------------')
-		#self.state = State(
-		#	name= 'sample',
-		#	level = 'ready',
-		#	label = 'Sample state',
-		#	summary= 'Summary for sample state',
-		#	body= 'This is the body for the current state, show a more detailed info',
-		#	url= 'https://google.com',
-		#)
-		#self.state = {
-		#	'name': 'sample',
-		#	'level': 'ready',
-		#	'label': 'Sample state',
-		#	'summary': 'Summary for sample state',
-		#	'body': 'This is the body for the current state, show a more detailed info',
-		#	'url': 'https://google.com',
-		#}
-		print('------------------------------------------------------------')
-		print('self.value={}'.format(self.value))
-		return False
+
+		if self.value == 4:
+			self.state = {
+				'name': 'v3',
+				'level': 'warning',
+				'label': 'Sample state',
+				'summary': 'The state value is 4 - Set by python code',
+				'body': 'This is the body for the current state, show a more detailed info',
+				'url': 'https://google.com',
+			}
+
+		if self.value == 5:
+			self.state = State(
+				name= 'v5',
+				level = 'error',
+				label = 'Sample state',
+				summary = 'The state value is 5 - Set by python code',
+				body= 'This is the body for the current state, show a more detailed info',
+				url= 'https://google.com',
+			)
+
+		return True
 
 def AgentFactory(properties):
 	return SampleAgent(properties)

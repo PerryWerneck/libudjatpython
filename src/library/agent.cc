@@ -113,11 +113,26 @@
 
 		Python::Guard guard;
 
+		auto current = dynamic_pointer_cast<Python::State>(this->state()); 
+		if(current && current->equal(value)) {
+			debug("The current state matches the value, keeping it");
+			return current;
+		}
+
+		debug("Computing state for value '",std::to_string(this->value).c_str(),"'");
 		for(auto state : states) {
 			if(state->equal(value)) {
+				debug("Accepting state '",state->name(),"'");
 				return state;
 			}
+#ifdef DEBUG
+			else {
+				debug("Rejecting state '",state->name(),"'");
+			}
+#endif
 		}
+
+		debug("Cant determine state, let the parent decide");
 		return super::computeState();
 	}
 

@@ -5,10 +5,10 @@
 	
 	<agent name='sample1' src='testagent' type='python' value='0' update-timer='10'>
 
-		<state name='sample' value='0' summary='The agent value is 0' level='ready' />
-		<state name='sample' value='1' summary='The agent value is 1' level='ready' />
-		<state name='sample' value='2' summary='The agent value is 2' level='ready' />
-		<state name='sample' value='3' summary='The agent value is 3' level='ready' />
+		<state name='v0' value='0' summary='The agent value is 0' level='ready' />
+		<state name='v1' value='1' summary='The agent value is 1' level='ready' />
+		<state name='v2' value='2' summary='The agent value is 2' level='ready' />
+		<state name='v3' value='3' summary='The agent value is 3' level='ready' />
 
 	</agent>
 
