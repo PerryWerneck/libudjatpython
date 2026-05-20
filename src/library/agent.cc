@@ -100,13 +100,13 @@
 	}
 
 	Python::Agent::Agent(PyObject *s, const XML::Node &node) : Abstract::Agent{node}, self{s} {
-
-		debug("Node name='",node.name(),"'");
-		debug("--- update-timer=",XML::AttributeFactory(node,"update-timer").as_uint(0));
-
 	}
 
 	Python::Agent::~Agent() {
+		if(self) {
+			Py_DecRef(self);
+			self = NULL;
+		}
 	}
 
 	std::shared_ptr<Abstract::State> Python::Agent::computeState() {

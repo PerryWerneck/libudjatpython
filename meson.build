@@ -138,12 +138,14 @@ py_modules = [
   'src/library/object.cc',
   'src/library/xml.cc',
   'src/library/agent.cc',
+  'src/library/action.cc',
   'src/library/state.cc',
   'src/library/types/object.c',
   'src/library/types/agent.c',
   'src/library/types/xml.c',
   'src/library/types/module.c',
   'src/library/types/state.c',
+  'src/library/types/action.c',
 ]
 
 module_src = [
