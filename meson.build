@@ -359,3 +359,23 @@ executable(
   dependencies: [ libudjat, py_dep ],
   include_directories: includes_dir
 )
+
+install_headers(
+  'src/include/udjat/tools/actions/python.h',
+  subdir: 'udjat/tools/actions'  
+)
+
+install_headers(
+  'src/include/udjat/module/python.h',
+  subdir: 'udjat/module'  
+)
+
+install_headers(
+  'src/include/udjat/agent/python.h',
+  subdir: 'udjat/agent'  
+)
+
+#install_headers(
+#  'src/include/udjat/tools/url/handler/python.h',
+#  subdir: 'udjat/tools/url/handler'  
+#)

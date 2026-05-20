@@ -70,6 +70,18 @@
 	Python::Agent::Factory::~Factory() {
 	}
 
+	bool Python::Agent::operator==(PyObject *obj) const {
+		return Python::compare(this->value,obj);
+	}
+
+	bool Python::Agent::operator!=(PyObject *obj) const {
+		return !Python::compare(this->value,obj);
+	}
+
+	bool Python::Agent::set_state(std::shared_ptr<Python::State> state) {
+		return super::set(state);
+	}
+	
 	std::shared_ptr<Abstract::Agent> Python::Agent::Factory::AgentFactory(const char *pysource, const XML::Node &node) const {
 
 		debug(__FUNCTION__);

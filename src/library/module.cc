@@ -29,8 +29,9 @@
  #include <udjat/tools/url.h>
  #include <udjat/tools/url/handler/python.h>
  #include <udjat/module/python.h>
+ #include <udjat/tools/actions/python.h>
  #include <private/modules.h>
- #include <private/agent.h>
+ #include <udjat/agent/python.h>
  #include <private/tools.h>
  #include <mutex>
 
@@ -40,7 +41,7 @@
 
 	Udjat::Module * Python::Module::Factory(const char *name) {
 
-		class Module : public Python::Module, private Python::Handler::Factory, private Python::Agent::Factory {
+		class Module : public Python::Module, private Python::Handler::Factory, private Python::Agent::Factory, private Python::Action::Factory {
 		public:
 			Module(const char *name, const char *description) : Python::Module{name,description} {
 			}

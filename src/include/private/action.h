@@ -34,45 +34,7 @@
  #include <string>
  #include <udjat/tools/request.h>
  #include <udjat/tools/response.h>
-
- namespace Udjat::Python {
-
-	class UDJAT_API Action : public Udjat::Action {
-	public:
-
-		class Factory : public Udjat::Action::Factory {
-		public:
-			Factory(const char *name);
-			~Factory() override;
-
-			std::shared_ptr<Udjat::Action> ActionFactory(const char *pysource, const XML::Node &node) const;
-			std::shared_ptr<Udjat::Action> ActionFactory(const XML::Node &node) const override;
-
-		};
-
-		enum Property : uint8_t {
-			Name,
-
-			PropertyCount
-		};
-
-		Action(PyObject *s, const XML::Node &node);
-		~Action() override;
-
-		const char *name() const noexcept override;
-
-		bool setProperty(const char *key, const char *value) override;
-		bool getProperty(const char *key, std::string &value) const override;
-
-		int call(Udjat::Request &request, Udjat::Response &response, bool except = true) override;
-
-	private:
-		PyObject * self = nullptr;
-		std::string properties[PropertyCount];
-
-	};
-
- };
+ #include <udjat/tools/actions/python.h>
 
  extern "C" {
  #endif // __cplusplus
