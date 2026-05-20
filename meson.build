@@ -244,6 +244,7 @@ if host_machine.system() == 'windows'
     install: true,
     dependencies: [ libudjat, py_dep ],
     cpp_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
+    c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
     include_directories: includes_dir
   )
 
