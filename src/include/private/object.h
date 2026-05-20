@@ -78,6 +78,11 @@
 		return !(object && object->pvt);
 	}
 
+	inline bool object_is_empty(PyObject *self) noexcept {
+		pyAbstractObject *object = ((pyAbstractObject *) self);
+		return !(object && object->pvt);
+	}
+
 	template <class T>
 	int set_property(PyObject *self, PyObject *attr, PyObject *value) {
 		const char *attrname = PyUnicode_AsUTF8(attr);

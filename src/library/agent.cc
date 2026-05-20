@@ -79,7 +79,12 @@
 
 		if(!PyObject_IsInstance(self, (PyObject *)&agent_type)) {
 			Py_DecRef(self);
-			throw logic_error(_("The object returned from factory method is not an agent"));
+			throw logic_error(_("The object returned from agent factory is not an agent"));
+		}
+
+		if(object_is_empty(self)) {
+			Py_DecRef(self);
+			throw logic_error(_("The object returned from agent factory is empty"));
 		}
 
 		return object_get_private<Abstract::Agent>(self);
