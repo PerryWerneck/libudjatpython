@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: udjathttp 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-19 13:58-0300\n"
+"POT-Creation-Date: 2026-05-20 00:02-0300\n"
 "PO-Revision-Date: 2026-04-23 21:47-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -30,20 +30,24 @@ msgstr "Mensagem de log precisa ser uma string"
 #: src/library/config.cc:111 src/library/config.cc:133
 #: src/library/config.cc:139 src/library/config.cc:145
 #: src/library/config.cc:150 src/library/xml.cc:243 src/library/state.cc:163
-#: src/library/agent.cc:335 src/library/agent.cc:341 src/library/agent.cc:346
-#: src/library/agent.cc:374
+#: src/library/agent.cc:420 src/library/agent.cc:426 src/library/agent.cc:431
+#: src/library/agent.cc:459
 msgid "Invalid argument"
 msgstr ""
 
 #: src/library/tools/call.cc:52 src/library/tools/call.cc:76
 #: src/library/tools/call.cc:101 src/library/tools/call.cc:120
 #: src/library/tools/value.cc:159 src/library/xml.cc:185
-#: src/library/object.cc:52 src/library/object.cc:144 src/library/agent.cc:317
-#: src/library/agent.cc:469
+#: src/library/object.cc:52 src/library/object.cc:144 src/library/agent.cc:402
+#: src/library/agent.cc:554
 msgid "Unexpected error in python callback."
 msgstr "Erro inesperado em chamada python."
 
-#: src/library/tools/call.cc:137 src/library/tools/call.cc:161
+#: src/library/tools/call.cc:131
+msgid "The object is not binded with python"
+msgstr ""
+
+#: src/library/tools/call.cc:141 src/library/tools/call.cc:165
 #: src/library/xml.cc:116
 #, c++-format
 msgid "The method {} is not callable on {}"
@@ -62,7 +66,7 @@ msgstr ""
 msgid "Unexpected value type in python callback."
 msgstr "Erro inesperado em chamada python."
 
-#: src/library/tools/misc.cc:60
+#: src/library/tools/misc.cc:59
 msgid "Unknown Python Error"
 msgstr ""
 
@@ -101,7 +105,7 @@ msgstr ""
 msgid "Object is empty"
 msgstr ""
 
-#: src/library/object.cc:158
+#: src/library/object.cc:158 src/library/agent.cc:345
 msgid "Too many arguments"
 msgstr ""
 
@@ -110,42 +114,42 @@ msgstr ""
 msgid "Unexpected error in python logger."
 msgstr "Erro inesperado em chamada python."
 
-#: src/library/agent.cc:96
-msgid "The object returned from factory method is not an agent"
+#: src/library/agent.cc:82
+msgid "The object returned from agent factory is not an agent"
 msgstr ""
 
-#: src/library/agent.cc:121
+#: src/library/agent.cc:87
+msgid "The object returned from agent factory is empty"
+msgstr ""
+
+#: src/library/agent.cc:144
 msgid "Cant factory state for empty agent"
 msgstr ""
 
-#: src/library/agent.cc:163
+#: src/library/agent.cc:186
 #, c++-format
 msgid "Agent value changed to {}"
 msgstr ""
 
-#: src/library/agent.cc:211 src/library/agent.cc:215
+#: src/library/agent.cc:229 src/library/agent.cc:233
 msgid "Failed to refresh agent"
 msgstr ""
 
-#: src/library/agent.cc:215
+#: src/library/agent.cc:233
 #, fuzzy
 msgid "Unexpected error"
 msgstr "Erro inesperado em chamada python."
 
-#: src/library/agent.cc:392
+#: src/library/agent.cc:337
+msgid "Agent requires a XML properties object as argument"
+msgstr ""
+
+#: src/library/agent.cc:477
 msgid "Cant set value on empty agent"
 msgstr ""
 
-#: src/library/agent.cc:403
+#: src/library/agent.cc:488
 msgid "Cant set state on empty agent"
-msgstr ""
-
-#: src/library/agent.cc:489
-msgid "Agent setup requires a properties object as argument"
-msgstr ""
-
-#: src/library/agent.cc:501
-msgid "Agent.setup() requires a valid properties object"
 msgstr ""
 
 #: src/library/types/module.c:102

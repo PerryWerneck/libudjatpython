@@ -19,7 +19,7 @@
 
 Summary:		Python bindings for %{udjat_product_name}  
 Name:			libudjat%{module_name}
-Version: 1.0.0
+Version:		1.0.0
 Release:		0
 License:		LGPL-3.0
 Source:			%{name}-%{version}.tar.xz
@@ -33,6 +33,7 @@ BuildRequires:	meson
 BuildRequires:	gcc-c++ 
 
 BuildRequires:	pkgconfig(libudjat) >= 2.5.0
+BuildRequires:	pkgconfig(python3-embed)
 BuildRequires:	udjat-rpm-macros 
 
 %description
@@ -76,6 +77,7 @@ C++ classes to add python support from lib%{product_name}
 %files -n %{udjat_library}
 %defattr(-,root,root)
 %{_libdir}/%{name}.so.%{udjat_package_major}.%{udjat_package_minor}
+%exclude %{_libdir}/python*
 
 %files -n %{udjat_library}-lang -f langfiles
 
