@@ -29,6 +29,9 @@
  #include <private/state.h>
  #include <private/action.h>
  #include <private/xml.h>
+ #include <private/request.h>
+ #include <private/response.h>
+ #include <private/value.h>
 
  static void cleanup(PyObject *module);
 
@@ -111,6 +114,9 @@ PyMODINIT_FUNC PyModule_Initialize(void)
 			{ "Agent", &agent_type },
 			{ "State", &state_type },
 			{ "Action", &action_type },
+			{ "Value", &value_type },
+			{ "Request", &request_type },
+			{ "Response", &response_type },
 		};
 
 		for (size_t i = 0; i < sizeof(objects) / sizeof(objects[0]); i++) {

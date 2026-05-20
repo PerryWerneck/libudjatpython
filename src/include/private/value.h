@@ -51,7 +51,8 @@
 	/// @return Python Object.
 	// PyObject * factory(const Udjat::Value &value) noexcept;
 	
-	Udjat::Value & get(Udjat::Value &value, PyObject *obj) noexcept;
+	UDJAT_PRIVATE std::shared_ptr<PyObject> factory(Udjat::Value &value);
+	UDJAT_PRIVATE Udjat::Value & get(Udjat::Value &value, PyObject *obj) noexcept;
 
 	template <class T>
 	void value_set_private(PyObject *self, T &value) {
@@ -82,6 +83,13 @@
 
  extern "C" {
  #endif // __cplusplus
+
+ extern UDJAT_PRIVATE PyTypeObject value_type;
+
+ UDJAT_PRIVATE PyObject	* value_alloc(PyTypeObject *type, PyObject *args, PyObject *kwds);
+ UDJAT_PRIVATE void		  value_dealloc(PyObject * self);
+ UDJAT_PRIVATE int		  value_init(PyObject *self, PyObject *args, PyObject *kwds);
+ UDJAT_PRIVATE void		  value_finalize(PyObject *self);
 
  UDJAT_PRIVATE int 		  value_setattr(PyObject *self, PyObject *attr, PyObject *value);
  UDJAT_PRIVATE PyObject * value_getattr(PyObject *self, PyObject *attr);

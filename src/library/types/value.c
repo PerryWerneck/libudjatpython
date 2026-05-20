@@ -24,9 +24,8 @@
  #endif // HAVE_CONFIG_H
 
  #include <private/value.h>
- #include <private/response.h>
 
- static PyMethodDef response_methods[] = {
+ static PyMethodDef value_methods[] = {
 
 	/*
     {
@@ -43,26 +42,26 @@
 	}
  };
 
- PyTypeObject response_type = {
+ PyTypeObject value_type = {
 
 	PyVarObject_HEAD_INIT(NULL, 0)
 
-	.tp_name = "udjat.Response",
-	.tp_doc = "UDJAT Response",
+	.tp_name = "udjat.Value",
+	.tp_doc = "UDJAT Value",
 	.tp_basicsize = sizeof(pyValue),
 	.tp_itemsize = 0,
 	.tp_flags = Py_TPFLAGS_HAVE_FINALIZE|Py_TPFLAGS_DEFAULT|Py_TPFLAGS_BASETYPE,
 
-	.tp_new = response_alloc,
-	.tp_dealloc = response_dealloc,
+	.tp_new = value_alloc,
+	.tp_dealloc = value_dealloc,
 
-	.tp_init = response_init,
-	.tp_finalize = response_finalize,
+	.tp_init = value_init,
+	.tp_finalize = value_finalize,
 
-	.tp_getattro = response_getattr,
-	.tp_setattro = response_setattr,
+	.tp_getattro = value_getattr,
+	.tp_setattro = value_setattr,
 
-	.tp_methods = response_methods,
+	.tp_methods = value_methods,
 
  };
 
