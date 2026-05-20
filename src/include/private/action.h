@@ -83,6 +83,7 @@
  UDJAT_PRIVATE void		  action_finalize(PyObject *self);
  UDJAT_PRIVATE int 		  action_setattr(PyObject *self, PyObject *attr, PyObject *value);
  UDJAT_PRIVATE PyObject * action_getattr(PyObject *self, PyObject *attr);
+ UDJAT_PRIVATE PyObject * action_call(PyObject *self, PyObject *args);
 
  #ifdef __cplusplus
 	}

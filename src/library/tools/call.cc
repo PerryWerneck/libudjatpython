@@ -28,6 +28,8 @@
  #include <private/tools.h>
  #include <udjat/tools/intl.h>
  #include <udjat/tools/logger.h>
+ #include <private/request.h>
+ #include <private/response.h>
  #include <functional>
  #include <errno.h>
  #include <mutex>
@@ -196,5 +198,36 @@
 		
 	}
 
+	int Python::call(PyObject *self, const Udjat::Request &request, Udjat::Response &response, bool except) {
+
+		debug(__FUNCTION__)
+
+		auto pyReq = Python::factory(const_cast<Udjat::Request &>(request));
+		auto pyResp = Python::factory(response);
+
+		auto ret = Python::call(
+				self,
+				"call",
+				pyReq.get(),
+				pyResp.get(),
+				NULL
+		);
+
+		int rc = -1;
+
+		if (PyLong_Check(ret)) {
+			rc = (int) PyLong_AsLong(ret);
+		} else if(except) {
+			Py_DecRef(ret);
+			throw logic_error(_("Unexpected response from python method"));
+		} else {
+			Logger::String{"Unexpected response from method"}.error("python");
+		}
+
+		Py_DecRef(ret);
+
+		return rc;
+	}
 
  }
+

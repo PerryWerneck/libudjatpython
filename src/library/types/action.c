@@ -50,7 +50,6 @@
 		.ml_flags = METH_VARARGS,
 		.ml_doc =	"Write informational message to log file\n"
     },
-	/*
     {
 		.ml_name = "call",
 		.ml_meth = (PyCFunction) action_call,
@@ -58,7 +57,6 @@
 		.ml_doc =	"Call action\n\n"
 					"call(request,response): Call action with request/response objects\n"
     },
-	*/
 
     {
     	NULL

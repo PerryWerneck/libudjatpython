@@ -26,6 +26,8 @@
  #include <udjat/defs.h>
  #include <udjat/agent/abstract.h>
  #include <private/interpreter.h>
+ #include <udjat/tools/request.h>
+ #include <udjat/tools/response.h>
  #include <private/object.h>
  #include <private/agent.h>
  #include <private/tools.h>
@@ -33,6 +35,7 @@
  #include <private/state.h>
  #include <private/value.h>
  #include <udjat/tools/xml.h>
+ #include <udjat/tools/value.h>
  #include <udjat/tools/memory.h>
  #include <string>
  #include <cstdarg>
@@ -302,6 +305,11 @@
 		return super::setProperty(key,value);
 	}
 
+	int Python::Agent::call(const Udjat::Request &request, Udjat::Response &response) {
+		debug(__FUNCTION__)
+		return Python::call(self,request,response);
+	}
+
  }
 
  // ---------------------------------------------------------------------------------------
@@ -559,6 +567,24 @@
 	}
 
 	return object_getattr(self, attr);
+
+ }
+
+ UDJAT_PRIVATE PyObject * agent_call(PyObject *self, PyObject *args) {
+
+ 	return call(self,[args](Udjat::Python::Agent &agent) -> PyObject *{
+
+		if(PyTuple_Size(args) != 2) {
+			throw logic_error(_("Method requires 2 arguments"));
+		}
+
+		int rc = agent.Abstract::Agent::call(
+			Python::value_get_private<Udjat::Request>(PyTuple_GetItem(args, 0)),
+			Python::value_get_private<Udjat::Response>(PyTuple_GetItem(args, 1))
+		);
+
+		return PyLong_FromLong(rc);
+	});
 
  }
 

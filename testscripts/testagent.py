@@ -49,10 +49,16 @@ class SampleAgent(Agent):
 
 		return True
 
+#	def call(self,response):
+#		return super().call(response)
+
 class SampleAction(Action):
 	def __init__(self,properties):
 		super().__init__(properties)
 
+	def call(self,request,response):
+		self.info("Python action was activated")
+		return 0 # super().call(request,response)
 
 def AgentFactory(properties):
 	return SampleAgent(properties)

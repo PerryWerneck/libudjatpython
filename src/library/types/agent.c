@@ -86,6 +86,13 @@
 		.ml_doc =	"Stop agent\n"
     },
     {
+		.ml_name = "call",
+		.ml_meth = (PyCFunction) agent_call,
+		.ml_flags = METH_VARARGS,
+		.ml_doc =	"Call action\n\n"
+					"call(request,response): Get informations about the agent\n"
+    },
+    {
 		.ml_name = "refresh",
 		.ml_meth = (PyCFunction) object_return_none,
 		.ml_flags = METH_VARARGS,

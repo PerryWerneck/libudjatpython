@@ -29,7 +29,10 @@
  #include <private/object.h>
  #include <private/action.h>
  #include <private/tools.h>
+ #include <private/value.h>
  #include <private/xml.h>
+ #include <private/request.h>
+ #include <private/response.h>
  #include <udjat/tools/xml.h>
  #include <udjat/tools/memory.h>
  #include <string>
@@ -122,8 +125,7 @@
 
 	int Python::Action::call(Udjat::Request &request, Udjat::Response &response, bool except) {
 		debug(__FUNCTION__)
-
-		return -1;
+		return Python::call(self,request,response,except);
 	}
 
  }
@@ -211,7 +213,6 @@
 
  }
 
- /*
  static PyObject * call(PyObject *self,const std::function<PyObject *(Udjat::Python::Action &action)> &callback) {
 
 	try {
@@ -231,7 +232,6 @@
 	return NULL;
 	
  }
- */
 
  UDJAT_PRIVATE int action_setattr(PyObject *self, PyObject *attr, PyObject *value) {
 	
@@ -281,3 +281,20 @@
 
  }
 
+ UDJAT_PRIVATE PyObject * action_call(PyObject *self, PyObject *args) {
+
+	return call(self,[args](Udjat::Python::Action &action) -> PyObject * {
+
+		if(PyTuple_Size(args) != 2) {
+			throw logic_error(_("Method requires 2 arguments"));
+		}
+
+		int rc = action.call(
+			Python::value_get_private<Udjat::Request>(PyTuple_GetItem(args, 0)),
+			Python::value_get_private<Udjat::Response>(PyTuple_GetItem(args, 1))
+		);
+
+		return PyLong_FromLong(rc);
+	});
+
+ }

@@ -74,9 +74,9 @@
 
 	UDJAT_PRIVATE PyObject * call(int required_args, PyObject *args, const std::function<PyObject *(PyObject *args)> &callback) noexcept;
 	UDJAT_PRIVATE PyObject * call(int required_args, PyObject *args, const std::function<void (PyObject *args)> &callback) noexcept;
+	UDJAT_PRIVATE int call(PyObject *self, const Udjat::Request &request, Udjat::Response &response, bool except = true);
 
 	UDJAT_PRIVATE bool compare(PyObject *a, PyObject *b);
-
 
  }
 

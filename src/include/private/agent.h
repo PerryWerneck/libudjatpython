@@ -70,6 +70,7 @@
 
 		bool setProperty(const char *key, const char *value) override;
 		bool getProperty(const char *key, std::string &value) const override;
+		int call(const Udjat::Request &request, Udjat::Response &response) override;
 
 		PyObject * get_value() const noexcept;
 
@@ -135,6 +136,7 @@
  UDJAT_PRIVATE PyObject * agent_failed(PyObject *self, PyObject *args);
  UDJAT_PRIVATE PyObject * agent_get_by_path(PyObject *self, PyObject *args);
  UDJAT_PRIVATE PyObject * agent_invalidate(PyObject *self, PyObject *args);
+ UDJAT_PRIVATE PyObject * agent_call(PyObject *self, PyObject *args);
 
  #ifdef __cplusplus
 	}
