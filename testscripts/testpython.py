@@ -49,8 +49,8 @@ class SampleAgent(Agent):
 
 		return True
 
-#	def call(self,response):
-#		return super().call(response)
+#	def call(self,request,response):
+#		return super().call(request,response)
 
 class SampleAction(Action):
 	def __init__(self,properties):

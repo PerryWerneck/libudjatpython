@@ -56,7 +56,6 @@
 	};
 
 	Python::Action::Factory::Factory(const char *name) : Udjat::Action::Factory{name} {
-		debug("****************************** Registering action factory '",name,"'");
 	}
 
 	Python::Action::Factory::~Factory() {
@@ -91,6 +90,12 @@
 	}
 
 	Python::Action::Action(PyObject *s, const XML::Node &node) : Udjat::Action{node}, self{s} {
+
+		for(size_t ix = 0; ix < Python::Action::PropertyCount; ix++) {
+			auto attr = XML::AttributeFactory(node,kwlist[ix]);
+			properties[ix] = attr.as_string(ix == Name ? "python" : "");
+		}
+
 	}
 
 	Python::Action::~Action() {
@@ -155,7 +160,7 @@
 					if(PyObject_TypeCheck(settings, &xml_type)) {
 
 						auto &node = xml_get_native(settings);
-						debug("Building action from node <",node.name(),">");
+						debug("Building action '",node.attribute("name").as_string(),"' from node <",node.name(),">");
 
 						action = make_shared<Python::Action>(self, node);
 
@@ -172,6 +177,7 @@
 				throw logic_error(_("Too many arguments"));
 		}
 
+		debug("Action '",action->name(),"' was built");
 		((pyAbstractObject *) self)->pvt->object = action;
 
 		if(kwds) {
