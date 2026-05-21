@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: udjathttp 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-20 00:08-0300\n"
+"POT-Creation-Date: 2026-05-20 22:43-0300\n"
 "PO-Revision-Date: 2026-05-20 00:22-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -29,41 +29,36 @@ msgstr "Mensagem de log precisa ser uma string"
 #: src/library/config.cc:94 src/library/config.cc:100 src/library/config.cc:106
 #: src/library/config.cc:111 src/library/config.cc:133
 #: src/library/config.cc:139 src/library/config.cc:145
-#: src/library/config.cc:150 src/library/xml.cc:243 src/library/state.cc:163
-#: src/library/agent.cc:420 src/library/agent.cc:426 src/library/agent.cc:431
-#: src/library/agent.cc:459
+#: src/library/config.cc:150 src/library/xml.cc:242 src/library/state.cc:163
+#: src/library/agent.cc:440 src/library/agent.cc:446 src/library/agent.cc:451
+#: src/library/agent.cc:479
 msgid "Invalid argument"
 msgstr "Argumento inválido"
 
-#: src/library/tools/call.cc:52 src/library/tools/call.cc:76
-#: src/library/tools/call.cc:101 src/library/tools/call.cc:120
-#: src/library/tools/value.cc:159 src/library/xml.cc:185
-#: src/library/object.cc:52 src/library/object.cc:144 src/library/agent.cc:402
-#: src/library/agent.cc:554
+#: src/library/tools/call.cc:54 src/library/tools/call.cc:78
+#: src/library/tools/call.cc:103 src/library/tools/call.cc:122
+#: src/library/xml.cc:184 src/library/object.cc:52 src/library/object.cc:144
+#: src/library/action.cc:235 src/library/request.cc:115
+#: src/library/request.cc:137 src/library/response.cc:111
+#: src/library/value.cc:99 src/library/value.cc:182 src/library/value.cc:202
+#: src/library/agent.cc:422 src/library/agent.cc:574
 msgid "Unexpected error in python callback."
 msgstr "Erro inesperado em chamada python."
 
-#: src/library/tools/call.cc:131
+#: src/library/tools/call.cc:133
 msgid "The object is not binded with python"
 msgstr "O objeto não foi conectado ao python"
 
-#: src/library/tools/call.cc:141 src/library/tools/call.cc:165
-#: src/library/xml.cc:116
+#: src/library/tools/call.cc:143 src/library/tools/call.cc:167
+#: src/library/xml.cc:115
 #, c++-format
 msgid "The method {} is not callable on {}"
 msgstr "O método{} não é chamável em {}"
 
-#: src/library/tools/value.cc:54
-msgid "Error creating python list."
-msgstr "Erro criando lista python"
-
-#: src/library/tools/value.cc:80
-msgid "Error creating python dictionary."
-msgstr "Erro criando dicionário python"
-
-#: src/library/tools/value.cc:147 src/library/tools/value.cc:151
-msgid "Unexpected value type in python callback."
-msgstr "Erro inesperado em chamada python."
+#: src/library/tools/call.cc:222
+#, fuzzy
+msgid "Unexpected response from python method"
+msgstr "Resposta inesperada do método 'factory'"
 
 #: src/library/tools/misc.cc:59
 msgid "Unknown Python Error"
@@ -83,20 +78,20 @@ msgstr "O método {}(settings) não é chamável em '{}'"
 msgid "Unexpected response from factory method"
 msgstr "Resposta inesperada do método 'factory'"
 
-#: src/library/xml.cc:112
+#: src/library/xml.cc:111
 #, c++-format
 msgid "The method {} is required on {}"
 msgstr "O método {} é necessário em {}"
 
-#: src/library/xml.cc:161
+#: src/library/xml.cc:160
 msgid "The properties object is empty"
 msgstr "O objeto de propriedades está vazio"
 
-#: src/library/xml.cc:171
+#: src/library/xml.cc:170
 msgid "The object is empty"
 msgstr "O objeto está vazio"
 
-#: src/library/xml.cc:237
+#: src/library/xml.cc:236 src/library/action.cc:296 src/library/agent.cc:590
 msgid "Method requires 2 arguments"
 msgstr "Método exige 2 argumentos"
 
@@ -104,7 +99,7 @@ msgstr "Método exige 2 argumentos"
 msgid "Object is empty"
 msgstr "Objeto está vazio"
 
-#: src/library/object.cc:158 src/library/agent.cc:345
+#: src/library/object.cc:158 src/library/action.cc:177 src/library/agent.cc:365
 msgid "Too many arguments"
 msgstr "Número excessivo de argumentos"
 
@@ -112,60 +107,75 @@ msgstr "Número excessivo de argumentos"
 msgid "Unexpected error in python logger."
 msgstr "Erro inesperado no logger python."
 
-#: src/library/agent.cc:82
+#: src/library/action.cc:76
+#, fuzzy
+msgid "The object returned from action factory is not an action"
+msgstr "O objeto retornado pela fábrica não é um agente"
+
+#: src/library/action.cc:81
+#, fuzzy
+msgid "The object returned from action factory is empty"
+msgstr "O agente retornado pela fábrica está vazio"
+
+#: src/library/action.cc:169
+#, fuzzy
+msgid "Action requires a XML properties object as argument"
+msgstr "Agente existe um objeto de propriedades XML como argumento"
+
+#: src/library/request.cc:158
+#, fuzzy
+msgid "Method requires one argument"
+msgstr "Método exige 2 argumentos"
+
+#: src/library/value.cc:173
+msgid "Unexpected value type in python callback."
+msgstr "Erro inesperado em chamada python."
+
+#: src/library/agent.cc:97
 msgid "The object returned from agent factory is not an agent"
 msgstr "O objeto retornado pela fábrica não é um agente"
 
-#: src/library/agent.cc:87
+#: src/library/agent.cc:102
 msgid "The object returned from agent factory is empty"
 msgstr "O agente retornado pela fábrica está vazio"
 
-#: src/library/agent.cc:144
+#: src/library/agent.cc:159
 msgid "Cant factory state for empty agent"
 msgstr "Não posso fabricar estado para um agente vazio"
 
-#: src/library/agent.cc:186
+#: src/library/agent.cc:201
 #, c++-format
 msgid "Agent value changed to {}"
 msgstr "Valor do agente mudou para {}"
 
-#: src/library/agent.cc:229 src/library/agent.cc:233
+#: src/library/agent.cc:244 src/library/agent.cc:248
 msgid "Failed to refresh agent"
 msgstr "Falha ao atualizar agente"
 
-#: src/library/agent.cc:233
+#: src/library/agent.cc:248
 msgid "Unexpected error"
 msgstr "Erro inesperado"
 
-#: src/library/agent.cc:337
+#: src/library/agent.cc:357
 msgid "Agent requires a XML properties object as argument"
 msgstr "Agente existe um objeto de propriedades XML como argumento"
 
-#: src/library/agent.cc:477
+#: src/library/agent.cc:497
 msgid "Cant set value on empty agent"
 msgstr "Não posso setar valor num agente vazio"
 
-#: src/library/agent.cc:488
+#: src/library/agent.cc:508
 msgid "Cant set state on empty agent"
 msgstr "Não posso setar estado num agente vazio"
 
-#: src/library/types/module.c:102
+#: src/library/types/module.c:106
 msgid "XML parser is not ready"
 msgstr "Parser XML não está pronto"
 
-#: src/library/types/module.c:118
+#: src/library/types/module.c:126
 msgid "Required object type is not ready"
 msgstr "Tipo de objeto necessário não está pronto"
 
-#: src/library/types/module.c:125
+#: src/library/types/module.c:133
 msgid "Failed inserting required object type"
 msgstr "Falha ao inserir tipo de objeto"
-
-#~ msgid "HTTP operation failed"
-#~ msgstr "Requisição HTTP falhou"
-
-#~ msgid "Unsupported HTTP verb"
-#~ msgstr "Verbo HTTP inválido ou não suportado"
-
-#~ msgid "Failed to get response code from curl"
-#~ msgstr "Erro ao tentar obter resposta da libcurl"
