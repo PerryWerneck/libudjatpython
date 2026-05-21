@@ -23,10 +23,6 @@
 	 #include <config.h>
  #endif // HAVE_CONFIG_H
 
- #ifndef DEBUG 
-	#error aqui
- #endif
-
  #include <udjat/defs.h>
  #include <udjat/module/abstract.h>
  #include <udjat/tools/logger.h>
