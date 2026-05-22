@@ -27,6 +27,8 @@
  #include <udjat/tools/logger.h>
  #include <iostream>
  #include <private/interpreter.h>
+ #include <private/modules.h>
+ #include <udjat/module/abstract.h>
 
  using namespace Udjat;
  using namespace std;
@@ -36,8 +38,7 @@
  static int call_python_test() {
 	return Python::Interpreter::getInstance().run(
 		"import sys\n"
-		"import logger\n"
-		"import config\n"
+		"from udjat import logger, config\n"
 		"logger.warning(f'----> Program name: {sys.executable}')\n"
 		"print(config.get('python','example','default'))\n"
 	);
