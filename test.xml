@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <udjat>
 
-	<module name='http' preload='yes' required='no' />
+	<module name='http' required='no' />
+	<module path='.build/udjat-module-python.so' required='yes' />
 	
 	<agent name='sample1' src='testpython' type='python' value='0' update-timer='10'>
 

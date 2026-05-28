@@ -67,9 +67,11 @@
 
 	return loader(argc,argv,[](Application &app) -> int {
 
+		/*
 		debug("Initializing " PACKAGE_NAME "...");
 		udjat_module_init();
 		debug("... initilization of " PACKAGE_NAME " is complete");
+		*/
 
 		return 0;
 	});
