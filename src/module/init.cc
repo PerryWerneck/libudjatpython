@@ -30,7 +30,7 @@
  using namespace Udjat;
 
  /// @brief Register udjat module.
- UDJAT_API Udjat::Module * udjat_module_init() {
+ UDJAT_API Udjat::Module * udjat_module_init(const Udjat::XML::Node &node) {
 	debug(__FUNCTION__, " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
 	return Udjat::Python::Module::Factory();
  }
