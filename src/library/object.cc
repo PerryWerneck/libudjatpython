@@ -25,6 +25,7 @@
  #include <private/object.h>
  #include <private/tools.h>
  #include <private/xml.h>
+ #include <private/value.h>
  #include <udjat/tools/xml.h>
  #include <udjat/tools/object.h>
  #include <udjat/tools/abstract/object.h>
@@ -113,6 +114,20 @@
 
 }
 
+ UDJAT_PRIVATE PyObject * object_getproperties(PyObject *self, PyObject *args) {
+
+	try {
+
+
+	} catch(const std::exception &e) {
+
+		PyErr_SetString(PyExc_RuntimeError, e.what());
+
+	}
+
+	return NULL;
+
+ }
 
  UDJAT_PRIVATE PyObject * object_getattr(PyObject *self, PyObject *attr) {
 
@@ -127,12 +142,34 @@
 
 		try {
 
-			string response;
-			if(object_get_private<Abstract::Object>(self)->getProperty(attrname,response)) {
-				return PyUnicode_FromString(
-					response.c_str()
-				);
+			if(!object_has_private(self)) {
+
+				// Empty object, use default python method.
+				return PyObject_GenericGetAttr(self, attr);
+
+			} else if(!strcasecmp(attrname,"properties")) {
+
+				// Get *all* object properties
+				Udjat::Value properties;
+				object_get_private<Abstract::Object>(self)->getProperties(properties);
+			
+				// Convert them to python dict.
+				auto response = Python::factory(properties);
+				Py_IncRef(response.get()); // Add reference because shared_ptr will remove one.
+				return response.get();
+
+			} else {
+
+				// Get object property
+				string response;
+				if(object_get_private<Abstract::Object>(self)->getProperty(attrname,response)) {
+					return PyUnicode_FromString(
+						response.c_str()
+					);
+				}
+
 			}
+
 
 		} catch(const std::exception &e) {
 

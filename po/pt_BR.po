@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: udjathttp 1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-20 22:43-0300\n"
+"POT-Creation-Date: 2026-06-02 21:37-0300\n"
 "PO-Revision-Date: 2026-05-20 00:22-0300\n"
 "Last-Translator: Perry Werneck <perry.werneck@gmail.com>\n"
 "Language-Team: Brazilian Portuguese <perry.werneck@gmail.com>\n"
@@ -30,8 +30,8 @@ msgstr "Mensagem de log precisa ser uma string"
 #: src/library/config.cc:111 src/library/config.cc:133
 #: src/library/config.cc:139 src/library/config.cc:145
 #: src/library/config.cc:150 src/library/xml.cc:242 src/library/state.cc:163
-#: src/library/agent.cc:440 src/library/agent.cc:446 src/library/agent.cc:451
-#: src/library/agent.cc:479
+#: src/library/value.cc:253 src/library/agent.cc:440 src/library/agent.cc:446
+#: src/library/agent.cc:451 src/library/agent.cc:479
 msgid "Invalid argument"
 msgstr "Argumento inválido"
 
@@ -40,7 +40,7 @@ msgstr "Argumento inválido"
 #: src/library/xml.cc:184 src/library/object.cc:52 src/library/object.cc:144
 #: src/library/action.cc:235 src/library/request.cc:115
 #: src/library/request.cc:137 src/library/response.cc:111
-#: src/library/value.cc:99 src/library/value.cc:182 src/library/value.cc:202
+#: src/library/value.cc:80 src/library/value.cc:142 src/library/value.cc:225
 #: src/library/agent.cc:422 src/library/agent.cc:574
 msgid "Unexpected error in python callback."
 msgstr "Erro inesperado em chamada python."
@@ -122,12 +122,12 @@ msgstr "O agente retornado pela fábrica está vazio"
 msgid "Action requires a XML properties object as argument"
 msgstr "Agente existe um objeto de propriedades XML como argumento"
 
-#: src/library/request.cc:158
+#: src/library/request.cc:158 src/library/value.cc:248
 #, fuzzy
 msgid "Method requires one argument"
 msgstr "Método exige 2 argumentos"
 
-#: src/library/value.cc:173
+#: src/library/value.cc:216
 msgid "Unexpected value type in python callback."
 msgstr "Erro inesperado em chamada python."
 
