@@ -163,7 +163,7 @@
 			{
 				// Return another value object.
 				auto ptr = Python::factory(object);
-				Py_IncRef(ptr.get());
+				Py_IncRef(ptr.get()); // Increase reference because the shared_ptr will decrease it.
 				return ptr.get();
 			}
 
