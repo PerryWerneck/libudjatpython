@@ -54,6 +54,10 @@
 	UDJAT_PRIVATE std::shared_ptr<PyObject> factory(Udjat::Value &value);
 	UDJAT_PRIVATE Udjat::Value & get(Udjat::Value &value, PyObject *obj) noexcept;
 
+	inline bool value_has_private(PyObject *self) {
+		return (bool) ((pyValue *) self)->handler;
+	}
+
 	template <class T>
 	void value_set_private(PyObject *self, T &value) {
 		pyValue *object = ((pyValue *) self);
@@ -95,6 +99,7 @@
  UDJAT_PRIVATE PyObject * value_getattr(PyObject *self, PyObject *attr);
 
  UDJAT_PRIVATE PyObject * value_str(PyObject *self);
+ UDJAT_PRIVATE PyObject * value_serialize(PyObject *self, PyObject *args);
 
  #ifdef __cplusplus
 	}

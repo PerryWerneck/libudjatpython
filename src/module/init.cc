@@ -31,7 +31,8 @@
 
  /// @brief Register udjat module.
  UDJAT_API Udjat::Module * udjat_module_init(const Udjat::XML::Node &node) {
-	debug(__FUNCTION__, " <<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<");
-	return Udjat::Python::Module::Factory();
+	auto module = Udjat::Python::Module::Factory();
+	module->autoclean();
+	return module;
  }
 

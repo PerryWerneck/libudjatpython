@@ -600,33 +600,4 @@
 
  }
 
- /*
- UDJAT_PRIVATE PyObject * agent_setup(PyObject *self, PyObject *args) {
-
-	debug(__FUNCTION__);
-	
-	return call(self,[args](Udjat::Python::Agent &agent) -> PyObject * {
-
-		debug("Setting up agent ",agent.name());
-		
-		if(PyTuple_Size(args) != 1) {
-			throw logic_error(_("Agent setup requires a properties object as argument"));
-		}
-
-		PyObject* settings = PyTuple_GetItem(args, 0);
-		if(PyObject_TypeCheck(settings, &xml_type)) {
-
-			if(agent.Udjat::Abstract::Agent::setup(xml_get_native(settings))) {
-				return Py_True;
-			}
-
-		} else {
-
-			throw logic_error(_("Agent.setup() requires a valid properties object"));
-		}
-
-		return Py_False;
-	});
-
- }
- */
+ 

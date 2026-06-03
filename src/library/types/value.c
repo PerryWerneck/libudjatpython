@@ -27,15 +27,13 @@
 
  static PyMethodDef value_methods[] = {
 
-	/*
     {
-		.ml_name = "get",
-		.ml_meth = (PyCFunction) xml_get,
+		.ml_name = "serialize",
+		.ml_meth = (PyCFunction) value_serialize,
 		.ml_flags = METH_VARARGS,
-		.ml_doc =	"Get attribute from XML definition\n\n"
-					"get(name,default): Get attribute 'name' from XML definition, use default value if not found\n"
+		.ml_doc =	"Export value to string\n\n"
+					"export(mimetype): Export value contents in 'mimetype' format\n"
     },
-	*/
 
     {
     	NULL
