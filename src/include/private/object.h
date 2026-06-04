@@ -48,8 +48,6 @@
 		std::shared_ptr<Udjat::Abstract::Object> object;
 	};
 
-	UDJAT_PRIVATE bool object_setup(PyObject *self, const char *name, const Udjat::XML::Node &node);
-	
 	extern "C" {
  #endif // __cplusplus
 

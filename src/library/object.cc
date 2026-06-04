@@ -112,21 +112,6 @@
 	
 	return PyObject_GenericSetAttr(self, attr, value);
 
-}
-
- UDJAT_PRIVATE PyObject * object_getproperties(PyObject *self, PyObject *args) {
-
-	try {
-
-
-	} catch(const std::exception &e) {
-
-		PyErr_SetString(PyExc_RuntimeError, e.what());
-
-	}
-
-	return NULL;
-
  }
 
  UDJAT_PRIVATE PyObject * object_getattr(PyObject *self, PyObject *attr) {
@@ -142,12 +127,7 @@
 
 		try {
 
-			if(!object_has_private(self)) {
-
-				// Empty object, use default python method.
-				return PyObject_GenericGetAttr(self, attr);
-
-			} else if(!strcasecmp(attrname,"properties")) {
+			if(!strcasecmp(attrname,"properties")) {
 
 				// Get *all* object properties
 				Udjat::Value properties;
@@ -244,33 +224,4 @@
 	return Py_None;
  }
 
- UDJAT_PRIVATE bool object_setup(PyObject *self, const char *name, const XML::Node &node) {
-
-	debug(__FUNCTION__);
-	
-	Python::Guard guard;
-
-	auto response = Python::make_handle(Python::call(self, "setup", node));
-	if(!response.get()) {
-		throw runtime_error(Python::exception());
-	}
-
-	if(Py_IsNone(response.get())) {
-		Logger::Message{"Setup method on {} returned PyNone when I was expecting a boolean",Py_TYPE(self)->tp_name}.warning(name);
-		return false;
-	}
-
-	if(!PyBool_Check(response.get())) {
-		Logger::String{"Setup method on {} returned value when I was expecting a boolean",Py_TYPE(self)->tp_name}.warning(name);
-		return false;
-	}		
-
-	int result = PyObject_IsTrue(response.get());
-	if (result == -1) {
-		throw logic_error(Python::exception());
-	}
-	
-	return (result != 0);
-
- }
 
