@@ -600,4 +600,13 @@
 
  }
 
- 
+  UDJAT_PRIVATE PyObject * agent_alert(PyObject *self, PyObject *args, PyObject *keywds) {
+
+	debug(__FUNCTION__,"<-------------------------------------------------------" );
+	return call(self,[args](Udjat::Python::Agent &agent) -> PyObject *{
+
+		debug("Arguments: ",PyTuple_Size(args));
+
+		return Py_None;
+	});
+  }

@@ -48,6 +48,7 @@
  UDJAT_PRIVATE PyObject * agent_get_by_path(PyObject *self, PyObject *args);
  UDJAT_PRIVATE PyObject * agent_invalidate(PyObject *self, PyObject *args);
  UDJAT_PRIVATE PyObject * agent_call(PyObject *self, PyObject *args);
+ UDJAT_PRIVATE PyObject * agent_alert(PyObject *self, PyObject *args, PyObject *keywds);
 
  #ifdef __cplusplus
 	}

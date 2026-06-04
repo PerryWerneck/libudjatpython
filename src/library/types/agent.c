@@ -98,10 +98,15 @@
 		.ml_flags = METH_VARARGS,
 		.ml_doc =	"Refresh agent\n"
     },
-
     {
-    	NULL
-	}
+		.ml_name = "alert",
+		.ml_meth = (PyCFunction) agent_alert,
+		.ml_flags = METH_VARARGS|METH_KEYWORDS,
+		.ml_doc =	"Manually trigger alert\n"
+    },
+
+	{NULL, NULL, 0, NULL}  // Sentinel
+ 
  };
 
  PyTypeObject agent_type = {

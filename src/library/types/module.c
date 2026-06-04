@@ -123,7 +123,12 @@ PyMODINIT_FUNC PyModule_Initialize(void)
 
 			if (PyType_Ready(objects[i].type) < 0) {
 				Py_DECREF(module);
-				PyErr_SetString(PyExc_RuntimeError, _("Required object type is not ready"));
+				char buffer[4096];
+				snprintf(buffer, sizeof(buffer), _("'%s' object type is not ready"), objects[i].name);
+				PyErr_SetString(
+					PyExc_RuntimeError, 
+					buffer
+				);
 				return NULL;
 			}
 
