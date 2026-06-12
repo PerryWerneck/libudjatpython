@@ -25,12 +25,13 @@
  #include <udjat/module/abstract.h>
  #include <udjat/module/python.h>
  #include <udjat/tools/logger.h>
+ #include <udjat/tools/properties.h>
 
  using namespace std;
  using namespace Udjat;
 
  /// @brief Register udjat module.
- UDJAT_API Udjat::Module * udjat_module_init(const Udjat::XML::Node &node) {
+ UDJAT_API Udjat::Module * udjat_module_init(const Udjat::Properties &) {
 	auto module = Udjat::Python::Module::Factory();
 	module->autoclean();
 	return module;

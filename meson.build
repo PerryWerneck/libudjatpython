@@ -49,7 +49,7 @@ subdir('po')
 #
 libudjat = dependency(
   'libudjat',
-  version: '>=2.5.0',
+  version: '>=2.7.0',
   fallback: ['libudjat', 'static_library'],
 )
 
