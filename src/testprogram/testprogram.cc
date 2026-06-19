@@ -21,57 +21,36 @@
 
  #include <config.h>
  #include <udjat/defs.h>
- #include <udjat/loader.h>
+ #include <udjat/tools/loader.h>
  #include <udjat/tools/logger.h>
  #include <udjat/module.h>
  #include <iostream>
  #include <private/interpreter.h>
- #include <private/agent.h>
  #include <private/modules.h>
  #include <udjat/tools/memory.h>
 
  using namespace Udjat;
  using namespace std;
 
- int main(int argc, char **argv) {
-
-	Logger::verbosity(9);
-	Logger::redirect();
+ int main(const int argc, const char **argv) {
 
 	Python::Interpreter::getInstance().run(
-		"import sys; sys.path.append('./testscripts')"
+	 	"import sys; sys.path.append('./testscripts')"
 	);
 
-	/*
-	return Python::Interpreter::getInstance().run(
-		"import sys\n"
-		"import logger\n"
-		"import config\n"
-		"logger.warning(f'----> Program name: {sys.executable}')\n"
-		"print(config.get('python','example','default'))\n"
-	);
-	*/
-
-
-	/*
-	{
-		// auto agent = Python::Agent::Factory("testagent");
-		auto agent = Python::Agent::Factory().AgentFactory("testagent", XML::Node());
-		agent->setup(XML::Node());
-		agent->start();
-		agent->refresh();
-		agent->stop();
-		return 0;
-	}
-	*/
+	// return Python::Interpreter::getInstance().run(
+	// 	"import sys\n"
+	// 	"import logger\n"
+	// 	"import config\n"
+	// 	"logger.warning(f'----> Program name: {sys.executable}')\n"
+	// 	"print(config.get('python','example','default'))\n"
+	// );
 
 	return loader(argc,argv,[](Application &app) -> int {
 
-		/*
-		debug("Initializing " PACKAGE_NAME "...");
-		udjat_module_init();
-		debug("... initilization of " PACKAGE_NAME " is complete");
-		*/
+		// debug("Initializing " PACKAGE_NAME "...");
+		// udjat_module_init();
+		// debug("... initilization of " PACKAGE_NAME " is complete");
 
 		return 0;
 	});

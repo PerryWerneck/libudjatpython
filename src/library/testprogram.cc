@@ -23,17 +23,26 @@
  #endif // HAVE_CONFIG_H
 
  #include <udjat/defs.h>
- #include <udjat/loader.h>
  #include <udjat/tools/logger.h>
  #include <iostream>
  #include <private/interpreter.h>
  #include <private/modules.h>
  #include <udjat/module/abstract.h>
+ #include <private/agent.h>
 
  using namespace Udjat;
  using namespace std;
 
  #ifdef DEBUG 
+
+ static int python_agent_test() {
+
+	auto agent = Python::Agent::Factory().AgentFactory("testpython", XML::Node());
+	agent->start();
+	agent->refresh();
+	agent->stop();
+	return 0;
+ }
 
  static int call_python_test() {
 	return Python::Interpreter::getInstance().run(
@@ -50,10 +59,11 @@
 		const char *name;
 		int (*test)();
 	} tests[] = {
-		{"call_python",call_python_test},
+		{"python-call",call_python_test},
+		{"python-agent",python_agent_test},
 	};
 
-	Logger::String{"Running unit test: ",name}.info();
+	Logger::String{"Running unit test: ",name}.notice();
 
 	if(!name) {
 		for(const auto &test : tests) {
