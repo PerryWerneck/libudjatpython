@@ -22,17 +22,11 @@
  #include <config.h>
  #include <udjat/defs.h>
  #include <udjat/tools/loader.h>
- #include <udjat/tools/logger.h>
- #include <udjat/module.h>
- #include <iostream>
  #include <private/interpreter.h>
- #include <private/modules.h>
- #include <udjat/tools/memory.h>
 
  using namespace Udjat;
- using namespace std;
 
- int main(const int argc, const char **argv) {
+ int main(int argc, char **argv) {
 
 	Python::Interpreter::getInstance().run(
 	 	"import sys; sys.path.append('./testscripts')"
