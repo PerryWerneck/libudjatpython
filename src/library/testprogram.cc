@@ -27,7 +27,7 @@
  #include <iostream>
  #include <private/interpreter.h>
  #include <private/modules.h>
- #include <udjat/module/abstract.h>
+ #include <udjat/module.h>
  #include <private/agent.h>
 
  using namespace Udjat;

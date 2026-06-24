@@ -22,7 +22,7 @@
  #endif // HAVE_CONFIG_H
 
  #include <udjat/defs.h>
- #include <udjat/module/abstract.h>
+ #include <udjat/module.h>
  #include <udjat/module/python.h>
  #include <udjat/tools/logger.h>
  #include <udjat/tools/properties.h>

@@ -20,7 +20,7 @@
  #pragma once
 
  #include <udjat/defs.h>
- #include <udjat/module/abstract.h>
+ #include <udjat/module.h>
  
  namespace Udjat {
 

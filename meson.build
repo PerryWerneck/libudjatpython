@@ -50,7 +50,13 @@ subdir('po')
 libudjat = dependency(
   'libudjat',
   version: '>=2.7.0',
-  fallback: ['libudjat', 'static_library'],
+  fallback: ['libudjat'],
+)
+
+pugixml = dependency(
+  'pugixml',
+  method : 'pkg-config',
+  required: true
 )
 
 # Import the python module
@@ -177,14 +183,14 @@ if host_machine.system() == 'windows'
   pkg.generate(
     name: 'lib' + meson.project_name(),
     description: project_description,
-    requires: [ libudjat ],
+    requires: [ libudjat, pugixml ],
     libraries: [ '-l' + meson.project_name() + '.dll' ]
   )
 
   pkg.generate(
     name: 'lib' + meson.project_name() + '-static',
     description: project_description,
-    requires: [ libudjat ],
+    requires: [ libudjat, pugixml ],
     libraries: [ 
       '-l' + meson.project_name(),
       '-lws2_32',
@@ -196,14 +202,14 @@ else
   pkg.generate(
     name: 'lib' + meson.project_name(),
     description: project_description,
-    requires: [ 'libudjat' ],
+    requires: [ 'libudjat', pugixml ],
     libraries: [ '-l' + meson.project_name() ]
   )
 
   pkg.generate(
     name: 'lib' + meson.project_name() + '-static',
     description: project_description,
-    requires: [ 'libudjat' ],
+    requires: [ 'libudjat', pugixml ],
     libraries: [ '-l:lib' + meson.project_name() + '.a' ]
   )
 
@@ -238,7 +244,7 @@ if host_machine.system() == 'windows'
     version : libversion,
     soversion : libversion,
     gnu_symbol_visibility: 'hidden',
-    dependencies: [ libudjat, py_dep ],
+    dependencies: [ libudjat, pugixml, py_dep ],
     link_args: [ 
       '-lws2_32',
       '-lwinhttp',
@@ -250,7 +256,7 @@ if host_machine.system() == 'windows'
     meson.project_name(), 
     config_src + lib_src + py_modules,
     install: true,
-    dependencies: [ libudjat, py_dep ],
+    dependencies: [ libudjat, pugixml, py_dep ],
     cpp_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
     c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
     include_directories: includes_dir
@@ -266,7 +272,7 @@ if host_machine.system() == 'windows'
     link_with: dynamic,
     install_dir: libudjat.get_variable('module_path'),
     gnu_symbol_visibility: 'hidden',
-    dependencies: [ libudjat, py_dep ],
+    dependencies: [ libudjat, pugixml, py_dep ],
     include_directories: includes_dir
   )
 
@@ -280,7 +286,7 @@ else
     soversion : libversion,
     cpp_args: [ '-ffat-lto-objects' ],    
     gnu_symbol_visibility: 'hidden',
-    dependencies: [ libudjat, py_dep ],
+    dependencies: [ libudjat, pugixml, py_dep ],
     include_directories: includes_dir
   )
 
@@ -301,7 +307,7 @@ else
     meson.project_name(), 
     config_src + lib_src + py_modules,
     install: true,
-    dependencies: [ libudjat, py_dep ],
+    dependencies: [ libudjat, pugixml, py_dep ],
     cpp_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
     c_args: [ '-DSTATIC_LIBRARY', '-fno-lto' ],
     include_directories: includes_dir
@@ -312,7 +318,7 @@ endif
 static_library = declare_dependency(
   link_with: static,
   include_directories: includes_dir,
-  dependencies: [ libudjat, py_dep ],
+  dependencies: [ libudjat, pugixml, py_dep ],
   link_args: [ 
     '-lws2_32',
     '-lwinhttp',

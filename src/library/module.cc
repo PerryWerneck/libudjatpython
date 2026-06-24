@@ -24,7 +24,7 @@
  #endif // HAVE_CONFIG_H
 
  #include <udjat/defs.h>
- #include <udjat/module/abstract.h>
+ #include <udjat/module.h>
  #include <udjat/tools/logger.h>
  #include <udjat/tools/url.h>
  #include <udjat/tools/url/handler/python.h>
